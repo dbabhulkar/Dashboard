@@ -1,0 +1,65 @@
+﻿@model IEnumerable<Dashboard.Models.UrgentBulletin>
+
+@{
+    ViewData["Title"] = "Bulletinelist";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Bulletinelist</h2>
+
+<p>
+
+    @Html.ActionLink("Create New", "CreateBulletin")
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Subject)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Body)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ExpiryDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FileName)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Subject)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Body)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ExpiryDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FileName)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.BulltinId }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.BulltinId })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+@if (ViewBag.Message != null)
+{
+    <script type="text/javascript">
+        window.onload = function () {
+            //alert('@ViewBag.msg');
+
+            swal('Success', '@ViewBag.Message', 'success');
+        };
+    </script>
+}

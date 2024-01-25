@@ -1,0 +1,239 @@
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor Accessor
+<div id="divAssetPricingViewIP">
+
+    <div class="row form-group">
+        <div class="col-md-4">
+            <h6 style="font-weight: 600; color:#333;">Customer Name :</h6>
+            <label id="lbl_AP_custName_view" style="color:#333;"></label>
+        </div>
+
+        <div class="col-md-4 ">
+            <h6 style="font-weight: 600; color:#333;">IP approval no :</h6>
+            <label id="lbl_AP_approvalNo_view" style="color:#333;text-transform:uppercase"></label>
+        </div>
+    </div>
+
+    <div class="row form-group">
+        <div class="col-md-4">
+            <h6 style="font-weight: 600; color:#333;">PSL Classification : <span style="color:#333;" id="lbl_IsPSL_view"></span></h6>
+            <label id="lbl_AP_pslClassification_view" style="color:#333;"></label>
+        </div>
+        <div class="col-md-4">
+            <h6 style="font-weight: 600; color:#333;">Weaker Section :</h6>
+            <label id="lbl_AP_weakerSection_view" style="color:#333;"></label>
+        </div>
+        <div class="col-md-4">
+            <h6 style="font-weight: 600; color:#333;">FTB :</h6>
+            <label id="lbl_AP_FTB_view" style="color:#333;"></label>
+        </div>
+    </div>
+
+    <div class="row form-group">
+        <div class="col-md-12">
+            <h6 style="font-weight: 600; color:#333;">Facility Details:</h6>
+
+            <table class="responsive-table dataTable no-footer" id="tbl_view_facilityDetails_view">
+                <thead>
+                    <tr>
+                        <th rowspan="2">Facility</th>
+                        <th colspan="2">Amt in Lac</th>
+                        <th colspan="2">ROI/ Commission (%)</th>
+                        <th>WS Rate Calculation Image</th>
+                    </tr>
+                    <tr>
+                        <th>Existing</th>
+                        <th>Proposed</th>
+                        <th>Existing</th>
+                        <th>Proposed</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Cash Credit</td>
+                        <td>100</td>
+                        <td>200</td>
+                        <td>10% linked to 3 mth Repo</td>
+                        <td>8.5% linked to 3 mth T bill</td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+    <div class="row form-group">
+        <div class="col-md-12">
+            <h6 style="font-weight: 600; color:#333;">Other Charges:</h6>
+
+            <table class="responsive-table dataTable no-footer" id="tbl_view_otherCharges_view">
+                <thead>
+                    <tr>
+                        <th>Particular</th>
+                        <th>Existing (%)</th>
+                        <th>Proposed (%)</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+
+        </div>
+    </div>
+    <div class="row form-group">
+        <div class="col-md-12">
+            <h6 style="font-weight: 600; color:#333;">Collateral Details:</h6>
+
+            <table class="responsive-table dataTable no-footer" id="tbl_view_collateralDetails_view">
+                <thead>
+                    <tr>
+                        <th>Security Type</th>
+                        <th>Security Description/Address</th>
+                        <th>Security Owner</th>
+                        <th>Value (Rs in lac)</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+
+        </div>
+    </div>
+    <div class="row form-group">
+        <div class="col-md-12">
+            <h6 style="font-weight: 600; color:#333;display: inline-block;margin-right: 8px;">Multiple Banking:</h6><span id="lbl_multipleBank_view" style="color: #333;"> Yes</span>
+
+
+            <table class="responsive-table dataTable no-footer" id="tbl_view_multipleBanking_view">
+                <thead>
+
+                    <tr>
+                        <th>Facility</th>
+                        <th>Bank</th>
+                        <th>Limit</th>
+                        <th>ROI/ Commission (%)</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+
+                    <tr>
+                        <td>CC</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>LC</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row form-group">
+        <div class="col-md-12">
+            <h6 style="font-weight: 600; color:#333;">Family Tree :</h6>
+            <label style="font-size:13px" class="label-promoters">Primary Promoters</label>
+            <table class="responsive-table dataTable no-footer" id="tbl_view_promoters_view">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Promoter Type</th>
+                        <th>Account With US (Yes/No)</th>
+                        <th>A/c no</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="row form-group">
+        <div class="col-md-12">
+            <label style="font-size:13px" class="label-promoters">Relative Promoters</label>
+            <table class="responsive-table dataTable no-footer" id="tbl_view_customer_view">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Relationship</th>
+                        <th>Relationship With</th>
+                        <th>Account With US (Yes/No)</th>
+                        <th>A/c no</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Co. name</td>
+                        <td>Group Company</td>
+                        <td>Yes</td>
+                        <td>XXXXXXX</td>
+
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+    <div class="row form-group">
+        <div class="col-md-12">
+            <h6 style="font-weight: 600; color:#333;">Justification :</h6>
+
+            <label id="lbl_view_Justification_view" style="color:#333;"></label>
+        </div>
+    </div>
+
+    @*<div class="row form-group">
+    <div class="col-md-12">
+    <h6 style="font-weight: 600; color:#333;">WB :</h6>
+    <div class="asset_img">
+    <img id="facilityImage" class="facilityImage" />
+    </div>
+
+
+    </div>
+    </div>.*@
+
+    <div class="row form-group">
+        <div class="col-md-12">
+            <h6 style="font-weight: 600; color:#333;">Audit Trail :</h6>
+
+            <table class="responsive-table dataTable no-footer" id="tbl_view_auditTrail_view">
+                <thead>
+                    <tr>
+                        <th>User Name</th>
+                        <th>User Role</th>
+                        <th>Action Taken</th>
+                        <th>Remarks</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+<script src="~/js/jquery.min.js"></script>
+
+<script src="~/js/dataTable.min.js"></script>

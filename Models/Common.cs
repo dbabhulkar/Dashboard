@@ -10,6 +10,10 @@ namespace Dashboard.Models
 {
     public class Common
     {
+        private SqlConnection sqlCon;
+        private SqlCommand cmd;
+        private SqlDataAdapter sda;
+
         public clsCMDelinquencyMain clsCMDelinquency11(string SelectedSegment, string SelectedLocation, string LSID, string datetime, string EmpID)
         {
             clsCMDelinquencyMain clsCMDelinquencyMain = new clsCMDelinquencyMain();
@@ -1299,5 +1303,56 @@ namespace Dashboard.Models
         public string Total_percentage { get; set; }
         public string Fresh_Leads { get; set; }
         public string UploadedDate { get; set; }
+    }
+    public class UrgentBulletin
+    {
+        public string Subject { get; set; }
+
+        public string Body { get; set; }
+        public IFormFile txtUpload { get; set; }
+
+        public DateTime ExpiryDate { get; set; }
+        public DateTime FromDate { get; set; }
+
+        public string Recipients { get; set; }
+        public string Business { get; set; }
+
+        public string FileName { get; set; }
+
+        public IEnumerable<UrgentBulletin> Bulletin { get; set; }
+
+        public int BulltinId { get; set; }
+        public string From_date { get; set; }
+        public string Create_date { get; set; }
+        public string EmpRole { get; set; }
+        public string EmpName { get; set; }
+        public int Bulletine_Count { get; set; }
+
+    }
+    public class clsTopSearch
+    {
+        public string ClientID { get; set; }
+        public string CustName { get; set; }
+    }
+    public class sessionClass
+    {
+        public bool sessionValue { get; set; }
+    }
+    public class DBClass
+    {
+        public string AppInId { get; set; }
+        public string sDBVaultId { get; set; }
+        public string userid { get; set; }
+        public int ItgrcCode { get; set; }
+        public string[] sValues { get; set; }
+        public string LoginId { get; set; }
+        public string APIMethod { get; set; }
+    }
+    public class QuickLink
+    {
+        public Int32 recordId { get; set; }
+        public string urlName { get; set; }
+        public string urlLink { get; set; }
+        public string description { get; set; }
     }
 }

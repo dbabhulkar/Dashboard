@@ -1,0 +1,676 @@
+﻿@using Dashboard.Models;
+@{
+    ViewData["Title"] = "Feedback";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/css/feedback.css" rel="stylesheet" />
+<div class="wrapper">
+    <div class="container-fluid">
+        <div class="card" style="padding: 15px;">
+            <div class="card-header article">
+                <h4 class="card-title">FeedBack</h4>
+            </div>
+            <div class="card-body">
+                <div class="row form-group">
+                    <div class="col-md-3">
+                        <label class="label-control">Please select the Page</label>
+                        <select class="form-control" id="ddl_Modules">
+                            @{
+                                if (ViewData["feedbackPageList"] != null)
+                                {
+                                    if (ViewData.Values != null && ViewData.Values.Count() > 0)
+                                    {
+                                        var feedbackPageList = ViewData["feedbackPageList"] as List<feedbackPageList>;
+
+                                        foreach (var item in feedbackPageList)
+                                        {
+                                            <option value="@item.ModuleID">@item.ModuleName</option>
+                                        }
+                                    }
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-md-12">
+                        <label class="label-control">1. How satisfied are you with the User Interface?</label>
+                        <div class="ui__rating" id="UI">
+                            <input id="rating-1" class="rating__input rating__input-1" type="radio" name="ui" value="1">
+                            <input id="rating-2" class="rating__input rating__input-2" type="radio" name="ui" value="2">
+                            <input id="rating-3" class="rating__input rating__input-3" type="radio" name="ui" value="3">
+                            <input id="rating-4" class="rating__input rating__input-4" type="radio" name="ui" value="4">
+                            <input id="rating-5" class="rating__input rating__input-5" type="radio" name="ui" value="5">
+                            <label class="rating__label ui__label" for="rating-1">
+                                <svg class="rating__star" width="32" height="32" viewBox="0 0 32 32" aria-hidden="true">
+                                    <g transform="translate(16,16)">
+                                        <circle class="rating__star-ring" fill="none" stroke="#000" stroke-width="16" r="8" transform="scale(0)" />
+                                    </g>
+                                    <g stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <g transform="translate(16,16) rotate(180)">
+                                            <polygon class="rating__star-stroke" points="0,15 4.41,6.07 14.27,4.64 7.13,-2.32 8.82,-12.14 0,-7.5 -8.82,-12.14 -7.13,-2.32 -14.27,4.64 -4.41,6.07" fill="none" />
+                                            <polygon class="rating__star-fill" points="0,15 4.41,6.07 14.27,4.64 7.13,-2.32 8.82,-12.14 0,-7.5 -8.82,-12.14 -7.13,-2.32 -14.27,4.64 -4.41,6.07" fill="#000" />
+                                        </g>
+                                        <g transform="translate(16,16)" stroke-dasharray="12 12" stroke-dashoffset="12">
+                                            <polyline class="rating__star-line" transform="rotate(0)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(72)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(144)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(216)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(288)" points="0 4,0 16" />
+                                        </g>
+                                    </g>
+                                </svg>
+                                <span class="rating__sr">1</span>
+                            </label>
+                            <label class="rating__label ui__label" for="rating-2">
+                                <svg class="rating__star" width="32" height="32" viewBox="0 0 32 32" aria-hidden="true">
+                                    <g transform="translate(16,16)">
+                                        <circle class="rating__star-ring" fill="none" stroke="#000" stroke-width="16" r="8" transform="scale(0)" />
+                                    </g>
+                                    <g stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <g transform="translate(16,16) rotate(180)">
+                                            <polygon class="rating__star-stroke" points="0,15 4.41,6.07 14.27,4.64 7.13,-2.32 8.82,-12.14 0,-7.5 -8.82,-12.14 -7.13,-2.32 -14.27,4.64 -4.41,6.07" fill="none" />
+                                            <polygon class="rating__star-fill" points="0,15 4.41,6.07 14.27,4.64 7.13,-2.32 8.82,-12.14 0,-7.5 -8.82,-12.14 -7.13,-2.32 -14.27,4.64 -4.41,6.07" fill="#000" />
+                                        </g>
+                                        <g transform="translate(16,16)" stroke-dasharray="12 12" stroke-dashoffset="12">
+                                            <polyline class="rating__star-line" transform="rotate(0)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(72)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(144)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(216)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(288)" points="0 4,0 16" />
+                                        </g>
+                                    </g>
+                                </svg>
+                                <span class="rating__sr">2</span>
+                            </label>
+                            <label class="rating__label ui__label" for="rating-3">
+                                <svg class="rating__star" width="32" height="32" viewBox="0 0 32 32" aria-hidden="true">
+                                    <g transform="translate(16,16)">
+                                        <circle class="rating__star-ring" fill="none" stroke="#000" stroke-width="16" r="8" transform="scale(0)" />
+                                    </g>
+                                    <g stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <g transform="translate(16,16) rotate(180)">
+                                            <polygon class="rating__star-stroke" points="0,15 4.41,6.07 14.27,4.64 7.13,-2.32 8.82,-12.14 0,-7.5 -8.82,-12.14 -7.13,-2.32 -14.27,4.64 -4.41,6.07" fill="none" />
+                                            <polygon class="rating__star-fill" points="0,15 4.41,6.07 14.27,4.64 7.13,-2.32 8.82,-12.14 0,-7.5 -8.82,-12.14 -7.13,-2.32 -14.27,4.64 -4.41,6.07" fill="#000" />
+                                        </g>
+                                        <g transform="translate(16,16)" stroke-dasharray="12 12" stroke-dashoffset="12">
+                                            <polyline class="rating__star-line" transform="rotate(0)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(72)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(144)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(216)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(288)" points="0 4,0 16" />
+                                        </g>
+                                    </g>
+                                </svg>
+                                <span class="rating__sr">3</span>
+                            </label>
+                            <label class="rating__label ui__label" for="rating-4">
+                                <svg class="rating__star" width="32" height="32" viewBox="0 0 32 32" aria-hidden="true">
+                                    <g transform="translate(16,16)">
+                                        <circle class="rating__star-ring" fill="none" stroke="#000" stroke-width="16" r="8" transform="scale(0)" />
+                                    </g>
+                                    <g stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <g transform="translate(16,16) rotate(180)">
+                                            <polygon class="rating__star-stroke" points="0,15 4.41,6.07 14.27,4.64 7.13,-2.32 8.82,-12.14 0,-7.5 -8.82,-12.14 -7.13,-2.32 -14.27,4.64 -4.41,6.07" fill="none" />
+                                            <polygon class="rating__star-fill" points="0,15 4.41,6.07 14.27,4.64 7.13,-2.32 8.82,-12.14 0,-7.5 -8.82,-12.14 -7.13,-2.32 -14.27,4.64 -4.41,6.07" fill="#000" />
+                                        </g>
+                                        <g transform="translate(16,16)" stroke-dasharray="12 12" stroke-dashoffset="12">
+                                            <polyline class="rating__star-line" transform="rotate(0)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(72)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(144)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(216)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(288)" points="0 4,0 16" />
+                                        </g>
+                                    </g>
+                                </svg>
+                                <span class="rating__sr">4</span>
+                            </label>
+                            <label class="rating__label Get ui__label" for="rating-5">
+                                <svg class="rating__star" width="32" height="32" viewBox="0 0 32 32" aria-hidden="true">
+                                    <g transform="translate(16,16)">
+                                        <circle class="rating__star-ring" fill="none" stroke="#000" stroke-width="16" r="8" transform="scale(0)" />
+                                    </g>
+                                    <g stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <g transform="translate(16,16) rotate(180)">
+                                            <polygon class="rating__star-stroke" points="0,15 4.41,6.07 14.27,4.64 7.13,-2.32 8.82,-12.14 0,-7.5 -8.82,-12.14 -7.13,-2.32 -14.27,4.64 -4.41,6.07" fill="none" />
+                                            <polygon class="rating__star-fill" points="0,15 4.41,6.07 14.27,4.64 7.13,-2.32 8.82,-12.14 0,-7.5 -8.82,-12.14 -7.13,-2.32 -14.27,4.64 -4.41,6.07" fill="#000" />
+                                        </g>
+                                        <g transform="translate(16,16)" stroke-dasharray="12 12" stroke-dashoffset="12">
+                                            <polyline class="rating__star-line" transform="rotate(0)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(72)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(144)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(216)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(288)" points="0 4,0 16" />
+                                        </g>
+                                    </g>
+                                </svg>
+                                <span class="rating__sr">5</span>
+                            </label>
+                            <p class="rating__display" data-rating="1" id="hdnTerrible" hidden>Terrible.</p>
+                            <p class="rating__display" data-rating="2" id="hdnBad" hidden>Bad.</p>
+                            <p class="rating__display" data-rating="3" id="hdnOk" hidden>OK.</p>
+                            <p class="rating__display" data-rating="4" id="hdnGood" hidden>Good.</p>
+                            <p class="rating__display" data-rating="5" id="hdnExcellen" hidden>Excellent.</p>
+                            <input type="hidden" name="hdnUI" ID="hdnUI" />
+                            @*<asp:HiddenField ID="hdnUI" runat="server" ClientIDMode="Static" />*@
+                        </div>
+                    </div>
+
+                </div>
+                <div class="row form-group">
+                    <div class="col-md-12">
+                        <label class="label-control">2. How satisfied are you with  the perfomance of the application?  </label>
+                        <div class="performance__rating" id="Performance">
+                            <input id="Perfomance-1" class="rating__input rating__input-1" type="radio" name="performance" value="1">
+                            <input id="Perfomance-2" class="rating__input rating__input-2" type="radio" name="performance" value="2">
+                            <input id="Perfomance-3" class="rating__input rating__input-3" type="radio" name="performance" value="3">
+                            <input id="Perfomance-4" class="rating__input rating__input-4" type="radio" name="performance" value="4">
+                            <input id="Perfomance-5" class="rating__input rating__input-5" type="radio" name="performance" value="5">
+                            <label class="rating__label Perfomance__label" for="Perfomance-1">
+                                <svg class="rating__star" width="32" height="32" viewBox="0 0 32 32" aria-hidden="true">
+                                    <g transform="translate(16,16)">
+                                        <circle class="rating__star-ring" fill="none" stroke="#000" stroke-width="16" r="8" transform="scale(0)" />
+                                    </g>
+                                    <g stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <g transform="translate(16,16) rotate(180)">
+                                            <polygon class="rating__star-stroke" points="0,15 4.41,6.07 14.27,4.64 7.13,-2.32 8.82,-12.14 0,-7.5 -8.82,-12.14 -7.13,-2.32 -14.27,4.64 -4.41,6.07" fill="none" />
+                                            <polygon class="rating__star-fill" points="0,15 4.41,6.07 14.27,4.64 7.13,-2.32 8.82,-12.14 0,-7.5 -8.82,-12.14 -7.13,-2.32 -14.27,4.64 -4.41,6.07" fill="#000" />
+                                        </g>
+                                        <g transform="translate(16,16)" stroke-dasharray="12 12" stroke-dashoffset="12">
+                                            <polyline class="rating__star-line" transform="rotate(0)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(72)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(144)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(216)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(288)" points="0 4,0 16" />
+                                        </g>
+                                    </g>
+                                </svg>
+                                <span class="rating__sr">1</span>
+                            </label>
+                            <label class="rating__label Perfomance__label" for="Perfomance-2">
+                                <svg class="rating__star" width="32" height="32" viewBox="0 0 32 32" aria-hidden="true">
+                                    <g transform="translate(16,16)">
+                                        <circle class="rating__star-ring" fill="none" stroke="#000" stroke-width="16" r="8" transform="scale(0)" />
+                                    </g>
+                                    <g stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <g transform="translate(16,16) rotate(180)">
+                                            <polygon class="rating__star-stroke" points="0,15 4.41,6.07 14.27,4.64 7.13,-2.32 8.82,-12.14 0,-7.5 -8.82,-12.14 -7.13,-2.32 -14.27,4.64 -4.41,6.07" fill="none" />
+                                            <polygon class="rating__star-fill" points="0,15 4.41,6.07 14.27,4.64 7.13,-2.32 8.82,-12.14 0,-7.5 -8.82,-12.14 -7.13,-2.32 -14.27,4.64 -4.41,6.07" fill="#000" />
+                                        </g>
+                                        <g transform="translate(16,16)" stroke-dasharray="12 12" stroke-dashoffset="12">
+                                            <polyline class="rating__star-line" transform="rotate(0)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(72)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(144)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(216)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(288)" points="0 4,0 16" />
+                                        </g>
+                                    </g>
+                                </svg>
+                                <span class="rating__sr">2</span>
+                            </label>
+                            <label class="rating__label Perfomance__label" for="Perfomance-3">
+                                <svg class="rating__star" width="32" height="32" viewBox="0 0 32 32" aria-hidden="true">
+                                    <g transform="translate(16,16)">
+                                        <circle class="rating__star-ring" fill="none" stroke="#000" stroke-width="16" r="8" transform="scale(0)" />
+                                    </g>
+                                    <g stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <g transform="translate(16,16) rotate(180)">
+                                            <polygon class="rating__star-stroke" points="0,15 4.41,6.07 14.27,4.64 7.13,-2.32 8.82,-12.14 0,-7.5 -8.82,-12.14 -7.13,-2.32 -14.27,4.64 -4.41,6.07" fill="none" />
+                                            <polygon class="rating__star-fill" points="0,15 4.41,6.07 14.27,4.64 7.13,-2.32 8.82,-12.14 0,-7.5 -8.82,-12.14 -7.13,-2.32 -14.27,4.64 -4.41,6.07" fill="#000" />
+                                        </g>
+                                        <g transform="translate(16,16)" stroke-dasharray="12 12" stroke-dashoffset="12">
+                                            <polyline class="rating__star-line" transform="rotate(0)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(72)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(144)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(216)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(288)" points="0 4,0 16" />
+                                        </g>
+                                    </g>
+                                </svg>
+                                <span class="rating__sr">3</span>
+                            </label>
+                            <label class="rating__label Perfomance__label" for="Perfomance-4">
+                                <svg class="rating__star" width="32" height="32" viewBox="0 0 32 32" aria-hidden="true">
+                                    <g transform="translate(16,16)">
+                                        <circle class="rating__star-ring" fill="none" stroke="#000" stroke-width="16" r="8" transform="scale(0)" />
+                                    </g>
+                                    <g stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <g transform="translate(16,16) rotate(180)">
+                                            <polygon class="rating__star-stroke" points="0,15 4.41,6.07 14.27,4.64 7.13,-2.32 8.82,-12.14 0,-7.5 -8.82,-12.14 -7.13,-2.32 -14.27,4.64 -4.41,6.07" fill="none" />
+                                            <polygon class="rating__star-fill" points="0,15 4.41,6.07 14.27,4.64 7.13,-2.32 8.82,-12.14 0,-7.5 -8.82,-12.14 -7.13,-2.32 -14.27,4.64 -4.41,6.07" fill="#000" />
+                                        </g>
+                                        <g transform="translate(16,16)" stroke-dasharray="12 12" stroke-dashoffset="12">
+                                            <polyline class="rating__star-line" transform="rotate(0)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(72)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(144)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(216)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(288)" points="0 4,0 16" />
+                                        </g>
+                                    </g>
+                                </svg>
+                                <span class="rating__sr">4</span>
+                            </label>
+                            <label class="rating__label Perfomance__label" for="Perfomance-5">
+                                <svg class="rating__star" width="32" height="32" viewBox="0 0 32 32" aria-hidden="true">
+                                    <g transform="translate(16,16)">
+                                        <circle class="rating__star-ring" fill="none" stroke="#000" stroke-width="16" r="8" transform="scale(0)" />
+                                    </g>
+                                    <g stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <g transform="translate(16,16) rotate(180)">
+                                            <polygon class="rating__star-stroke" points="0,15 4.41,6.07 14.27,4.64 7.13,-2.32 8.82,-12.14 0,-7.5 -8.82,-12.14 -7.13,-2.32 -14.27,4.64 -4.41,6.07" fill="none" />
+                                            <polygon class="rating__star-fill" points="0,15 4.41,6.07 14.27,4.64 7.13,-2.32 8.82,-12.14 0,-7.5 -8.82,-12.14 -7.13,-2.32 -14.27,4.64 -4.41,6.07" fill="#000" />
+                                        </g>
+                                        <g transform="translate(16,16)" stroke-dasharray="12 12" stroke-dashoffset="12">
+                                            <polyline class="rating__star-line" transform="rotate(0)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(72)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(144)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(216)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(288)" points="0 4,0 16" />
+                                        </g>
+                                    </g>
+                                </svg>
+                                <span class="rating__sr">5</span>
+                            </label>
+                            <p class="rating__display" data-rating="1" id="perfomance_0" hidden>Very Dissatisfied.</p>
+                            <p class="rating__display" data-rating="2" id="perfomance_1" hidden>Not Satisfied.</p>
+                            <p class="rating__display" data-rating="3" id="perfomance_2" hidden>Neutral.</p>
+                            <p class="rating__display" data-rating="4" id="perfomance_3" hidden>Satisfied.</p>
+                            <p class="rating__display" data-rating="5" id="perfomance_4" hidden>Very Satisfied.</p>
+                            <input type="hidden" name="hdnPerformance" ID="hdnPerformance" />
+                            @*<asp:HiddenField ID="hdnPerformance" runat="server" ClientIDMode="Static" />*@
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row form-group">
+                    <div class="col-md-12">
+                        <label class="label-control">3. Do you find the application to be User-friendly?  </label>
+                        <div class="userfreindly__rating" id="Userfreindly">
+                            <input id="Userfreindly-1" class="rating__input rating__input-1" type="radio" name="userfreindly" value="1">
+                            <input id="Userfreindly-2" class="rating__input rating__input-2" type="radio" name="userfreindly" value="2">
+                            <input id="Userfreindly-3" class="rating__input rating__input-3" type="radio" name="userfreindly" value="3">
+                            <input id="Userfreindly-4" class="rating__input rating__input-4" type="radio" name="userfreindly" value="4">
+                            <input id="Userfreindly-5" class="rating__input rating__input-5" type="radio" name="userfreindly" value="5">
+                            <label class="rating__label Userfreindly__label" for="Userfreindly-1">
+                                <svg class="rating__star" width="32" height="32" viewBox="0 0 32 32" aria-hidden="true">
+                                    <g transform="translate(16,16)">
+                                        <circle class="rating__star-ring" fill="none" stroke="#000" stroke-width="16" r="8" transform="scale(0)" />
+                                    </g>
+                                    <g stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <g transform="translate(16,16) rotate(180)">
+                                            <polygon class="rating__star-stroke" points="0,15 4.41,6.07 14.27,4.64 7.13,-2.32 8.82,-12.14 0,-7.5 -8.82,-12.14 -7.13,-2.32 -14.27,4.64 -4.41,6.07" fill="none" />
+                                            <polygon class="rating__star-fill" points="0,15 4.41,6.07 14.27,4.64 7.13,-2.32 8.82,-12.14 0,-7.5 -8.82,-12.14 -7.13,-2.32 -14.27,4.64 -4.41,6.07" fill="#000" />
+                                        </g>
+                                        <g transform="translate(16,16)" stroke-dasharray="12 12" stroke-dashoffset="12">
+                                            <polyline class="rating__star-line" transform="rotate(0)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(72)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(144)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(216)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(288)" points="0 4,0 16" />
+                                        </g>
+                                    </g>
+                                </svg>
+                                <span class="rating__sr">1</span>
+                            </label>
+                            <label class="rating__label Userfreindly__label" for="Userfreindly-2">
+                                <svg class="rating__star" width="32" height="32" viewBox="0 0 32 32" aria-hidden="true">
+                                    <g transform="translate(16,16)">
+                                        <circle class="rating__star-ring" fill="none" stroke="#000" stroke-width="16" r="8" transform="scale(0)" />
+                                    </g>
+                                    <g stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <g transform="translate(16,16) rotate(180)">
+                                            <polygon class="rating__star-stroke" points="0,15 4.41,6.07 14.27,4.64 7.13,-2.32 8.82,-12.14 0,-7.5 -8.82,-12.14 -7.13,-2.32 -14.27,4.64 -4.41,6.07" fill="none" />
+                                            <polygon class="rating__star-fill" points="0,15 4.41,6.07 14.27,4.64 7.13,-2.32 8.82,-12.14 0,-7.5 -8.82,-12.14 -7.13,-2.32 -14.27,4.64 -4.41,6.07" fill="#000" />
+                                        </g>
+                                        <g transform="translate(16,16)" stroke-dasharray="12 12" stroke-dashoffset="12">
+                                            <polyline class="rating__star-line" transform="rotate(0)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(72)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(144)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(216)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(288)" points="0 4,0 16" />
+                                        </g>
+                                    </g>
+                                </svg>
+                                <span class="rating__sr">2</span>
+                            </label>
+                            <label class="rating__label Userfreindly__label" for="Userfreindly-3">
+                                <svg class="rating__star" width="32" height="32" viewBox="0 0 32 32" aria-hidden="true">
+                                    <g transform="translate(16,16)">
+                                        <circle class="rating__star-ring" fill="none" stroke="#000" stroke-width="16" r="8" transform="scale(0)" />
+                                    </g>
+                                    <g stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <g transform="translate(16,16) rotate(180)">
+                                            <polygon class="rating__star-stroke" points="0,15 4.41,6.07 14.27,4.64 7.13,-2.32 8.82,-12.14 0,-7.5 -8.82,-12.14 -7.13,-2.32 -14.27,4.64 -4.41,6.07" fill="none" />
+                                            <polygon class="rating__star-fill" points="0,15 4.41,6.07 14.27,4.64 7.13,-2.32 8.82,-12.14 0,-7.5 -8.82,-12.14 -7.13,-2.32 -14.27,4.64 -4.41,6.07" fill="#000" />
+                                        </g>
+                                        <g transform="translate(16,16)" stroke-dasharray="12 12" stroke-dashoffset="12">
+                                            <polyline class="rating__star-line" transform="rotate(0)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(72)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(144)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(216)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(288)" points="0 4,0 16" />
+                                        </g>
+                                    </g>
+                                </svg>
+                                <span class="rating__sr">3</span>
+                            </label>
+                            <label class="rating__label Userfreindly__label" for="Userfreindly-4">
+                                <svg class="rating__star" width="32" height="32" viewBox="0 0 32 32" aria-hidden="true">
+                                    <g transform="translate(16,16)">
+                                        <circle class="rating__star-ring" fill="none" stroke="#000" stroke-width="16" r="8" transform="scale(0)" />
+                                    </g>
+                                    <g stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <g transform="translate(16,16) rotate(180)">
+                                            <polygon class="rating__star-stroke" points="0,15 4.41,6.07 14.27,4.64 7.13,-2.32 8.82,-12.14 0,-7.5 -8.82,-12.14 -7.13,-2.32 -14.27,4.64 -4.41,6.07" fill="none" />
+                                            <polygon class="rating__star-fill" points="0,15 4.41,6.07 14.27,4.64 7.13,-2.32 8.82,-12.14 0,-7.5 -8.82,-12.14 -7.13,-2.32 -14.27,4.64 -4.41,6.07" fill="#000" />
+                                        </g>
+                                        <g transform="translate(16,16)" stroke-dasharray="12 12" stroke-dashoffset="12">
+                                            <polyline class="rating__star-line" transform="rotate(0)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(72)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(144)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(216)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(288)" points="0 4,0 16" />
+                                        </g>
+                                    </g>
+                                </svg>
+                                <span class="rating__sr">4</span>
+                            </label>
+                            <label class="rating__label Userfreindly__label" for="Userfreindly-5">
+                                <svg class="rating__star" width="32" height="32" viewBox="0 0 32 32" aria-hidden="true">
+                                    <g transform="translate(16,16)">
+                                        <circle class="rating__star-ring" fill="none" stroke="#000" stroke-width="16" r="8" transform="scale(0)" />
+                                    </g>
+                                    <g stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <g transform="translate(16,16) rotate(180)">
+                                            <polygon class="rating__star-stroke" points="0,15 4.41,6.07 14.27,4.64 7.13,-2.32 8.82,-12.14 0,-7.5 -8.82,-12.14 -7.13,-2.32 -14.27,4.64 -4.41,6.07" fill="none" />
+                                            <polygon class="rating__star-fill" points="0,15 4.41,6.07 14.27,4.64 7.13,-2.32 8.82,-12.14 0,-7.5 -8.82,-12.14 -7.13,-2.32 -14.27,4.64 -4.41,6.07" fill="#000" />
+                                        </g>
+                                        <g transform="translate(16,16)" stroke-dasharray="12 12" stroke-dashoffset="12">
+                                            <polyline class="rating__star-line" transform="rotate(0)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(72)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(144)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(216)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(288)" points="0 4,0 16" />
+                                        </g>
+                                    </g>
+                                </svg>
+                                <span class="rating__sr">5</span>
+                            </label>
+                            <p class="rating__display" data-rating="1" id="userfreindly_0" hidden>Very difficult to use.</p>
+                            <p class="rating__display" data-rating="2" id="userfreindly_1" hidden>Difficult to use.</p>
+                            <p class="rating__display" data-rating="3" id="userfreindly_2" hidden>Ok to use.</p>
+                            <p class="rating__display" data-rating="4" id="userfreindly_3" hidden>User friendly.</p>
+                            <p class="rating__display" data-rating="5" id="userfreindly_4" hidden>Very user friendly.</p>
+                            <input type="hidden" name="hdnUserfreindly" ID="hdnUserfreindly" />
+                            @*<asp:HiddenField ID="hdnUserfreindly" runat="server" ClientIDMode="Static" />*@
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row form-group">
+                    <div class="col-md-12">
+                        <label class="label-control">4. How is your overall experience using the application?  </label>
+                        <div class="experience__rating" id="Experience">
+                            <input id="Experience-1" class="rating__input rating__input-1" type="radio" name="experience" value="1">
+                            <input id="Experience-2" class="rating__input rating__input-2" type="radio" name="experience" value="2">
+                            <input id="Experience-3" class="rating__input rating__input-3" type="radio" name="experience" value="3">
+                            <input id="Experience-4" class="rating__input rating__input-4" type="radio" name="experience" value="4">
+                            <input id="Experience-5" class="rating__input rating__input-5" type="radio" name="experience" value="5">
+                            <label class="rating__label Experience__label" for="Experience-1">
+                                <svg class="rating__star" width="32" height="32" viewBox="0 0 32 32" aria-hidden="true">
+                                    <g transform="translate(16,16)">
+                                        <circle class="rating__star-ring" fill="none" stroke="#000" stroke-width="16" r="8" transform="scale(0)" />
+                                    </g>
+                                    <g stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <g transform="translate(16,16) rotate(180)">
+                                            <polygon class="rating__star-stroke" points="0,15 4.41,6.07 14.27,4.64 7.13,-2.32 8.82,-12.14 0,-7.5 -8.82,-12.14 -7.13,-2.32 -14.27,4.64 -4.41,6.07" fill="none" />
+                                            <polygon class="rating__star-fill" points="0,15 4.41,6.07 14.27,4.64 7.13,-2.32 8.82,-12.14 0,-7.5 -8.82,-12.14 -7.13,-2.32 -14.27,4.64 -4.41,6.07" fill="#000" />
+                                        </g>
+                                        <g transform="translate(16,16)" stroke-dasharray="12 12" stroke-dashoffset="12">
+                                            <polyline class="rating__star-line" transform="rotate(0)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(72)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(144)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(216)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(288)" points="0 4,0 16" />
+                                        </g>
+                                    </g>
+                                </svg>
+                                <span class="rating__sr">1</span>
+                            </label>
+                            <label class="rating__label Experience__label" for="Experience-2">
+                                <svg class="rating__star" width="32" height="32" viewBox="0 0 32 32" aria-hidden="true">
+                                    <g transform="translate(16,16)">
+                                        <circle class="rating__star-ring" fill="none" stroke="#000" stroke-width="16" r="8" transform="scale(0)" />
+                                    </g>
+                                    <g stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <g transform="translate(16,16) rotate(180)">
+                                            <polygon class="rating__star-stroke" points="0,15 4.41,6.07 14.27,4.64 7.13,-2.32 8.82,-12.14 0,-7.5 -8.82,-12.14 -7.13,-2.32 -14.27,4.64 -4.41,6.07" fill="none" />
+                                            <polygon class="rating__star-fill" points="0,15 4.41,6.07 14.27,4.64 7.13,-2.32 8.82,-12.14 0,-7.5 -8.82,-12.14 -7.13,-2.32 -14.27,4.64 -4.41,6.07" fill="#000" />
+                                        </g>
+                                        <g transform="translate(16,16)" stroke-dasharray="12 12" stroke-dashoffset="12">
+                                            <polyline class="rating__star-line" transform="rotate(0)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(72)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(144)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(216)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(288)" points="0 4,0 16" />
+                                        </g>
+                                    </g>
+                                </svg>
+                                <span class="rating__sr">2 </span>
+                            </label>
+                            <label class="rating__label Experience__label" for="Experience-3">
+                                <svg class="rating__star" width="32" height="32" viewBox="0 0 32 32" aria-hidden="true">
+                                    <g transform="translate(16,16)">
+                                        <circle class="rating__star-ring" fill="none" stroke="#000" stroke-width="16" r="8" transform="scale(0)" />
+                                    </g>
+                                    <g stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <g transform="translate(16,16) rotate(180)">
+                                            <polygon class="rating__star-stroke" points="0,15 4.41,6.07 14.27,4.64 7.13,-2.32 8.82,-12.14 0,-7.5 -8.82,-12.14 -7.13,-2.32 -14.27,4.64 -4.41,6.07" fill="none" />
+                                            <polygon class="rating__star-fill" points="0,15 4.41,6.07 14.27,4.64 7.13,-2.32 8.82,-12.14 0,-7.5 -8.82,-12.14 -7.13,-2.32 -14.27,4.64 -4.41,6.07" fill="#000" />
+                                        </g>
+                                        <g transform="translate(16,16)" stroke-dasharray="12 12" stroke-dashoffset="12">
+                                            <polyline class="rating__star-line" transform="rotate(0)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(72)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(144)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(216)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(288)" points="0 4,0 16" />
+                                        </g>
+                                    </g>
+                                </svg>
+                                <span class="rating__sr">3</span>
+                            </label>
+                            <label class="rating__label Experience__label" for="Experience-4">
+                                <svg class="rating__star" width="32" height="32" viewBox="0 0 32 32" aria-hidden="true">
+                                    <g transform="translate(16,16)">
+                                        <circle class="rating__star-ring" fill="none" stroke="#000" stroke-width="16" r="8" transform="scale(0)" />
+                                    </g>
+                                    <g stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <g transform="translate(16,16) rotate(180)">
+                                            <polygon class="rating__star-stroke" points="0,15 4.41,6.07 14.27,4.64 7.13,-2.32 8.82,-12.14 0,-7.5 -8.82,-12.14 -7.13,-2.32 -14.27,4.64 -4.41,6.07" fill="none" />
+                                            <polygon class="rating__star-fill" points="0,15 4.41,6.07 14.27,4.64 7.13,-2.32 8.82,-12.14 0,-7.5 -8.82,-12.14 -7.13,-2.32 -14.27,4.64 -4.41,6.07" fill="#000" />
+                                        </g>
+                                        <g transform="translate(16,16)" stroke-dasharray="12 12" stroke-dashoffset="12">
+                                            <polyline class="rating__star-line" transform="rotate(0)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(72)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(144)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(216)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(288)" points="0 4,0 16" />
+                                        </g>
+                                    </g>
+                                </svg>
+                                <span class="rating__sr">4</span>
+                            </label>
+                            <label class="rating__label Experience__label" for="Experience-5">
+                                <svg class="rating__star" width="32" height="32" viewBox="0 0 32 32" aria-hidden="true">
+                                    <g transform="translate(16,16)">
+                                        <circle class="rating__star-ring" fill="none" stroke="#000" stroke-width="16" r="8" transform="scale(0)" />
+                                    </g>
+                                    <g stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <g transform="translate(16,16) rotate(180)">
+                                            <polygon class="rating__star-stroke" points="0,15 4.41,6.07 14.27,4.64 7.13,-2.32 8.82,-12.14 0,-7.5 -8.82,-12.14 -7.13,-2.32 -14.27,4.64 -4.41,6.07" fill="none" />
+                                            <polygon class="rating__star-fill" points="0,15 4.41,6.07 14.27,4.64 7.13,-2.32 8.82,-12.14 0,-7.5 -8.82,-12.14 -7.13,-2.32 -14.27,4.64 -4.41,6.07" fill="#000" />
+                                        </g>
+                                        <g transform="translate(16,16)" stroke-dasharray="12 12" stroke-dashoffset="12">
+                                            <polyline class="rating__star-line" transform="rotate(0)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(72)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(144)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(216)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(288)" points="0 4,0 16" />
+                                        </g>
+                                    </g>
+                                </svg>
+                                <span class="rating__sr">5</span>
+                            </label>
+                            <p class="rating__display" data-rating="1" id="experience_0" hidden>Very undelightful.</p>
+                            <p class="rating__display" data-rating="2" id="experience_1" hidden>Undelightful.</p>
+                            <p class="rating__display" data-rating="3" id="experience_2" hidden>Neutral.</p>
+                            <p class="rating__display" data-rating="4" id="experience_3" hidden>Delightful.</p>
+                            <p class="rating__display" data-rating="5" id="experience_4" hidden>Very delightful.</p>
+                            <input type="hidden" name="hdnExperience" ID="hdnExperience" />
+                            @*<asp:HiddenField ID="hdnExperience" runat="server" ClientIDMode="Static" />*@
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row form-group">
+                    <div class="col-md-12">
+                        <label class="label-control">5. How relevent do you think the application is for your business? </label>
+                        <div class="revelvance__rating" id="Revelvance">
+                            <input id="Revelvance-1" class="rating__input rating__input-1" type="radio" name="revelvance" value="1">
+                            <input id="Revelvance-2" class="rating__input rating__input-2" type="radio" name="revelvance" value="2">
+                            <input id="Revelvance-3" class="rating__input rating__input-3" type="radio" name="revelvance" value="3">
+                            <input id="Revelvance-4" class="rating__input rating__input-4" type="radio" name="revelvance" value="4">
+                            <input id="Revelvance-5" class="rating__input rating__input-5" type="radio" name="revelvance" value="5">
+                            <label class="rating__label Revelvance__label" for="Revelvance-1">
+                                <svg class="rating__star" width="32" height="32" viewBox="0 0 32 32" aria-hidden="true">
+                                    <g transform="translate(16,16)">
+                                        <circle class="rating__star-ring" fill="none" stroke="#000" stroke-width="16" r="8" transform="scale(0)" />
+                                    </g>
+                                    <g stroke="#593bdb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <g transform="translate(16,16) rotate(180)">
+                                            <polygon class="rating__star-stroke" points="0,15 4.41,6.07 14.27,4.64 7.13,-2.32 8.82,-12.14 0,-7.5 -8.82,-12.14 -7.13,-2.32 -14.27,4.64 -4.41,6.07" fill="none" />
+                                            <polygon class="rating__star-fill" points="0,15 4.41,6.07 14.27,4.64 7.13,-2.32 8.82,-12.14 0,-7.5 -8.82,-12.14 -7.13,-2.32 -14.27,4.64 -4.41,6.07" fill="#000" />
+                                        </g>
+                                        <g transform="translate(16,16)" stroke-dasharray="12 12" stroke-dashoffset="12">
+                                            <polyline class="rating__star-line" transform="rotate(0)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(72)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(144)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(216)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(288)" points="0 4,0 16" />
+                                        </g>
+                                    </g>
+                                </svg>
+                                <span class="rating__sr">1</span>
+                            </label>
+                            <label class="rating__label Revelvance__label" for="Revelvance-2">
+                                <svg class="rating__star" width="32" height="32" viewBox="0 0 32 32" aria-hidden="true">
+                                    <g transform="translate(16,16)">
+                                        <circle class="rating__star-ring" fill="none" stroke="#000" stroke-width="16" r="8" transform="scale(0)" />
+                                    </g>
+                                    <g stroke="#593bdb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <g transform="translate(16,16) rotate(180)">
+                                            <polygon class="rating__star-stroke" points="0,15 4.41,6.07 14.27,4.64 7.13,-2.32 8.82,-12.14 0,-7.5 -8.82,-12.14 -7.13,-2.32 -14.27,4.64 -4.41,6.07" fill="none" />
+                                            <polygon class="rating__star-fill" points="0,15 4.41,6.07 14.27,4.64 7.13,-2.32 8.82,-12.14 0,-7.5 -8.82,-12.14 -7.13,-2.32 -14.27,4.64 -4.41,6.07" fill="#000" />
+                                        </g>
+                                        <g transform="translate(16,16)" stroke-dasharray="12 12" stroke-dashoffset="12">
+                                            <polyline class="rating__star-line" transform="rotate(0)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(72)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(144)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(216)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(288)" points="0 4,0 16" />
+                                        </g>
+                                    </g>
+                                </svg>
+                                <span class="rating__sr">2</span>
+                            </label>
+                            <label class="rating__label Revelvance__label" for="Revelvance-3">
+                                <svg class="rating__star" width="32" height="32" viewBox="0 0 32 32" aria-hidden="true">
+                                    <g transform="translate(16,16)">
+                                        <circle class="rating__star-ring" fill="none" stroke="#000" stroke-width="16" r="8" transform="scale(0)" />
+                                    </g>
+                                    <g stroke="#593bdb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <g transform="translate(16,16) rotate(180)">
+                                            <polygon class="rating__star-stroke" points="0,15 4.41,6.07 14.27,4.64 7.13,-2.32 8.82,-12.14 0,-7.5 -8.82,-12.14 -7.13,-2.32 -14.27,4.64 -4.41,6.07" fill="none" />
+                                            <polygon class="rating__star-fill" points="0,15 4.41,6.07 14.27,4.64 7.13,-2.32 8.82,-12.14 0,-7.5 -8.82,-12.14 -7.13,-2.32 -14.27,4.64 -4.41,6.07" fill="#000" />
+                                        </g>
+                                        <g transform="translate(16,16)" stroke-dasharray="12 12" stroke-dashoffset="12">
+                                            <polyline class="rating__star-line" transform="rotate(0)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(72)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(144)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(216)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(288)" points="0 4,0 16" />
+                                        </g>
+                                    </g>
+                                </svg>
+                                <span class="rating__sr">3</span>
+                            </label>
+                            <label class="rating__label Revelvance__label" for="Revelvance-4">
+                                <svg class="rating__star" width="32" height="32" viewBox="0 0 32 32" aria-hidden="true">
+                                    <g transform="translate(16,16)">
+                                        <circle class="rating__star-ring" fill="none" stroke="#000" stroke-width="16" r="8" transform="scale(0)" />
+                                    </g>
+                                    <g stroke="#593bdb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <g transform="translate(16,16) rotate(180)">
+                                            <polygon class="rating__star-stroke" points="0,15 4.41,6.07 14.27,4.64 7.13,-2.32 8.82,-12.14 0,-7.5 -8.82,-12.14 -7.13,-2.32 -14.27,4.64 -4.41,6.07" fill="none" />
+                                            <polygon class="rating__star-fill" points="0,15 4.41,6.07 14.27,4.64 7.13,-2.32 8.82,-12.14 0,-7.5 -8.82,-12.14 -7.13,-2.32 -14.27,4.64 -4.41,6.07" fill="#000" />
+                                        </g>
+                                        <g transform="translate(16,16)" stroke-dasharray="12 12" stroke-dashoffset="12">
+                                            <polyline class="rating__star-line" transform="rotate(0)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(72)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(144)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(216)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(288)" points="0 4,0 16" />
+                                        </g>
+                                    </g>
+                                </svg>
+                                <span class="rating__sr">4</span>
+                            </label>
+                            <label class="rating__label Revelvance__label" for="Revelvance-5">
+                                <svg class="rating__star" width="32" height="32" viewBox="0 0 32 32" aria-hidden="true">
+                                    <g transform="translate(16,16)">
+                                        <circle class="rating__star-ring" fill="none" stroke="#000" stroke-width="16" r="8" transform="scale(0)" />
+                                    </g>
+                                    <g stroke="#593bdb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <g transform="translate(16,16) rotate(180)">
+                                            <polygon class="rating__star-stroke" points="0,15 4.41,6.07 14.27,4.64 7.13,-2.32 8.82,-12.14 0,-7.5 -8.82,-12.14 -7.13,-2.32 -14.27,4.64 -4.41,6.07" fill="none" />
+                                            <polygon class="rating__star-fill" points="0,15 4.41,6.07 14.27,4.64 7.13,-2.32 8.82,-12.14 0,-7.5 -8.82,-12.14 -7.13,-2.32 -14.27,4.64 -4.41,6.07" fill="#000" />
+                                        </g>
+                                        <g transform="translate(16,16)" stroke-dasharray="12 12" stroke-dashoffset="12">
+                                            <polyline class="rating__star-line" transform="rotate(0)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(72)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(144)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(216)" points="0 4,0 16" />
+                                            <polyline class="rating__star-line" transform="rotate(288)" points="0 4,0 16" />
+                                        </g>
+                                    </g>
+                                </svg>
+                                <span class="rating__sr">5</span>
+                            </label>
+                            <p class="rating__display" data-rating="1" id="revelvance_0" hidden>Very irrelevant.</p>
+                            <p class="rating__display" data-rating="2" id="revelvance_1" hidden>Irrelevant.</p>
+                            <p class="rating__display" data-rating="3" id="revelvance_2" hidden>Neutral.</p>
+                            <p class="rating__display" data-rating="4" id="revelvance_3" hidden>Relevant.</p>
+                            <p class="rating__display" data-rating="5" id="revelvance_4" hidden>Very Relevant.</p>
+                            <input type="hidden" name="hdnRevelvance" ID="hdnRevelvance" />
+                            @*<asp:HiddenField ID="hdnRevelvance" runat="server" ClientIDMode="Static" />*@
+                        </div>
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-md-12">
+                        <label class="label-control">Please provide your valuable feedback</label>
+                        <textarea class="form-control" maxlength="500" rows="3" id="txtRemarks"></textarea>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 text-left">
+                        <button class="btn btn-primary" id="btnsubmit_feedback" value="submit">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script src="~/js/feedback.js"></script>
+

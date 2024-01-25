@@ -1,0 +1,113 @@
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor Accessor
+
+<div class="header-content">
+    <div class="nav-header">
+        <div class="nav-outer">
+            <a href="@Url.Action("Dashboard", "Home",new {USERID=Accessor.HttpContext.Session.GetString("EncryptedId").ToString(),IP=Accessor.HttpContext.Session.GetString("EncryptedIP").ToString()})" class="brand-logo">
+                <img class="logo-abbr" src="images/download.png" alt="">
+                <img class="logo-compact" src="images/HDFC_logo.png" alt="">
+                <img class="brand-title" src="~/images/HDFC_logo.png" alt="">
+
+            </a>
+            <label class="app-name">OneView Indicator</label>
+        </div>
+
+
+    </div>
+    <div class="nav-control">
+        <div class="hamburger">
+            <span class="hamburger-line"></span><span class="hamburger-line"></span><span class="hamburger-line"></span>
+        </div>
+    </div>
+    <h1>@ViewBag.Title</h1>
+    <nav class="navbar navbar-expand">
+        <div class="collapse navbar-collapse justify-content-between">
+            <ul class="navbar-nav header-right">
+
+                <li class="nav-item dropdown header-profile selection-login">
+                    <div class='search-container'>
+                        <div class='search-area'>
+                            <input class='community-search' id="clientSearch" type="text" value="@Accessor.HttpContext.Session.GetString("searchData")" placeholder="Search" />
+                            <button class="clearBtn clearBtnNew" id="btnClearSearch">
+                                <i class="fa fa-times" aria-hidden="true"></i>
+                            </button>
+                            <button type="button" id="BtnMasterSearch"> <i class="icon-magnifier"></i></button>
+                            <input type="hidden" id="hfCustomer" name="CustomerId" />
+                        </div>
+
+                    </div>
+                </li>
+                <li class="nav-item dropdown header-profile selection-login">
+                    <button class="btn-border" id="btnAppLink" data-toggle="modal" data-target="#quicklink">
+                        <img src="~/images/quicklink-ico.svg" />
+                    </button>
+                </li>
+                <li class="nav-item dropdown notification_dropdown selection-login">
+                    <label id="notificationsCount" style="display:none" class="notification-cnt pulse"></label>
+                    <button id="btnShowNotification" class="btn-border nav-link" data-toggle="modal" data-target="#notification">
+                        <img src="~/images/bell-ico.svg" />
+                    </button>
+
+                </li>
+                <li class="nav-item dropdown header-profile">
+                    <a class="nav-link" href="#" role="button" data-toggle="dropdown" aria-expanded="true">
+                        <img src="~/images/user-ico.svg" />
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right">
+                        <span style="color:#10498b;" class="">@Accessor.HttpContext.Session.GetString("LUserName") - @Accessor.HttpContext.Session.GetString("EmpName")</span>
+                    </div>
+                </li>
+
+                <li class="nav-item dropdown header-profile">
+                    @using (Html.BeginForm("LogoutUser", "Login", FormMethod.Post,
+                    new { enctype = "multipart/form-data" }))
+                    {
+                        <button type="submit" class="btn-border">
+                            <img src="~/images/logout.svg" />
+                        </button>
+                    }
+                    @*<button type="submit"  asp-controller="Login" asp-action="LogoutUser" class="btn-border">
+                    <img src="~/images/logout.svg" />
+                    </button>*@
+
+
+                </li>
+            </ul>
+        </div>
+    </nav>
+</div>
+
+
+<script src="~/js/jquery.min.js"></script>
+<script>
+    //$(document).ready(function () {
+    //    $("#btn_logout").click(function (e) {
+
+    //        $.ajax({
+    //            type: "POST",
+    //            url: "/Login/LogoutUser",
+    //            data: null,
+    //            contentType: "application/json; charset=utf-8",
+    //            dataType: "json",
+    //            async: true,
+    //            processData: false,
+    //            success: function (response) {
+    //                window.location.href = response.url;
+    //            },
+    //            error: function (xhr, ajaxOptions, thrownError) {
+
+    //            }
+    //        });
+    //    })
+    //})
+
+    $(document).ready(function () {
+        //Show then hide ddown menu on hover
+        $('.menuitem').hover(function () {
+            $(this).children('.navmain').slideDown(500);
+        }, function () {
+            $(this).children('.navmain').slideUp(500);
+        });
+    });
+</script>

@@ -1,0 +1,76 @@
+﻿@model Dashboard.Models.Portfolio
+@{
+    ViewData["Title"] = "Upload";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@if (ViewBag.Message != null)
+{
+    <div class="alert alert-success alert-dismissible" style="margin-top:20px">
+        @ViewBag.Message
+    </div>
+
+
+}
+
+@*<select id="ddlFruits" name="FruitId" asp-items="Model">
+        <option value="0">Please select</option>
+    </select>*@
+
+<div class="col-lg-12">
+    <div class="row">
+        <div class="col-lg-2"><label style="color: #000;font-size: 15px;margin-top: 5px;font-weight: 600;">File Type :</label></div>
+        <div class="col-lg-3">
+            @Html.DropDownListFor(model => model.FileType, new SelectList(Model.FileType, "Value", "Text")
+                     , new { @class = "form-control", onchange = "SelectedFileTypeIndexChanged(this)" })
+            @*<select id="FilesList" class="form-control" required>
+            <option value="0">Select</option>
+            <option value="1">Portfolio Upload</option>
+            <option value="2">APRs Upload</option>
+            <option value="3">RM Hierarchy Mapping Upload</option>
+            <option value="4">Client RM Mapping Upload</option>
+            </select>*@
+        </div>
+        <div class="col-lg-2" id="divUploadedDate">
+            <label class="label-control" style="font-size:10px;margin:0px">Date</label>
+            <input type="text" id="UploadedDate" name="UploadedDate" required readonly class="form-control custom-form-control uploadedDate">
+
+        </div>
+        <div class="col-lg-3">
+            <input type="button" value="Download Sample" id="btnSubmit" class="btn btn-primary" style="color:#fff;width: 80%;" />
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-lg-5">
+            <form method="post" enctype="multipart/form-data">
+                <div style="display:flex">
+                    <input type="file" class="form-control" id="fileUpload" name="files" multiple required />
+                    @*<button type="submit" style="margin-left: 10px;" class="btn btn-primary" asp-controller="Upload" asp-action="UploadToFileSystem">Upload</button>*@
+                    <input type="button" value="Upload" id="btnUploadFile" style="margin-left: 10px;" class="btn btn-primary" />
+                </div>
+
+                @*<input type="text" autocomplete="off" placeholder="Enter File Description" name="description" required />*@
+
+                @*<input type="button" id="btnSubmit" />*@
+                @*<a></a>*@
+                @*<a href="~/SampleFiles/Sample Portfolio file.csv" download>Sample Portfolio file</a>*@
+
+                @*@Html.ActionLink("Download", "DownloadFile", "Upload", "Sample Portfolio file.csv")*@
+                @*@Html.ActionLink("Download Sample", "DownloadFile", "Upload", new { fileName = "Sample Portfolio file.csv" }, null)*@
+
+
+            </form>
+        </div>
+        <div class="col-lg-4">
+        </div>
+    </div>
+</div>
+
+
+
+<script src="~/js/jquery.min.js"></script>
+<script>
+
+</script>

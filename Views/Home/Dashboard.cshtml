@@ -1,0 +1,712 @@
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor Accessor
+
+@{
+
+    ViewData["Title"] = "Dashboard";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@model Dashboard.Models.Portfolio
+
+@{ var decomplance = ViewData["Decomplance"] as List<Dashboard.Models.DelinquencyDaysCount>;
+    @*var decomplance = ViewData["Decomplance"] as Dashboard.Models.DelinquencyDaysCount;*@
+    var compliance = ViewData["Compliance"] as List<Dashboard.Models.Compliance>;
+
+}
+@*<div class="col-lg-6">
+        <div id="panel-5" class="panel">
+            <div class="panel-hdr">
+                <h2>Subscriptions Hourly</h2>
+            </div>
+            <div class="panel-container show">
+                <div class="panel-content">
+                    <h5>Subscription Views / hour</h5>
+                    <div id="flotBar1" style="width: 100%; height: 160px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>*@
+<style>
+    .tooltipDashboard {
+        position: relative;
+        /*display: inline-block;
+            border-bottom: 1px dotted black;*/
+    }
+
+        .tooltipDashboard .tooltiptext {
+            visibility: hidden;
+            width: 120px;
+            background-color: #1c34b1;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px 0;
+            /* Position the tooltip */
+            position: absolute;
+            z-index: 1;
+            top: 100%;
+            left: 50%;
+            margin-left: -60px;
+        }
+
+        .tooltipDashboard:hover .tooltiptext {
+            visibility: visible;
+        }
+</style>
+<div class="wrapper">
+
+    <div class="row form-group">
+        <div class="col-md-8">
+            <div class="dash-card">
+                <h2 class="card-header-title">
+                    To-do List
+                </h2>
+                @if (@Accessor.HttpContext.Session.GetString("UserRole") == "Business Head" || @Accessor.HttpContext.Session.GetString("UserRole") == "Group Head")
+                {
+                    <div style="display: inline-block;margin-left: 18px;margin-bottom: 15px;">
+                        <button type="button" class="btn btn-outline-primary" id="new_bulletin">New Bulletin</button>
+                    </div>
+                }
+                <div class="card-header-right">
+                    @*<ul class="to-do-status">
+                            <li>
+                                <div class="idication overdue"></div> Overdue
+                            </li>
+                            <li>
+                                <div class="idication duesoon"></div> Due Soon
+                            </li>
+                            <li>
+                                <div class="idication duelater"></div> Due Later
+                            </li>
+                        </ul>*@
+
+                    @*@Html.ActionLink("View all", "#", null, null, new { @class = "link" })*@
+                    <a data-toggle="modal" data-target="#ToDoModel" id="viewToDo" class="link">View all <i class="fa fa-chevron-right"></i></a>
+                </div>
+                <div class="dash-card-body">
+                    <div class="cust-table">
+                        <table class="table table-borderless table-hover table-striped form-group tbl_all_todo" id="tbl_todo">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Due On</th>
+                                    <th>Item</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr id="tr_urgentBulletine">
+                                    <td><div class="idication overdue"></div></td>
+                                    <td>
+                                        <lable class="due-dt" id="urgentbulletine_dueDate"></lable>
+                                    </td>
+                                    <td>
+                                        <lable class="item">Urgent Bulletins(<label id="lbl_count"></label>)</lable>
+                                    </td>
+                                    <td>
+                                        <button class="link" id="btn_read_bulletin" style="border: none;background-color: transparent;" data-toggle="modal" data-target="#bulletinModal">Read</button>
+                                        @*@Html.ActionLink("Read", "#", null, null, new { @class = "link" })*@
+                                    </td>
+                                </tr>
+                            </tbody>
+                            @*
+                                <tr>
+                                    <td><div class="idication duesoon"></div></td>
+                                    <td>
+                                        <lable class="due-dt">Dec 22</lable>
+                                    </td>
+                                    <td>
+                                        <lable>This is another item</lable>
+                                    </td>
+                                    <td>
+                                        @Html.ActionLink("Action Link", "#", null, null, new { @class = "link" })
+                                    </td>
+                                </tr>*@
+                        </table>
+
+
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="dash-card">
+                @*<h2 class="card-header-title">
+                        Notifications
+                    </h2>*@
+                <div class="dash-card-body">
+                    <ul class="notifications">
+                        <li style="margin-top: 37px;">
+                            <label class="notification-count">@Model.Fresh_Leads.ToString()</label>
+                            <label class="notification-title">Fresh Leads</label>
+                        </li>
+                        @*<li>
+                                <label class="notification-count">0</label>
+                                <label class="notification-title">Overdue Compliance</label>
+                            </li>
+                            <li>
+                                <label class="notification-count">0</label>
+                                <label class="notification-title">TAT Breach Cases</label>
+                            </li>
+                            <li>
+                                <label class="notification-count">0</label>
+                                <label class="notification-title">CRM Interactions</label>
+                            </li>*@
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="card-header">
+                        <h3></h3>
+                    </div>
+                    @*<div class="iframe_new">
+
+                            <iframe src="https://tableauwb.hbctxdom.com/views/DailyALMBusinessHeadViewBBWC/BusinessHeadView?iframeSizedToWindow=true&%3Aembed=y&%3AshowAppBanner=false&%3Adisplay_count=no&%3AshowVizHome=no#1" style="height:250px;width: 100%;"></iframe>
+                        </div>*@
+                    <div class='tableauPlaceholder' style='width: 948px; height: 250px;'>
+                        <object class='tableauViz' width='946'
+                                height='250' style='display:none;'>
+                            <param name='host_url' value='https%3A%2F%2Ftableauwb.hbctxdom.com%2F' />
+                            <param name='embed_code_version' value='3' />
+                            <param name='site_root' value='' />
+                            <param name='name' value='DailyALMBusinessHeadViewBBWC_16547507456780&#47;BusinessHeadView' />
+                            <param name='tabs' value='no' />
+                            <param name='toolbar' value='yes' />
+                            <param name='display_count' value='n' />
+                            <param name='origin' value='viz_share_link' />
+                            <param name='customViews' value='no' />
+                            <param name='filter' value=':original_view=yes' />
+                            <param name='showAppBanner' value='false' />
+                        </object>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-10">
+            <div class="card">
+                <div class="card-body">
+                    <div class="card-header">
+                        <h2 class="card-header-title">Income</h2>
+                    </div>
+                    @*<div class="iframe_new">
+                            <iframe src="https://tableauwb.hbctxdom.com/#/views/APR2022-23/SummaryView?:display_count=n&:iid=1&:origin=viz_share_link&:showAppBanner=false&:showVizHome=n"></iframe>
+                        </div>*@
+
+                    <div class='tableauPlaceholder' style='width:712px; height: 300px;'><object class='tableauViz' style='display:none;width:712px; height:300px'><param name='host_url' value='https%3A%2F%2Ftableauwb.hbctxdom.com%2F' /> <param name='embed_code_version' value='3' /> <param name='site_root' value='' /><param name='name' value='APR2022-23&#47;SummaryView' /><param name='tabs' value='yes' /><param name='toolbar' value='yes' /><param name='display_count' value='n' /><param name='origin' value='viz_share_link' /><param name='showAppBanner' value='false' /></object></div>
+                    @*<div class="iframe_new">
+                            <div class='tableauPlaceholder' style='width:438px; height: 236px;'>
+                                <object class='tableauViz' width='436'
+                                        height='235' style='display:none;'>
+                                    <param name='host_url' value='https%3A%2F%2Ftableauwb.hbctxdom.com%2F' />
+                                    <param name='embed_code_version' value='3' />
+                                    <param name='site_root' value='' />
+                                    <param name='name' value='APRFY2021-22OneView&#47;APRDashboardED' />
+                                    <param name='tabs' value='yes' />
+                                    <param name='toolbar' value='yes' />
+                                    <param name='display_count' value='n' />
+                                    <param name='origin' value='viz_share_link' />
+                                    <param name='showAppBanner' value='false' />
+                                </object>
+                            </div>
+                        </div>*@
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+    <div class="row ">
+        <div class="col-md-6">
+            <div class="card portfolio_height">
+                <div class="card-body">
+                    <div class="card-header">
+                        <h2 class="card-header-title">Portfolio <span class="dtdata">Data as of @Model.UploadedDate</span></h2>
+                        @if (Model.Clients_count.ToString() != "0" && Model.APRs_count.ToString() != "0")
+                        {
+                            <a href="/Home/DownloadFile?flagName=Portfolio"> <i class="fa fa-download" aria-hidden="true" style="vertical-align: middle;color: #1c34b1; font-size: 20px;"></i></a>
+                        }
+
+                    </div>
+                    <div class="portfolio-section">
+                        <div class="portfolio-section-header">
+
+                            <label class="portfolio-header-count"> @Model.Clients_count.ToString()</label>
+                            <label class="portfolio-header-lable">Clients</label>
+                            <label class="portfolio-header-count">@Model.APRs_count.ToString()</label>
+                            <label class="portfolio-header-lable">APRs</label>
+                        </div>
+                        <table class="table table-borderless table-striped portfolio-table table-hover">
+                            <tr>
+                                <th></th>
+                                <th>In Cr</th>
+                                <th></th>
+                                <th>In Cr</th>
+                                <th>Percentage</th>
+                            </tr>
+                            <tr>
+                                <td>FB LIMITS</td>
+                                <td>@Model.FB_Limits.ToString()</td>
+                                <td>FB O/s</td>
+                                <td>@Model.FB_Os</td>
+                                <td>@Model.FB_Percentage%</td>
+                            </tr>
+                            <tr>
+                                <td>NFB LIMITS</td>
+                                <td>@Model.NFB_Limits</td>
+                                <td>NFB O/s</td>
+                                <td>@Model.NFB_Os</td>
+                                <td>@Model.NFB_percentage%</td>
+                            </tr>
+                            <tr>
+                                <td>Total</td>
+                                <td>@Model.Total_Limits</td>
+                                <td></td>
+                                <td>@Model.Total_Os</td>
+                                <td>@Model.Total_percentage%</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <div class="card-header">
+                        <h2 class="card-header-title">Compliance</h2>
+                    </div>
+                    <div class="portfolio-section">
+                        <div style="padding:5px;">
+                            <div class="row">
+                                @{ var cnt = 0;
+                                    var isInnerCount = false;
+                                }
+
+                                @if (compliance.Count > 0)
+                                {
+
+                                    @for (int i = 0; i < compliance.Count; i++)
+                                    {
+                                        if (cnt == 0)
+                                        {
+                                            @:<div class="col-md-4">
+                                                @:<table class="table table-borderless table-striped table-hover compliance-table">
+                                                    @:<tr>
+                                                        @: <th>Item</th>
+                                                        @: <th>No</th>
+                                                    @:</tr>
+                                                }
+                                                //if (cnt != 0)
+                                                //{
+                                                <tr class="tooltipDashboard">
+                                                    <td>@compliance[i].ComplianceItem</td>
+                                                    <td>
+                                                        @compliance[i].ItemCount
+                                                        <span class="tooltiptext">@compliance[i].ItemDate</span>
+                                                    </td>
+
+                                                </tr>
+                                                //}
+
+                                                cnt = cnt + 1;
+                                                if (cnt == 4 && !isInnerCount)
+                                                {
+                                                @:</table>
+                                            @:</div>
+                                            isInnerCount = true;
+                                        }
+
+                                        if (cnt == 4)
+                                        {
+                                            cnt = 0;
+                                            isInnerCount = false;
+                                        }
+                                    }
+                                    @if (!isInnerCount)
+                                    {
+                                        @:</table>
+                                    @:</div>
+                                }
+                                }
+                                @if (compliance.Count == 0)
+                                {
+                                    <div class="col-md-4">
+                                        <table class="table table-borderless table-striped table-hover compliance-table">
+                                            <tbody>
+                                                <tr>
+                                                <tr>
+                                                    <th>Item</th>
+                                                    <th>No</th>
+                                                </tr>
+                                                <tr>
+                                                    <td>CAD Deferrals</td>
+                                                    <td>0</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Call Memo</td>
+                                                    <td>0</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>CAM Expiry</td>
+                                                    <td>0</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Deferrals</td>
+                                                    <td>0</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>IDPMS</td>
+                                                    <td>0</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <table class="table table-borderless table-striped table-hover compliance-table">
+                                            <tbody>
+                                                <tr>
+                                                    <th>Item</th>
+                                                    <th>No</th>
+                                                </tr>
+                                                <tr>
+                                                    <td>EDPMS</td>
+                                                    <td>0</td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td>Out of Order</td>
+                                                    <td>0</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Pledge</td>
+                                                    <td>0</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Plant & Machinery</td>
+                                                    <td>0</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Property Insurance</td>
+                                                    <td>0</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <table class="table table-borderless table-striped table-hover compliance-table">
+                                            <tbody>
+                                                <tr>
+                                                    <th>Item</th>
+                                                    <th>No</th>
+                                                </tr>
+                                                <tr>
+                                                    <td>Stock Insurance</td>
+                                                    <td>0</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Stock Statement</td>
+                                                    <td>0</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>UFCE</td>
+                                                    <td>0</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>AML</td>
+                                                    <td>0</td>
+                                                </tr>
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row" style="width:100%;margin:0 auto;">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="card-header">
+                            <div class="row form-group">
+                                <div class="col-md-3">
+                                    <h2 class="card-header-title">
+                                        Acquisitions <span id="AquisitionUploadedDate" class="dtdata"></span>
+                                    </h2>
+
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="switch-field">
+                                        <input type="radio" id="mtd" name="MTD_YTD" value="mtd" checked />
+                                        <label for="mtd">MTD</label>
+                                        <input type="radio" id="ytd" name="MTD_YTD" value="ytd" />
+                                        <label for="ytd">YTD</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-5">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="input-group">
+                                                <input type="text" id="month" required class="form-control custom-form-control month">
+                                                <div class="input-group-addon">
+                                                    <span class="icon-arrow-down"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="input-group">
+                                                <input type="text" id="year" required class="form-control custom-form-control year">
+                                                <div class="input-group-addon">
+                                                    <span class="icon-arrow-down"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-section">
+                            <div class="portfolio-section aquisition-section">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <table id="tbl_asset" class="table table-borderless table-striped table-hover compliance-table"></table>
+                                    </div>
+                                    <div class="col-md-6" style="border-left: 1px solid #eaeaea;">
+                                        <table id="tbl_liability" class="table table-borderless table-striped table-hover compliance-table"></table>
+                                        <lable class="sfr-sal-a" id="lblSFR"><label id="lblSFRVal"></label>%  <span>Self-Funding Ratio(%)</span></lable>
+                                        <lable class="sfr-sal-a" style="float:right" id="lblSAL"> <label id="lblSALVal"></label> <span>CR SAL.AMB</span></lable>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row" style="width:100%;margin:0 auto;">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="card-header">
+
+                            <h2 class="card-header-title">
+                                Delinquency
+                                @if (decomplance.Count > 0)
+                                {
+                                    <span class="dtdata">Data as of @decomplance[0].UploadedDate</span>
+                                }
+                            </h2>
+                            @if (decomplance.Count > 0)
+                            {
+                                <a href="/Home/DownloadFile?flagName=Customer" style="color: #374151;font-weight: 600;">Customer <i class="fa fa-download" aria-hidden="true" style="vertical-align: middle;color: #1c34b1; font-size: 20px;"></i></a>
+                                <a href="/Home/DownloadFile?flagName=Account" style="color: #374151;font-weight: 600;">Account <i class="fa fa-download" aria-hidden="true" style="vertical-align: middle;color: #1c34b1; font-size: 20px;"></i></a>
+                            }
+                        </div>
+                        <div class="portfolio-section">
+                            <table class="table table-borderless table-striped table-hover compliance-table">
+                                <tbody>
+                                    @if (decomplance.Count > 0)
+                                    {
+                                        <tr>
+                                            <th>Item</th>
+                                            <th>No</th>
+                                            <th>%</th>
+                                            <th>Value</th>
+                                        </tr>
+
+                                        @for (int i = 0; i < decomplance.Count; i++)
+                                        {
+                                            <tr>
+                                                <td>@decomplance[i].Items</td>
+                                                <td>@decomplance[i].No</td>
+                                                <td>@decomplance[i].Percent</td>
+                                                <td>@decomplance[i].Value</td>
+                                            </tr>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        @*<tr><td>No data available in table</td></tr>*@
+                                        <tr>
+                                            <th>Item</th>
+                                            <th>No</th>
+                                            <th>%</th>
+                                            <th>Value</th>
+                                        </tr>
+                                        <tr>
+                                            <td>15 Plus</td>
+                                            <td> – </td>
+                                            <td> – </td>
+                                            <td> – </td>
+
+                                        </tr>
+                                        <tr>
+                                            <td>20 Plus</td>
+                                            <td> – </td>
+                                            <td> – </td>
+                                            <td> – </td>
+
+                                        </tr>
+                                        <tr>
+                                            <td>30 Plus</td>
+                                            <td> – </td>
+                                            <td> – </td>
+                                            <td> – </td>
+
+                                        </tr>
+                                    }
+
+                                </tbody>
+                            </table>
+                        </div>
+
+                        @*<div style="background-color:#fff">
+                                <div class="row form-group">
+                                    <div class="col-md-4">
+                                        <div class="delinquency-card delinquency-green">
+                                            <Lable class="delinquency-count">@decomplance.Days_15</Lable>
+                                            <Lable class="delinquency-days">15+ Days</Lable>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="delinquency-card delinquency-yellow">
+                                            <Lable class="delinquency-count">@decomplance.Days_30</Lable>
+                                            <Lable class="delinquency-days">30+ Days</Lable>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="delinquency-card delinquency-red">
+                                            <Lable class="delinquency-count">@decomplance.Days_60</Lable>
+                                            <Lable class="delinquency-days">60+ Days</Lable>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row form-group d-none">
+                                    <div class="col-md-6">
+                                        <div class="delinquency-card delinquency-blue">
+                                            <Lable class="delinquency-count" style="display:inline-block;font-size:24px;">1</Lable>
+                                            <Lable class="delinquency-days" style="display:inline-block;font-size:14px;">PMG</Lable>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="delinquency-card delinquency-blue">
+                                            <Lable class="delinquency-count" style="display:inline-block;font-size:24px;">1</Lable>
+                                            <Lable class="delinquency-days" style="display:inline-block;font-size:14px;">Pending Action</Lable>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>*@
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!---  Bulletin Modal Popup ---->
+
+    <div class="modal fade" id="bulletinModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content bulletin-content">
+                <div class="modal-header bulletin-header">
+                    <h5 class="modal-title bulletin-title" id="exampleModalLabel">Urgent Bulletins</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body bulletin-body">
+                    <ul class="bulletin-list" id="bulletin_list"></ul>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="ToDoModel" tabindex="-1" role="dialog" aria-labelledby="ToDoModel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content bulletin-content">
+                <div class="modal-header bulletin-header">
+                    <h5 class="modal-title bulletin-title" id="exampleModalLabel">ToDo List</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body bulletin-body">
+                    <div class="cust-table">
+                        <table class="table table-borderless table-hover table-striped form-group" id="tbl_all_todo">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Due On</th>
+                                    <th>Item</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- New Bulletin Sidebar -->
+
+    <div class="side-wrapper" id="sidebar_bulletin">
+        <div class="side-content">
+            <div class="modal-header custom-header">
+                <h3 class="sidebar-header">New Bulletin</h3>
+                @*<label class="sidebar-header">Create Proposal</label>*@
+                <button class="close-btn" id="btn_close_bulletine">
+                    <div class="line"></div>
+                    <div class="line"></div>
+                </button>
+            </div>
+            <div class="modal-body" id="bulltine_partial">
+
+                @{
+                    Html.RenderPartial("../UrgentBulletin/_NewBulletin");
+                }
+            </div>
+        </div>
+    </div>
+    <script>
+        $(document).ready(function () {
+            debugger;
+             var ErrorMsg = '@TempData["ErrorMessage"]';
+             if (ErrorMsg != '') {
+           alert(ErrorMsg);
+             }
+
+
+        });
+    </script>
+    @*<script src="~/js/common.js"></script>*@
+    <script src="~/js/viz_v1.js"></script>
+    <script type='text/javascript' src='https://tableauwb.hbctxdom.com/javascripts/api/viz_v1.js'></script>
+    @*
+        <script type='text/javascript' src='https://tableauwb.hbctxdom.com/javascripts/api/viz_v1.js'></script>*@
+

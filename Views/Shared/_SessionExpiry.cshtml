@@ -1,0 +1,55 @@
+﻿@{
+    ViewData["Title"] = "Expiry";
+    // Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/css/style.css" rel="stylesheet" />
+<link href="~/css/responsive.css" rel="stylesheet" />
+<link href="~/css/Gridmvc.css" rel="stylesheet" />
+<link href="~/css/PagedList.css" rel="stylesheet" />
+<link href="~/css/sweetalert.min.css" rel="stylesheet" />
+<link href="~/css/Toaster.css" rel="stylesheet" />
+
+<style>
+    body {
+        background-color: #eff8ff;
+    }
+</style>
+
+<div class="modal-content session-modal">
+
+    <div class="modal-body text-center">
+        <img src="~/images/session.svg" style="width:30%;" class="vert-move" />
+        <div class="img-shadow"></div>
+        <h1>Session expired !!!</h1>
+        <p>Your session has expired. Please login again.</p>
+        @using (Html.BeginForm("RedirectToLogin", "Login", FormMethod.Post,
+        new { enctype = "multipart/form-data" }))
+        {
+            <button type="submit" id="btnOkLogin" class=" btn-lg btn-primary btn-border btn-session-login">Login</button>
+        }
+
+
+    </div>
+
+</div>
+
+<script src="~/js/jquery.min.js"></script>
+<script src="~/js/global.min.js"></script>
+<script src="~/js/custom.min.js"></script>
+<script src="~/js/gridmvc.min.js"></script>
+<script src="~/js/sweetalert.min.js"></script>
+<script src="~/js/Toaster.js"></script>
+<script src="~/js/common.js"></script>
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+<script type="text/javascript">
+    //$(document).ready(function () {
+    //    $("#btnOkLogin").click(function () {
+
+    //        window.location.href = 'http://10.226.215.14:9123/PMS_NEW_OVI_Merged/Login.aspx';
+    //        //window.location.href = 'http://localhost:49188/Login.aspx';
+    //    })
+    //})
+</script>

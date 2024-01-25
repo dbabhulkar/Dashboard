@@ -1,0 +1,87 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+<div class="tab-pane fade" id="Hub" role="tabpanel">
+    <div class="row form-group">
+        <div class="col-md-6">
+            <div class="custom-card">
+                <div class="custom-header-title">
+                    <h2>
+                        Portfolio
+                    </h2>
+                </div>
+                <div class="custom-card-body" id="portfolioChart">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <canvas id="portfolio_hub_chart"></canvas>
+                            <div id="portfolio_hub_legend" class="legendvalue"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="custom-card">
+                <div class="custom-header-title">
+                    <h2>
+                        LCHU
+                    </h2>
+                </div>
+                <div class="custom-card-body" id="lchuChart">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <canvas id="lchu_hub_chart"></canvas>
+                            <div id="lchu_hub_legend" class="legendvalue"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row form-group">
+        <div class="col-md-6">
+            <div class="custom-card">
+                <div class="custom-header-title">
+                    <h2>
+                        Delinquency
+                    </h2>
+
+
+                </div>
+                <div class="custom-card-body" id="delinquencyChart">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <canvas id="delinquency_hub_chart"></canvas>
+                            <div id="delinquency_hub_legend" class="legendvalue"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="custom-card">
+                <div class="custom-header-title">
+                    <h2>
+                        AUR
+                    </h2>
+                </div>
+                <div class="custom-card-body" id="aurChart">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <canvas id="aur_hub_chart"></canvas>
+                            <div id="aur_hub_legend" class="legendvalue"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/js/DasboardJS.js"></script>

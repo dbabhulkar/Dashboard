@@ -1,0 +1,25 @@
+﻿@model Microsoft.AspNetCore.Diagnostics.IExceptionHandlerFeature
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="row">
+    <div class="col-12 text-center">
+        <img src="~/images/error.svg" style="width:10%;" />
+        <h1 style="color:red">Error !!!</h1>
+
+    </div>
+</div>
+<div class="row">
+    <div class="col-12 text-center">
+
+        <h3>@Model.Error.Message</h3>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12 text-center">
+        @*<p>@Model.Error.StackTrace</p>*@
+        <p style="color:black;font-size:medium">Please contact to Support Team.</p>
+        @*<p>@Model.Error.InnerException</p>*@
+    </div>
+</div>

@@ -1,0 +1,375 @@
+﻿@using Dashboard.Models
+@model Dashboard.Models.clsCMWatchListMain;
+
+
+@{
+    ViewData["Title"] = "Watch List";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@Html.AntiForgeryToken()
+@using (Html.BeginForm("CMWatchList", "CMWatchList", FormMethod.Post))
+{
+
+    <div class="wrapper">
+        <div class="row form-group">
+
+            <div class="col-md-12">
+                <div class="dash-card">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <h2 class="card-header-title">
+                                Trend Data
+                            </h2>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="input-group">
+                                <input type="text" id="delquMonth" name="month" required class="form-control custom-form-control delquMonth" data-provide="datepicker">
+
+                                @Html.HiddenFor(x => x.HiddenDatetime)
+
+                                <div class="input-group-addon">
+                                    <span class="icon-arrow-down"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row form-group">
+
+            <div class="col-md-12">
+                <div class="custom-card">
+                    <div class="custom-header-title">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <h2>
+                                    Overview
+                                </h2>
+                            </div>
+                            <div class="col-md-4">
+                                <ul class="nav nav-tabs overview-tab" role="tablist">
+                                    <li class="nav-item overview-item">
+                                        <a class="nav-link active overview-active" data-toggle="tab" href="#Segment" id="lnkSegment">Segment</a>
+                                    </li>
+                                    <li class="nav-item overview-item">
+                                        @*<a class="nav-link" data-toggle="tab" href="#Hub" >Hub</a>*@
+                                        <a class="nav-link" data-toggle="tab" href="#" style="pointer-events: none;">Hub</a>
+                                    </li>
+
+                                </ul>
+                            </div>
+                        </div>
+
+
+
+                    </div>
+                    <div class="custom-card-body">
+                        <div class="tab-content">
+                            <div class="tab-pane fade show active" id="Segment" role="tabpanel">
+
+
+                                @if (Model.clsCMWatchList.Count > 0)
+                                {
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <div class="canvas-con">
+                                                <h6 id="piChartValue" style="left:215px;"></h6><span style="left:220px;">CR</span>
+                                                <p>Total</p>
+                                                <div class="canvas-con-inner">
+                                                    <canvas id="delinquency-chart"></canvas>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-10">
+                                            <table id="tbl_delinquency_trendData_overview" class="display delinquency__tbl nowrap" style="width:100%">
+                                                <thead>
+                                                    <tr>
+                                                        <th rowspan="2">Segment</th>
+
+                                                        @foreach (var item in Model.clsMonthWatchList)
+                                                        {
+                                                            <th colspan="2">
+                                                                @Html.DisplayFor(modelItem => item.MonthName)
+                                                            </th>
+                                                        }
+                                                    </tr>
+                                                    <tr>
+                                                        <th>No.</th>
+                                                        <th>Util</th>
+                                                        <th>No.</th>
+                                                        <th>Util</th>
+                                                        <th>No.</th>
+                                                        <th>Util</th>
+                                                        <th>No.</th>
+                                                        <th>Util</th>
+                                                        <th>No.</th>
+                                                        <th>Util</th>
+
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+
+                                                    @foreach (var item in Model.clsColorCode)
+                                                    {
+                                                        int count = 0;
+                                                        <tr>
+                                                            <td>
+
+
+                                                                @Html.Raw(item.Div)
+                                                                @Html.DisplayFor(modelItem => item.Segment)
+                                                            </td>
+
+                                                            @foreach (var item2 in Model.clsMonthWatchList)
+                                                            {
+                                                                count = 0;
+                                                                foreach (var item1 in Model.clsCMWatchList)
+                                                                {
+
+                                                                    if (item.Segment == item1.Segment
+                                                                    && item2.MonthName == item1.Month)
+                                                                    {
+                                                                        count = 1;
+                                                                        <td>
+
+                                                                            @Html.DisplayFor(modelItem => item1.NOOFAcc)
+                                                                        </td>
+                                                                        <td>
+                                                                            @Html.DisplayFor(modelItem => item1.Utilization)
+                                                                        </td>
+                                                                    }
+                                                                }
+
+                                                                if (count == 0)
+                                                                {
+                                                                    <td>0</td>
+                                                                    <td>0.00</td>
+
+                                                                }
+                                                            }
+                                                        </tr>
+                                                    }
+
+                                                </tbody>
+                                                <tfoot>
+                                                    <tr>
+                                                        <th>Total</th>
+                                                        @foreach (var item in Model.clsMonthWatchList)
+                                                        {
+                                                            int count = 0;
+                                                            foreach (var item1 in Model.clsMonthTotalWatchList)
+                                                            {
+                                                                if (item.MonthName == item1.MonthName)
+                                                                {
+                                                                    count = 1;
+                                                                    <th>
+                                                                        @*@Html.Label(item1.NoOFAcc)*@
+                                                                        @Html.DisplayFor(modelItem => item1.NoOFAcc)
+                                                                    </th>
+                                                                    <th>
+                                                                        @Html.DisplayFor(modelItem => item1.TotalAmount)
+                                                                    </th>
+                                                                }
+                                                            }
+                                                            if (count == 0)
+                                                            {
+                                                                <th>0</th>
+                                                                <th>0.00</th>
+                                                            }
+                                                        }
+
+                                                    </tr>
+
+                                                </tfoot>
+                                            </table>
+                                        </div>
+                                    </div>
+                                }
+
+                                else
+                                {
+                                    <div class="row" style="margin-left:5px;margin-top:10px;">No Records Found</div>
+                                }
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row form-group">
+
+            <div class="col-md-12">
+                <h2 class="card-header-title">
+                    Summary
+                </h2>
+            </div>
+
+            <div class="col-md-6">
+                <div class="custom-card">
+                    <div class="custom-header-title" style="border-bottom:0;">
+                        <h2 style="margin-bottom:0;">
+
+                            <label id="total_overdue" style="margin-bottom:0;font-weight:900;font-size: 35px;">
+                                @Html.DisplayFor(modelItem => Model.WatchListAccount)
+
+                            </label>
+                        </h2>
+                    </div>
+                    <div class="custom-card-body">
+                        <p style="margin-bottom:0;color: #374151;">
+                            Total No. of WatchList A/c's
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="custom-card">
+                    <div class="custom-header-title" style="border-bottom:0;">
+                        <h2 style="margin-bottom:0;">
+
+                            <label id="overdue_amt" style="margin-bottom:0;font-weight:900;font-size: 35px;">
+                                â¹
+                                @Html.DisplayFor(modelItem => Model.WatchListAmount)
+                            </label><span style="font-size: 15px; font-weight: 400;">CR</span>
+                        </h2>
+                    </div>
+                    <div class="custom-card-body">
+                        <p style="margin-bottom:0;color: #374151;">
+                            Total WatchList Amount
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+
+        <div class="row form-group">
+
+            <div class="col-md-2">
+                <h2 class="card-header-title">
+                    Action Items
+                </h2>
+            </div>
+
+            <div class="col-md-3 multiselect__drp">
+
+                @Html.ListBoxFor(model => model.SelectedLocation, new MultiSelectList(Model.lstLocation, "Value", "Text"), new { @class = "form-control custom-form-control", multiple = "multiple", id = "Location_dropdown" })
+
+                @*<select id='drp_location' multiple class="form-control custom-form-control">
+            <option value='1'>location 1</option>
+            <option value='2'>location 2</option>
+            <option value='3'>location 3</option>
+            <option value='4'>location 4</option>
+            <option value='5'>location 5</option>
+            </select>*@
+            </div>
+            <div class="col-md-3 multiselect__drp">
+
+                @Html.ListBoxFor(model => model.SelectedSegment, new MultiSelectList(Model.lstSegment, "Value", "Text"), new { @class = "form-control custom-form-control", multiple = "multiple", id = "Segment_dropdown" })
+
+                @*<select id='drp_segments' multiple class="form-control custom-form-control">
+            <option value='1'>segment 1</option>
+            <option value='2'>segment 2</option>
+            <option value='3'>segment 3</option>
+            <option value='4'>segment 4</option>
+            <option value='5'>segment 5</option>
+            </select>*@
+            </div>
+
+            <div class="col-md-2">
+                @Html.TextBoxFor(model => model.LSId, new { @class = "form-control", @placeholder = "LSID" })
+
+            </div>
+
+            <div class="col-md-2">
+                <input type="submit" value="Search" id="btnSearch" class="btn btn-primary" />
+
+                @*<input type="submit"
+            name="submit"
+            value="Search"
+            class="btn btn-primary" />*@
+
+            </div>
+        </div>
+        <div class="row form-group">
+
+            <div class="col-md-12">
+                <div class="custom-card">
+                    @if (Model.ActionItemWatchList.Count > 0)
+                    {
+                        <div class="custom-card-body">
+
+                            <table id="tbl_actionitem" class="display delinquency__tbl nowrap actiontable" style="width:100%;">
+                                <thead>
+                                    <tr>
+                                        <th>LSID</th>
+                                        <th>Customer Name</th>
+                                        <th>Segment</th>
+                                        <th>PMG</th>
+                                        <th>SAN.EXP.</th>
+                                        <th>O/S EXP.</th>
+                                        <th>RM</th>
+                                        <th>TH</th>
+
+                                    </tr>
+
+                                </thead>
+                                <tbody>
+
+
+                                    @foreach (var item in Model.ActionItemWatchList)
+                                    {
+                                        <tr>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.LSID)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.CustomerName)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Segment)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.PMG)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.SANEXP)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.OSEXP)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.RM)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.TH)
+                                            </td>
+                                        </tr>
+                                    }
+
+
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="custom-card-body">
+                            No Records Found
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+
+<script src="~/js/CMWatchList.js"></script>

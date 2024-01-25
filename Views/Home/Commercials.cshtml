@@ -1,0 +1,457 @@
+﻿@*@model IPagedList<Dashboard.Models.Home>
+    @using X.PagedList.Mvc.Core;
+    @using X.PagedList;
+    @using X.PagedList.Mvc.Common*@
+
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor Accessor
+
+@addTagHelper*, Microsoft.AspNetCore.Mvc.TagHelpers
+@using Dashboard.Models
+@model dynamic
+
+@{
+    ViewData["Title"] = "Commercials";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="wrapper">
+
+    <div class="row form-group">
+        <input type="hidden" id="LoginUserRole" value="@Accessor.HttpContext.Session.GetString("UserRole")" />
+        <div class="col-md-12">
+
+            <ul class="nav nav-tabs" id="ul_commercial_type" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" data-toggle="tab" data-name="Assets Pricing" href="#AssetsPricing">Assets Pricing</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" data-name="Trade Pricing" href="#TradePricing">Trade Pricing</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" data-name="Reversal Approval" href="#ReversalApproval">Reversal Approval</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" data-name="Account customisation" href="#Accountcustomisation">Account customisation</a>
+                </li>
+            </ul>
+            <div class="tab-content">
+
+                @* ------- Asset Pricing ------- *@
+
+                <div class="tab-pane fade show active" id="AssetsPricing" role="tabpanel">
+                    <div class="pt-4">
+                        <ul class="nav nav-tabs asset-tabs form-group assetpricing-tab" id="ul_customer_type" role="tablist" style="margin-bottom:2rem;">
+                            <li class="nav-item">
+                                <a class="nav-link active" data-toggle="tab" data-name="IP" id="IP_Tab" href="#Ip" data-id="1"><label id="lbl_IPCount"></label> IP </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-toggle="tab" data-name="NTB" id="NTB_Tab" href="#NTB" data-id="2"><label id="lbl_NTBCount"></label> NTB </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-toggle="tab" data-name="Existing" id="Existing_Tab" href="#Existing" data-id="3"><label id="lbl_ExistingCount"></label> Existing </a>
+                            </li>
+
+                        </ul>
+                        <div class="row form-group">
+                            <div class="col-md-6">
+                                <h2 class="card-header-title" style="margin-right: 26px;margin-bottom: 0;">
+                                    View Detail
+                                </h2>
+                                <div class="input-group proposal-dt">
+                                    <input type="text" data-provide="datepicker" id="From_Date" required class="form-control custom-form-control monthYear">
+                                    <label class="input-group-addon" for="From_Date" style="margin-bottom: 0;">
+                                        <span class="icon-calendar icn_calender"></span>
+                                        @*<button ><i class="icon-calendar icn_calender"></i></button>*@
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 text-right">
+                                @if (@Accessor.HttpContext.Session.GetString("UserRole") == "Relationship Manager")
+                                {
+                                    <button class="btn btn-primary btn-custom" id="btn_addnew">Create New</button>
+                                }
+
+                            </div>
+                        </div>
+                        <div class="tab-content">
+                            <div class="tab-pane fade show active" id="Ip" role="tabpanel">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="table-td-border-outer">
+                                            <table cellpadding="0" cellspacing="0" id="Tbl_IPLeads" class="table table-borderless table-striped table-td-border table-hover display"></table>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="NTB" role="tabpanel">
+                                <div class="pt-4">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="table-td-border-outer">
+                                                <table cellpadding="0" cellspacing="0" style="width:100%" id="Tbl_NTBLeads" class="table table-borderless table-striped table-td-border table-hover"></table>
+                                                <br />
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="Existing" role="tabpanel">
+                                <div class="pt-4">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="table-td-border-outer">
+                                                <table cellpadding="0" cellspacing="0" id="Tbl_ExistingLeads" class="table table-borderless table-striped table-td-border table-hover"></table>
+                                                <br />
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                @* ------- Trade Pricing ------- *@
+
+                <div class="tab-pane fade" id="TradePricing">
+                    <div class="pt-4">
+                        <div class="row form-group">
+                            <div class="col-md-8">
+                                <h2 class="card-header-title" style="margin-right: 26px;margin-bottom: 0;">
+                                    View Detail
+                                </h2>
+
+                            </div>
+                            <div class="col-md-4 text-right">
+                                @if (@Accessor.HttpContext.Session.GetString("UserRole") == "Relationship Manager")
+                                {
+                                    <button class="btn btn-primary" id="Tradepricing_btn_addnew">+ Create New</button>
+                                }
+
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="table-td-border-outer">
+                                    <table cellpadding="0" cellspacing="0" id="Tbl_TradePricing" style="width:100%!important" class="table table-borderless table-striped table-td-border table-hover display"></table>
+                                    <br />
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                @* ------- Reversal Approval ------- *@
+
+                <div class="tab-pane fade" id="ReversalApproval">
+                    <div class="pt-4">
+                        <div class="row form-group">
+                            <div class="col-md-3">
+                                <h2 class="card-header-title" style="margin-right: 26px;margin-bottom: 0;">
+                                    View Detail
+                                </h2>
+
+
+                            </div>
+                            <div class="col-md-3">
+                                <label class="label-control">Proposal No.</label>
+                                <input type="text" id="txt_proposalNo" class="form-control custom-form-control" />
+                                <p id="ProposalNolength" style="display:none;color:red" class="label-control">Maximum 12 characters allowed</p>
+                                <button class="clearBtn" id="BtnClear">
+                                    <div class="line"></div>
+                                    <div class="line"></div>
+                                </button>
+                            </div>
+                            <div class="col-md-3">
+                                <button class="btn btn-primary" id="BtnSearchByProposalNo" style="max-width: 120px;">Search</button>
+                            </div>
+
+                            <div class="col-md-3 text-right">
+                                @if (@Accessor.HttpContext.Session.GetString("UserRole") == "Relationship Manager")
+                                {
+                                    <button class="btn btn-primary" style="width:58%" id="ReversalApproval_btn_addnew">+ Create New</button>
+                                }
+
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="table-td-border-outer">
+                                    <table cellpadding="0" id="TBL_ReversalApproval" cellspacing="0" class="table table-borderless table-striped table-td-border table-hover display" style="border:0">
+                                        <thead>
+                                        </thead>
+                                    </table>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                @* ------- Account Customisation ------- *@
+                <div class="tab-pane fade" id="Accountcustomisation">
+                    <div class="pt-4">
+                        <div class="row form-group">
+                            <div class="col-md-3">
+                                <h2 class="card-header-title" style="margin-right: 26px;margin-bottom: 0;">
+                                    View Detail
+                                </h2>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="label-control">Account No.</label>
+                                <input type="text" id="txt_ac_proposalNumber" class="form-control custom-form-control" />
+                                <p id="ACProposalNolength" style="display:none;color:red" class="label-control">Maximum 12 characters allowed</p>
+                                <button class="clearBtn" id="BtnClearText">
+                                    <div class="line"></div>
+                                    <div class="line"></div>
+                                </button>
+                            </div>
+                            <div class="col-md-3">
+                                <button class="btn btn-primary" id="btn_Accountsearch" style="max-width: 120px;">Search</button>
+
+                            </div>
+                            @if (@Accessor.HttpContext.Session.GetString("UserRole") == "Relationship Manager")
+                            {
+                                <div class="col-md-3">
+                                    <button class="btn btn-primary" style="width:58%;float:right;" id="Accountcustomisation_btn_addnew">+ Create New</button>
+                                </div>
+
+                            }
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="table-td-border-outer">
+                                    <table cellpadding="0" cellspacing="0" id="tbl_AccountCustomisation" class="table table-borderless table-striped table-td-border table-hover display" style="border:0">
+                                        <thead>
+                                        </thead>
+                                        <tbody></tbody>
+
+                                    </table>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*-------------Sidebar--------------*@
+
+    @* ------- Asset Pricing ------- *@
+
+    <div class="side-wrapper" id="sidebar_assetpricing">
+        <div class="side-content">
+            <div class="modal-header custom-header" style="padding-left: 3%;padding-right: 3%;">
+                <h3 class="sidebar-header" id="create_AP_Proposal">Asset Pricing</h3>
+                <h3 class="sidebar-header" id="update_AP_Proposal" style="display:none">Asset Pricing</h3>
+                @*<label class="sidebar-header">Create Proposal</label>*@
+                <button class="close-btn" id="btn_close_sidebar">
+                    <div class="line"></div>
+                    <div class="line"></div>
+                </button>
+            </div>
+            <div class="modal-body" id="myPartialViewContainer" style="padding-left: 3%;padding-right: 3%;">
+                @{
+                    Html.RenderPartial("../Commercials/_AssetPricing");
+                }
+            </div>
+        </div>
+
+
+    </div>
+
+    <div class="modal fade" id="ApproveModal" tabindex="-1" aria-labelledby="ApproveModal" aria-hidden="true">
+        <div class="modal-dialog modal-sm" style="max-width: 610px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Add Approve Remark</h5>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="label-control">Remark</label>
+                        <textarea class="form-control" id="txt_approve_remark" required rows="5"></textarea>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" id="BtnApprove" class="btn btn-info">Save</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="SendBackModal" tabindex="-1" aria-labelledby="SendBackModal" aria-hidden="true">
+        <div class="modal-dialog modal-sm" style="max-width: 610px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Add Send Back Remark</h5>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="label-control">Remark</label>
+                        <textarea class="form-control" id="txt_sendback_remark" required rows="5"></textarea>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" id="BtnSendBack" class="btn btn-info">Save</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="RejectModal" tabindex="-1" aria-labelledby="RejectModal" aria-hidden="true">
+        <div class="modal-dialog modal-sm" style="max-width: 610px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Add Reject Remark</h5>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="label-control">Remark</label>
+                        <textarea class="form-control" id="txt_reject_remark" required rows="5"></textarea>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" id="BtnReject" class="btn btn-info">Save</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="Modal_AssetPricingView" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 style="font-weight:600; font-size:21px;" class="modal-title">IP Proposal</h4>
+                    <button type="button" class="close" data-dismiss="modal">
+                        &times;
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                    @{
+                        Html.RenderPartial("../Commercials/_IP_AssetPricingView");
+                    }
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    @* ------- Trade Pricing ------- *@
+
+    <div class="side-wrapper" id="sidebar_tradepricing">
+        <div class="side-content">
+            <div class="modal-header custom-header" style="padding-left: 3%;padding-right: 3%;">
+                <h3 class="sidebar-header">Trade Pricing</h3>
+                @*<label class="sidebar-header">Create Proposal</label>*@
+                <button class="close-btn">
+                    <div class="line"></div>
+                    <div class="line"></div>
+                </button>
+            </div>
+
+            <div class="modal-body" style="padding-left: 3%;padding-right: 3%;">
+                @{
+                    Html.RenderPartial("../Commercials/_TradePricing");
+                }
+            </div>
+        </div>
+    </div>
+
+    @* ------- Reversal Approval ------- *@
+    <div class="side-wrapper" id="sidebar_reversalproposal">
+        <div class="side-content">
+            <div class="modal-header custom-header" style="padding-left: 3%;padding-right: 3%;">
+                <h3 id="NewReversalProposal" class="sidebar-header">Reversal Approval</h3>
+                <h3 id="UpdateReversalProposal" style="display:none" class="sidebar-header">Reversal Approval</h3>
+                @*<label class="sidebar-header">Create Proposal</label>*@
+                <button class="close-btn" id="BtncloseReversal">
+                    <div class="line"></div>
+                    <div class="line"></div>
+                </button>
+            </div>
+
+            <div class="modal-body" id="reversalApproverContainer" style="padding-left: 3%;padding-right: 3%;">
+                @{
+                    Html.RenderPartial("../Commercials/_ReversalApproval");
+                }
+            </div>
+        </div>
+    </div>
+
+    @* ------- Account Customisation  ------- *@
+    <div class="side-wrapper" id="sidebar_accountcustomization">
+        <div class="side-content">
+            <div class="modal-header custom-header" style="padding-left: 3%;padding-right: 3%;">
+                <h3 class="sidebar-header">ACCOUNT CUSTOMISATION </h3>
+                @*<label class="sidebar-header">Create Proposal</label>*@
+                <button class="close-btn" id="btn_close_accountCustomisation">
+                    <div class="line"></div>
+                    <div class="line"></div>
+                </button>
+            </div>
+
+            <div class="modal-body" style="padding-left: 3%;padding-right: 3%;">
+                @{
+                    Html.RenderPartial("../Commercials/_AccountCustomisation");
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="FacilityImgModal" tabindex="-1" aria-labelledby="FacilityImgModal" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    @*<h5 class="modal-title" id="exampleModalLabel">Add Approve Remark</h5>*@
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="facilityImg">
+                        <img class="facilityImageView" />
+                        <label class="facilityImageName"></label>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script src="~/js/jquery.min.js"></script>
+<script src="~/js/commercial.js"></script>
+<script src="~/js/ReversalApproval.js"></script>
+
+@*<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>*@
+
+@*<script type='text/javascript' src='https://tableauwb.hbctxdom.com/javascripts/api/viz_v1.js'></script>*@
+
+
+

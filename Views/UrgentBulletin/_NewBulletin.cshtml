@@ -1,0 +1,122 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+
+@using (Html.BeginForm("UploadPdf", "FileUpload", FormMethod.Post,
+                                                new { enctype = "multipart/form-data" }))
+{
+    <div class="row form-group">
+        <div class="col-md-12">
+            <label class="accordion__header--text">Subject</label>
+            <input type="text" id="txt_subject" class="form-control custom-form-control" />
+            <p id="subjectMaxLen" class="label-control">Maximum 500 characters allowed</p>
+        </div>
+    </div>
+    <div class="row form-group">
+        <div class="col-md-12">
+            <label class="accordion__header--text">Message</label>
+            <textarea rows="2" type="text" id="txt_msg" class="form-control custom-form-control" style="font-family: 'Open Sans', sans-serif;"></textarea>
+            <p id="msg_maxLength" class="label-control">Maximum 1000 characters allowed</p>
+        </div>
+    </div>
+    <div class="row form-group">
+        <div class="col-md-12">
+            <label class="accordion__header--text">Attachments</label>
+            <div class="bulletin-upload">
+                <div class='file'>
+                    <input type="file" id="txtUpload" class="custom-file-upload" accept=".png,.jpg,.jpeg,.pdf,.doc,.docx,.csv,.xlsx,.xls" multiple required />
+                    <label for="txtUpload">Upload file</label>
+                    <div id="file-upload-filename" class="upload-file-name"></div>
+                    <p>Supported formats: JPG, JPEG, PNG, DOC, DOCX, CSV, XLSX, XLS, PDF; Maximum file size: 5MB</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row form-group">
+        <div class="col-md-12">
+            <label style="color: #1F2937;font-weight: 600;font-size: 18px;border-bottom: 1px solid #D2D5DB;display: block;margin-bottom: 17px;">Recipients</label>
+            <div class="custom_radio" style="margin-left:0;    display: block;">
+                <input type="radio" id="rbl_RM" name="rblRecipients" value="Relationship Manager" checked><label for="rbl_RM">Relationship Managers (RM)</label>
+                <input type="radio" id="rbl_Supervisors" name="rblRecipients" value="Supervisor"><label for="rbl_Supervisors">Supervisors</label>
+                <input type="radio" id="rbl_both" name="rblRecipients" value="RM and Supervisor"><label for="rbl_both">Both (RM & Supervisor)</label>
+            </div>
+        </div>
+    </div>
+    @*<div class="row form-group">
+            <div class="col-md-12">
+                <label style="color: #1F2937;font-weight: 600;font-size: 18px;border-bottom: 1px solid #D2D5DB;display: block;margin-bottom: 17px;">Filter By</label>
+                <div class="custom_radio" style="margin-left:0;    display: block;">
+                    <input type="radio" id="rbl_Team" name="rblFilter" checked><label for="rbl_Team">Team</label>
+                    <input type="radio" id="rbl_Location" name="rblFilter"><label for="rbl_Location">Location</label>
+                </div>
+            </div>
+        </div>*@
+    <div class="row form-group">
+        <div class="col-md-4">
+            <lable class="label-control">Business</lable>
+            <select id="drp_business" class="form-control custom-form-control"></select>
+        </div>
+        @*<div class="col-md-4">
+    <lable class="label-control">Regional Head</lable>
+    <select class="form-control custom-form-control">
+    <option>Select</option>
+    </select>
+    </div>
+    <div class="col-md-4">
+    <lable class="label-control">Unit Head</lable>
+    <select class="form-control custom-form-control">
+    <option>Select</option>
+    </select>
+    </div>*@
+
+    </div>
+    @*<div class="row form-group">
+            <div class="col-md-4">
+                <lable class="label-control">Cluster Head</lable>
+                <select class="form-control custom-form-control">
+                    <option>Select</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <lable class="label-control">Relationship Manager</lable>
+                <select class="form-control custom-form-control">
+                    <option>Select</option>
+                </select>
+            </div>
+
+        </div>*@
+
+    <div class="row form-group">
+        <div class="col-md-12">
+            <label style="color: #1F2937;font-weight: 600;font-size: 18px;border-bottom: 1px solid #D2D5DB;display: block;margin-bottom: 17px;">Duration</label>
+        </div>
+        @*<div class="col-md-4">
+    <lable class="label-control">From Date</lable>
+    <div class="input-group date" data-provide="datepicker">
+    <input type="text" id="From_Date" required class="form-control custom-form-control">
+    <div class="input-group-addon">
+    <span class="icon-calendar"></span>
+    </div>
+    </div>
+    </div>*@
+        <div class="col-md-4">
+            <lable class="label-control">Expiry Date</lable>
+            <div class="input-group date" data-provide="datepicker">
+                <input type="text" id="To_Date" required class="form-control custom-form-control">
+                <div class="input-group-addon">
+                    <span class="icon-calendar"></span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="row form-group">
+        <div class="col-md-2">
+            <button type="button" style="width:100%;margin-top: 20px;" class="btn btn-primary" id="btnSubmitBulletin">Submit</button>
+        </div>
+    </div>
+    <script src="~/js/commercial.js"></script>
+
+}

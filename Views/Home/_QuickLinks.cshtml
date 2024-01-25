@@ -1,0 +1,62 @@
+﻿<div class="row">
+    <div class="col-md-12 form-group">
+        <input type="text" id="txtQuickSearch" class="form-control custom-form-control quicksearch" data-type="accordion-search" name="search" placeholder="Search Links" style="width:280px;display: inline-block;" />
+        <button id="btnAddLink" value="Add Link" class="btn btn-primary btnAddLink" style="display: inline-block;width: 88px;font-size: 13px; margin-left: 20px;float:right;">Add Link</button>
+    </div>
+    <div class="col-md-12" id="divScroll">
+        <div id="noData" style="text-align:center;padding-top:20px 0;"></div>
+        <section id="accordion" class="sectionheight"></section>
+    </div>
+</div>
+<!--- Add Links Popup -->
+<div id="addlinks" class="addlinkpopup" role="alert" runat="server" style="visibility:hidden">
+    <div class="addlinkpopup-container" style="max-width: 700px; margin: 0 auto;">
+        <div class="pop-header">
+            <h3>Add Link</h3>
+
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <input type="text" id="txtRecordId" hidden />
+                    <label id="lblName" class="label-control" style="display: inline-block;">Name</label>
+                    <span style="color: red;display: inline-block;">*</span>
+                    <input type="text" class="form-control custom-form-control" id="txtName" />
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label id="lblurlLink" class="label-control" style="display: inline-block;">Link</label>
+                    <span style="color: red; display: inline-block;">*</span>
+                    <input type="text" class="form-control custom-form-control" id="txturlLink" />
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label id="lbldescription" class="label-control">Description</label>
+                    <input type="text" class="form-control custom-form-control" id="txtDescription" />
+                </div>
+            </div>
+        </div>
+        @*<div class="row">
+        <div class="col-md-12">
+        <div class="form-group">
+        <label id="lbl_frequentlyUsed" class="label-control">Is Frequently Used</label>
+        <input type="checkbox" id="IsFrequentlyUsed" name="IsFrequentlyUsed" />
+        </div>
+        </div>
+        </div>*@
+        <div class="row">
+            <div class="col-md-12">
+                <input type="button" id="btnSaveLink" value="Save" class="btn btn-outline-primary" />
+                <input type="button" id="btnDeleteLink" style="visibility:hidden" value="Delete" class="btn btn-outline-danger" />
+
+            </div>
+        </div>
+    </div>
+</div>
+

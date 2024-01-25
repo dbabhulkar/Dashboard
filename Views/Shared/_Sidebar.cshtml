@@ -1,0 +1,156 @@
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor Accessor
+<div class="quixnav">
+    <div class="quixnav-scroll">
+        @if (Accessor.HttpContext.Session.GetString("sectionType") != null)
+        {
+
+
+            <ul class="metismenu" id="menu">
+                @if (Accessor.HttpContext.Session.GetString("sectionType").ToString().ToLower() == "RMView".ToLower())
+                {
+                    <li>
+                        <a href='@Url.Action("Dashboard", "Home",new {USERID=Accessor.HttpContext.Session.GetString("EncryptedId").ToString(),IP=Accessor.HttpContext.Session.GetString("EncryptedIP").ToString()})' aria-expanded="false">
+                            <img src="~/images/dashboard_ico.svg" /><span class="nav-text">Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href='@Url.Action("Commercials", "Home")' aria-expanded="false">
+                            <img src="~/images/comercials_ico.svg" /><span class="nav-text">Commercials</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href='https://btgrewsapp1.hbctxdom.com:9005/WRSK_EWSYSTEM/ACR_ASR/frmreport.aspx?empid=@Accessor.HttpContext.Session.GetString("EmpId").ToString()' aria-expanded="false" target="_blank" rel="noopener noreferrer">
+                            <img src="~/images/portfolio_ico.svg" /><span class="nav-text">ACR ASR Download</span>
+                        </a>
+                    </li>
+                }
+                @*<li>
+            <a href='@Url.Action("Portfolio","CM")' aria-expanded="false">
+            <img src="~/images/portfolio_ico.svg" /><span class="nav-text">Portfolio</span>
+            </a>
+            </li>*@
+
+                @if (Accessor.HttpContext.Session.GetString("sectionType").ToString().ToLower() == "CMView".ToLower())
+                {
+                    <li>
+                        <a href='@Url.Action("CMDashboard","CM",new {USERID=Accessor.HttpContext.Session.GetString("EncryptedId").ToString(),IP=Accessor.HttpContext.Session.GetString("EncryptedIP").ToString()})' aria-expanded="false">
+                            <img src="~/images/dashboard_ico.svg" /><span class="nav-text">CM-Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href='@Url.Action("Portfolio","CM")' aria-expanded="false">
+                            <img src="~/images/portfolio_ico.svg" /><span class="nav-text">Portfolio</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href='@Url.Action("Delinquency","Delinquency")' aria-expanded="false">
+                            <img src="~/images/portfolio_ico.svg" /><span class="nav-text">Deliquency</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href='@Url.Action("CMLCHU","CMLCHU")' aria-expanded="false">
+                            <img src="~/images/portfolio_ico.svg" /><span class="nav-text">LCHU</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href='@Url.Action("CMAUR","CMAUR")' aria-expanded="false">
+                            <img src="~/images/portfolio_ico.svg" /><span class="nav-text">AUR</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href='@Url.Action("CMWatchList","CMWatchList")' aria-expanded="false">
+                            <img src="~/images/portfolio_ico.svg" /><span class="nav-text">Watch List</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href='@Url.Action("CMOneViewIndicator","CMOnewView")' aria-expanded="false">
+                            <img src="~/images/portfolio_ico.svg" /><span class="nav-text">One View Indicator</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href='https://btgrewsapp1.hbctxdom.com:9005/WRSK_EWSYSTEM/ACR_ASR/frmreport.aspx?empid=@Accessor.HttpContext.Session.GetString("EmpId").ToString()' aria-expanded="false" target="_blank" rel="noopener noreferrer">
+                            <img src="~/images/portfolio_ico.svg" /><span class="nav-text">ACR ASR Download</span>
+                        </a>
+                    </li>
+                    @*<li>
+            <a href='@Url.Action("CMOneViewIndicator","CMOnewView")' aria-expanded="false">
+            <img src="~/images/portfolio_ico.svg" /><span class="nav-text">CM OnewView</span>
+            </a>
+            </li>*@
+                }
+
+
+
+                @*@if (Accessor.HttpContext.Session.GetString("EmpId").ToString().ToLower() == "c3286" || Accessor.HttpContext.Session.GetString("EmpId").ToString().ToLower() == "a28030" || Accessor.HttpContext.Session.GetString("EmpId").ToString().ToLower() == "k1123" || Accessor.HttpContext.Session.GetString("EmpId").ToString().ToLower() == "a28584" || Accessor.HttpContext.Session.GetString("sectionType").ToString().ToLower() == "CMView".ToLower())*@
+                @if (Accessor.HttpContext.Session.GetString("CentralTeam").ToString().ToLower() == "yes" || Accessor.HttpContext.Session.GetString("CMUserRole").ToString().ToLower() == "EW - Manager".ToLower())
+                {
+
+                    <li>
+                        <a href='@Url.Action("Index","Upload")' aria-expanded="false">
+                            <img src="~/images/portfolio_ico.svg" /><span class="nav-text">Masters Upload</span>
+                        </a>
+                    </li>
+                }
+
+
+                @*<li>
+            <a href='@Url.Action("Index","Upload")' aria-expanded="false">
+            <img src="~/images/portfolio_ico.svg" /><span class="nav-text">Masters Upload</span>
+            </a>
+            </li>*@
+                @*
+            <li>
+            <a class="has-arrow" href="javascript:void()" aria-expanded="false">
+            <i class="fa fa-pie-chart"></i><span class="nav-text">Portfolio</span>
+            </a>
+            <ul aria-expanded="false">
+            <li><a href="./index.html">Dashboard 1</a></li>
+            <li><a href="./index2.html">Dashboard 2</a></li>
+            </ul>
+            </li>
+            <li>
+            <a class="has-arrow" href="#" aria-expanded="false">
+            <i class="fa fa-file-text-o"></i><span class="nav-text">Tableau</span>
+            </a>
+            </li>
+
+            <li>
+            <a class="has-arrow" href="#" aria-expanded="false">
+            <i class="fa fa-file-text-o"></i><span class="nav-text">Aquisitions</span>
+            </a>
+            </li>
+            <li>
+            <a class="has-arrow" href="#" aria-expanded="false">
+            <i class="fa fa-file-text-o"></i><span class="nav-text">Compliance</span>
+            </a>
+
+            </li>
+
+            <li>
+            <a class="has-arrow" href="#" aria-expanded="false">
+            <i class="fa fa-file-text-o"></i><span class="nav-text">Indicative Score</span>
+            </a>
+            </li>
+            <li>
+            <a class="has-arrow" href="#" aria-expanded="false">
+            <i class="fa fa-file-text-o"></i><span class="nav-text">Advisory</span>
+            </a>
+            </li>
+            <li>
+            <a class="has-arrow" href="#" aria-expanded="false">
+            <i class="fa fa-file-text-o"></i><span class="nav-text">Sanction Letter</span>
+            </a>
+            </li>*@
+            </ul>
+        }
+    </div>
+    @*<div class="quixnav-footer">
+    <a href="/Home/feedback" class="footer-link">Feedback</a>
+    </div>*@
+    <div class="quixnav-footer">
+        <a href="/Home/feedback" class="footer-link" style="float: left;"><i class="icon-star"></i> Feedback</a>
+        <span class="footer-link" style="float: right;">Version 1.1.1</span>
+    </div>
+
+</div>

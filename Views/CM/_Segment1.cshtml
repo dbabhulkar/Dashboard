@@ -1,0 +1,124 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+<div class="tab-pane fade show active" id="Segment" role="tabpanel">
+    <div class="row form-group">
+        <div class="col-md-6">
+            <div class="custom-card">
+                <div class="custom-header-title">
+                    <h2>
+                        Portfolio
+                    </h2>
+                </div>
+                <div class="custom-card-body">
+                    <div class="row" id="dvGan">
+                        <div class="col-md-4">
+                            <div class="canvas-con">
+                                <h6 id="piChartValue"></h6><span>CR</span>
+                                <p>Total</p>
+                                <div class="canvas-con-inner">
+                                    <canvas id="portfolio-chart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <table class="table table-borderless table-hover table-striped form-group chart-table" id="tblPortFolio"></table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="custom-card" id="lchuCanv">
+                <div class="custom-header-title">
+                    <h2>
+                        LCHU
+                    </h2>
+                </div>
+                <div class="custom-card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="canvas-con">
+                                <h6 id="lcuhTotal"></h6><span>CR</span>
+                                <p>Total</p>
+                                <div class="canvas-con-inner">
+                                    <canvas id="lchu-chart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <table class="table table-borderless table-hover table-striped table-responsive form-group chart-table" id="tblLUCH"></table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row form-group">
+        <div class="col-md-6">
+            <div class="custom-card" id="delinquencyCanv">
+                <div class="custom-header-title">
+                    <h2>
+                        Delinquency
+                    </h2>
+                    <select class="form-control custom-form-control chart-dropdown" id="delDrop">
+                        <option value="7P" selected>7+</option>
+                        <option value="15P">15+</option>
+                        <option value="30P">30+</option>
+                        <option value="60P">60+</option>
+                    </select>
+                </div>
+                <div class="custom-card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="canvas-con">
+                                <h6 id="delinquencyTotal"></h6><span>CR</span>
+                                <p>Total</p>
+                                <div class="canvas-con-inner">
+                                    <canvas id="delinquency-chart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-8" id="dvdelTable">
+                            <table class="table table-borderless table-hover table-striped table-responsive form-group chart-table" id="tblDelinquency"></table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="custom-card">
+                <div class="custom-header-title">
+                    <h2>
+                        AUR
+                    </h2>
+                </div>
+                <div class="custom-card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="canvas-con">
+                                <h6 id="AURTotal"></h6><span>CR</span>
+                                <p>Total</p>
+                                <div class="canvas-con-inner" id="aurCanv">
+                                    <canvas id="aur-chart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <table class="table table-borderless table-hover table-striped table-responsive form-group chart-table" id="tblAUR"></table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+</div>
+

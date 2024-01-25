@@ -1,0 +1,69 @@
+﻿<div class="header-content">
+    <div class="nav-control">
+        <div class="hamburger">
+            <span class="hamburger-line"></span><span class="hamburger-line"></span><span class="hamburger-line"></span>
+        </div>
+    </div>
+    <h1>Page Title</h1>
+    <nav class="navbar navbar-expand">
+        <div class="collapse navbar-collapse justify-content-between">
+            <ul class="navbar-nav header-right">
+
+                <li class="nav-item dropdown header-profile">
+                    <div class='search-container'>
+                        <div class='search-area'>
+                            <input class='community-search' type="text" placeholder="Search" />
+                            <i class="icon-magnifier"></i>
+                        </div>
+
+                    </div>
+                </li>
+                <li class="nav-item dropdown header-profile">
+                    <button class="btn-border btnAppLink">
+                        Quick Links
+                        <img src="~/images/quicklink-ico.svg" />
+                    </button>
+                </li>
+                <li class="nav-item dropdown header-profile">
+                    <button class="btn-border">
+                        Notification
+                        <img src="~/images/bell-ico.svg" />
+                    </button>
+                </li>
+                <li class="nav-item dropdown header-profile">
+                    <button class="btn-border">
+                        User
+                        <img src="~/images/user-ico.svg" />
+                    </button>
+                </li>
+                <li class="nav-item dropdown header-profile">
+                    @*<button type="submit" class="btn-border" id="btn_logout" />*@
+                    @*<button type="submit" style="margin-left: 10px;" class="btn-border" asp-controller="Login" asp-action="LogoutUser">Logout</button>*@
+                </li>
+            </ul>
+        </div>
+    </nav>
+</div>
+<script src="~/js/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#btn_logout").click(function (e) {
+            $.ajax({
+                type: "POST",
+                url: "/Login/LogoutUser",
+                data: null,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                async: false,
+                processData: false,
+                success: function (response) {
+                    debugger;
+                    window.location.href = response.url;
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+
+                }
+            });
+        })
+    })
+</script>

@@ -1,0 +1,116 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>login</title>
+    <environment>
+        <link href="~/css/style.css" rel="stylesheet" />
+        <link href="~/css/responsive.css" rel="stylesheet" />
+        <link href="~/css/Gridmvc.css" rel="stylesheet" />
+        <link href="~/css/PagedList.css" rel="stylesheet" />
+        <link href="~/css/sweetalert.min.css" rel="stylesheet" />
+        <link href="~/css/Toaster.css" rel="stylesheet" />
+    </environment>
+
+</head>
+<body>
+    <div style="max-width: 550px;margin: 0 auto;transform: translateY(50%);">
+        <div style="text-align:center;">
+            <h1>Login</h1>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <label>User ID</label>
+                <input type="text" id="UserName" class="form-control form-group" autofocus />
+
+                <label>Password</label>
+                <input type="password" id="Password" class="form-control form-group" />
+                <div style="text-align:center;">
+                    <button type="button" id="btnLogin" class="btn btn-primary">Login</button>
+                </div>
+            </div>
+            <div class="card-footer">
+                <label style="color:black;font-weight:800" id="lbl_message"></label>
+            </div>
+        </div>
+    </div>
+
+
+    <environment>
+        @*<script src="~/lib/jquery/dist/jquery-1.8.3.min.js"></script>*@
+        <script src="~/js/jquery.min.js"></script>
+        <script src="~/js/global.min.js"></script>
+        <script src="~/js/custom.min.js"></script>
+        <script src="~/js/gridmvc.min.js"></script>
+        <script src="~/js/sweetalert.min.js"></script>
+        <script src="~/js/Toaster.js"></script>
+        <script src="~/js/common.js"></script>
+        <script src="~/js/aes.js"></script>
+    </environment>
+    <script>
+
+        $("#btnLogin").click(function () {
+
+            LoginProcess();
+
+
+        });
+
+        $(document).keypress(function (event) {
+            var keycode = (event.keyCode ? event.keyCode : event.which);
+            if (keycode == '13') {
+                LoginProcess();
+            }
+        });
+
+        function LoginProcess() {
+            var Login = document.getElementById("Password").value.trim();
+
+            var key = CryptoJS.enc.Utf8.parse('8080808080808080');
+            var iv = CryptoJS.enc.Utf8.parse('8080808080808080');
+
+            var encryptedlogin = CryptoJS.AES.encrypt(CryptoJS.enc.Utf8.parse(Login), key,
+                {
+                    keySize: 128 / 8,
+                    iv: iv,
+                    mode: CryptoJS.mode.CBC,
+                    padding: CryptoJS.pad.Pkcs7
+                });
+
+            document.getElementById("Password").value = encryptedlogin;
+
+            var data = {};
+            data.userName = $("#UserName").val();
+            data.passWord = $("#Password").val();
+            $.ajax({
+                type: "POST",
+                url: "/Login/LoginUser",
+                data: JSON.stringify(data),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                async: false,
+                processData: false,
+                success: function (response) {
+
+                    if (response != null && response.isSuccess == 'false') {
+                        $("#lbl_message").text(response.msg);
+                    }
+                    else if (response != null && response.isSuccess == 'true') {
+                        window.location.href = response.url;
+                    }
+
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    event.preventDefault();
+                }
+            });
+        }
+
+    </script>
+</body>
+</html>

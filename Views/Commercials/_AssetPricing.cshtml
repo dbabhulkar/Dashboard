@@ -1,0 +1,581 @@
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor Accessor
+
+<input type="text" hidden id="AssetPricing_status" />
+<input type="text" hidden id="ActionType" />
+<input type="text" hidden id="Asset_Pricing_CustomerId" />
+@*<div id="view_IPPropsl" style="display:none">
+        <div class="row">
+            <div class="col-md-10"></div>
+            <div class="col-md-2">
+                @if (@Accessor.HttpContext.Session.GetString("UserRole") != "Relationship Manager")
+                {
+                <button id="BtnViewIP_Proposal" style="width:42px;padding:2px 6px;font-size:12px;float:right" class="btn btn-primary btn-fetch">View</button>
+                }
+            </div>
+        </div>
+    </div>*@
+<div id="dv_clientid" style="display:none">
+    <div class="row form-group">
+        <div class="col-md-3">
+            <lable class="label-control">Client ID *</lable>
+            <input type="text" id="AssetPricing_txtClientId" onkeypress="return isNumberOnlyKey(event)" class="form-control custom-form-control" placeholder="Enter" />
+        </div>
+        <div class="col-md-1">
+            <button id="btn_fetchclientId" class="btn btn-primary btn-fetch"><i class="fa fa-chevron-right"></i></button>
+        </div>
+    </div>
+</div>
+<style>
+    #tbl_ResponseHistory > thead th {
+        text-align: center;
+    }
+</style>
+
+<div id="divAssetPricing">
+    <div class="row form-group">
+
+        <div class="col-md-3" id="dv_customer_name">
+            <lable class="label-control">Customer Name *</lable>
+            <input type="text" id="txt_customerName" class="form-control custom-form-control" placeholder="Enter" />
+        </div>
+        <div class="col-md-3" id="dv_proposalno" style="display:none">
+            <lable class="label-control">Proposal Number *</lable>
+            <input type="text" onkeypress="return isNumberOnlyKey(event)" class="form-control custom-form-control" id="AP_ProposalNo" placeholder="Enter" />
+            <p id="NTBProposalNolength" style="display:none;color:red" class="label-control">Maximum 12 characters allowed</p>
+        </div>
+        <div class="col-md-3" id="dv_ipApprovalNo" style="display:none">
+            <lable class="label-control">IP Approval No(Optional)</lable>
+            <input type="text" class="form-control custom-form-control" style="text-transform:uppercase" id="AP_Approval_No" placeholder="Enter" />
+            <p id="NTBApprovalNolength" style="display:none;color:red" class="label-control">Maximum 10 characters allowed</p>
+        </div>
+        <div class="col-md-1">
+            <button id="btn_fetchIP_proposal" style="display:none" class="btn btn-primary btn-fetch"><i class="fa fa-chevron-right"></i></button>
+
+        </div>
+
+
+    </div>
+    <div class="form-group">
+        <div id="createProposal" class="accordion accordion-no-gutter accordion-bordered">
+            <div class="accordion__item" id="dv_accordian_customerDetails">
+                <div class="accordion__header collapsed style_two" data-toggle="collapse" data-target="#bordered_no-gutter_collapseOne">
+                    <span class="accordion__header--text">
+                        Customer Details
+                    </span>
+                    <span class="accordion__header--indicator"></span>
+                </div>
+                <div id="bordered_no-gutter_collapseOne" class="collapse accordion__body show customerDetails_Existing" data-parent="#createProposal">
+                    <div class="accordion__body--text">
+                        <table class="responsive-table">
+                            <thead>
+                                <tr>
+                                    <th>Customer Name</th>
+                                    <th>Client ID</th>
+                                    <th>Proposal Number</th>
+                                    <th>RAROC (%)</th>
+                                    <th>APR PFY (In Lacs)</th>
+                                    <th>APR YTD (In Lacs)</th>
+                                    <th>CTI (%)</th>
+                                    <th>Vintage (In Years)</th>
+                                    @*<th>PSL Classification</th>*@
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><label id="lbl_Customer_Name"></label></td>
+                                    <td><label id="lbl_clientsIdAP"></label></td>
+                                    <td><label id="lbl_ProposalNo"></label></td>
+                                    <td><label id="lbl_RAROC"></label></td>
+                                    <td><label id="lbl_APR_PFY"></label></td>
+                                    <td><label id="lbl_APR_YTD"></label></td>
+                                    <td><label id="lbl_AP_CTI"></label></td>
+                                    <td><label id="lbl_Vintage"></label></td>
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="accordion__item" id="accordian_firsttimeborrower" style="display:none">
+                <div class="accordion__header collapsed style_two">
+                    <span class="accordion__header--text">
+                        First Time Borrower
+                        <div class="custom_radio">
+                            <input type="radio" id="rbl_FTByes" value="1" name="IsFTB"><label for="rbl_FTByes">Yes</label>
+                            <input type="radio" id="rbl_FTBno" value="0" name="IsFTB" checked><label for="rbl_FTBno">No</label>
+                        </div>
+
+                    </span>
+
+                </div>
+
+            </div>
+            <div class="accordion__item" id="dv_accordianPsl">
+                <div class="accordion__header collapsed style_two" id="psl_accordian_header" data-toggle="collapse" data-target="#bordered_no-gutter_collapseTwo">
+                    <span class="accordion__header--text">
+                        PSL
+                        <div class="custom_radio">
+                            @*@Html.RadioButton("PSL", "Yes", false)<label for="Yes">Yes</label>
+                            @Html.RadioButton("PSL", "No", false)<label for="No">No</label>*@
+
+                            <input type="radio" id="rbl_yes" value="1" name="PSL"><label for="rbl_yes">Yes</label>
+                            <input type="radio" id="rbl_no" value="0" name="PSL" checked><label for="rbl_no">No</label>
+
+                        </div>
+                    </span>
+                    <span class="accordion__header--indicator style_two" data-toggle="collapse" data-target="#bordered_no-gutter_collapseTwo"></span>
+                </div>
+                <div id="bordered_no-gutter_collapseTwo" class="psl_show collapse accordion__body show" data-parent="#createProposal">
+                    <div class="accordion__body--text" id="psl_details">
+                        <div class="custom_radio form-group" style="display: block;    margin-left: 0;">
+                            <input type="radio" id="rbl_Micro" value="Micro" name="PSL_Type" checked><label for="rbl_Micro">Micro</label>
+                            <input type="radio" id="rbl_Small" value="Small" name="PSL_Type"><label for="rbl_Small">Small</label>
+                            <input type="radio" id="rbl_Medium" value="Medium" name="PSL_Type"><label for="rbl_Medium">Medium</label>
+                            <input type="radio" id="rbl_Agri" value="Agri" name="PSL_Type"><label for="rbl_Agri">Agri</label>
+                        </div>
+                        <label style="color: #000000;font-weight: 600;font-size: 14px;">Weaker Section</label>
+                        <div class="custom_radio">
+                            <input type="radio" id="rbl_WeakerSection_yes" value="1" name="WeakerSection"><label for="rbl_WeakerSection_yes">Yes</label>
+                            <input type="radio" id="rbl_WeakerSection_no" value="0" name="WeakerSection" checked><label for="rbl_WeakerSection_no">No</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion__item" id="accordian_LimitDetails" style="display:none;">
+                <div class="accordion__header collapsed style_two" data-toggle="collapse" data-target="#bordered_no-gutter_collapseThree">
+                    <span class="accordion__header--text">Limit Details</span>
+                    <span class="accordion__header--indicator"></span>
+                </div>
+                <div id="bordered_no-gutter_collapseThree" class="collapse accordion__body" data-parent="#createProposal">
+                    <div class="accordion__body--text" style="padding:0;">
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion__item">
+                <div class="accordion__header collapsed style_two" data-toggle="collapse" data-target="#bordered_no-gutter_collapseFour">
+                    <span class="accordion__header--text">Facility Details</span>
+                    <span class="accordion__header--indicator"></span>
+                </div>
+                <div id="bordered_no-gutter_collapseFour" class="collapse accordion__body ExistingFacilityDetails" data-parent="#createProposal">
+                    <div class="accordion__body--text" style="padding:0;">
+
+                        <table id="tbl_FacilityDetails" class="table table-borderless table-striped proposal-table dynamic-control-grid">
+                            <thead>
+                                <tr>
+                                    <td></td>
+                                    <td colspan="2">Amount in lac</td>
+                                    <td colspan="2">ROI / Commission (%) </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <th>Facility</th>
+                                    <th>Existing</th>
+                                    <th>Proposed</th>
+                                    <th>Existing</th>
+                                    <th>Proposed</th>
+                                    <th>Instruction</th>
+                                    <th>Upload</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+
+                        </table>
+                        <div class="col-md-12 form-group">
+                            <input type="button" id="btnFacilityDetails" class="dynamic-control-add" value="Add" />
+                        </div>
+
+                        @*<div class="fileUpload blue-btn btn width100">
+                        <span class="file-name"><i class="icon-cloud-upload"></i></span>
+                        <input type="file" class="uploadlogo" />
+                        </div>*@
+
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion__item">
+                <div class="accordion__header collapsed style_two" data-toggle="collapse" data-target="#bordered_no-gutter_collapseFive">
+                    <span class="accordion__header--text">Other Charges</span>
+                    <span class="accordion__header--indicator"></span>
+                </div>
+                <div id="bordered_no-gutter_collapseFive" class="collapse accordion__body other_charges" data-parent="#createProposal">
+                    <div class="accordion__body--text" style="padding:0;">
+                        <table id="tbl_OtherCharges" class="table table-borderless table-striped proposal-table">
+                            <thead>
+                                <tr>
+                                    <th>Charges Type</th>
+                                    <th>Existing</th>
+                                    <th>Proposed </th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                        <div class="col-md-12 form-group">
+                            <input type="button" id="btnAddCharges" class="dynamic-control-add" value="Add" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @*<div class="accordion__item">
+            <div class="accordion__header">
+            <span class="accordion__header--text">Exporter / Importer</span>
+            <div class="custom_radio">
+            <input type="radio" id="rbl_ExporterYes" name="IsExporter" value="1" checked><label for="rbl_ExporterYes">Yes</label>
+            <input type="radio" id="rbl_ExporterNo" name="IsExporter" value="0"><label for="rbl_ExporterNo">No</label>
+            </div>
+            <span class="accordion__header--indicator collapsed style_two" data-toggle="collapse" data-target="#bordered_no-gutter_collapseSix"></span>
+            </div>
+            <div id="bordered_no-gutter_collapseSix" class="collapse accordion__body" data-parent="#createProposal">
+            <div class="accordion__body--text" id="import_export_body">
+            <div class="col-md-12 form-group">
+            <div class="custom_radio form-group" style="display: block;    margin-left: 0;">
+            <input type="radio" id="rbl_Exporter" name="rblExporter" value="Exporter" checked><label for="rbl_Exporter">Exporter</label>
+            <input type="radio" id="rbl_Importer" name="rblExporter" value="Importer"><label for="rbl_Importer">Importer</label>
+            <input type="radio" id="rbl_Both" name="rblExporter" value="Both"><label for="rbl_Both">Both</label>
+            </div>
+            </div>
+            <div class="col-md-3 form-group">
+            <lable class="label-control">IEC No</lable>
+            <input type="text" id="txt_IEC_No" class="form-control custom-form-control" />
+            </div>
+            <div class="col-md-12">
+            <table class="table table-striped table-bordered">
+            <tr>
+            <th>Avg Import Volume</th>
+            <th>Overdue IDPMS</th>
+            <th>Overdue EDPMS</th>
+            <th>MTT Transactions</th>
+            </tr>
+            <tr>
+            <td>
+            <input type="text" class="form-control custom-form-control" id="txt_Avg_Import_Volume" placeholder="Enter" />
+            </td>
+            <td>
+            <input type="text" class="form-control custom-form-control" id="txt_Overdue_IDPMS" placeholder="Enter" />
+            </td>
+            <td>
+            <input type="text" class="form-control custom-form-control" id="txt_Overdue_EDPMS" placeholder="Enter" />
+            </td>
+            <td>
+            <input type="text" class="form-control custom-form-control" id="txt_MTT_Transactions" placeholder="Enter" />
+            </td>
+            </tr>
+            </table>
+            </div>
+            </div>
+            </div>
+            </div>*@
+            <div class="accordion__item">
+                <div class="accordion__header collapsed style_two" data-toggle="collapse" data-target="#bordered_no-gutter_collapseSeven">
+                    <span class="accordion__header--text">Collateral Details</span>
+                    <span class="accordion__header--indicator"></span>
+                </div>
+                <div id="bordered_no-gutter_collapseSeven" class="collapse accordion__body collateralDetails" data-parent="#createProposal">
+                    <div class="accordion__body--text">
+
+                        <div class="col-md-12 form-group">
+                            <table class="table table-striped table-bordered" id="tbl_ipCollateral">
+                                <thead>
+                                    <tr>
+                                        <th>Security Type</th>
+                                        <th>Security Description / Address</th>
+                                        <th>Security Owner</th>
+                                        <th>Security Value (In Lacs)</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+
+                        </div>
+                        <div class="col-md-12 form-group">
+                            <input type="button" id="btnAddCollateral" class="dynamic-control-add" value="Add" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="accordion__item" id="accordian_multiplebanking">
+                <div class="accordion__header collapsed style_two" data-toggle="collapse" data-target="#bordered_no-gutter_collapseEight">
+                    <span class="accordion__header--text">multiple Banking</span>
+                    <div class="custom_radio">
+                        <input type="radio" id="rbl_MultiplebankingYes" value="1" name="Multiple_Banking"><label for="rbl_MultiplebankingYes">Yes</label>
+                        <input type="radio" id="rbl_MultiplebankingNo" value="0" name="Multiple_Banking" checked><label for="rbl_MultiplebankingNo">No</label>
+                    </div>
+                    <span class="accordion__header--indicator"></span>
+                </div>
+                <div id="bordered_no-gutter_collapseEight" class="collapse accordion__body multiple_Banking" data-parent="#createProposal">
+                    <div class="accordion__body--text" id="multiple_banking_body">
+                        @*<div class="row">
+                        <div class="col-md-3 form-group">
+                        <lable class="label-control">Facility Type</lable>
+                        <select id="drp_facility_type" class="form-control custom-form-control"></select>
+                        </div>
+                        </div>*@
+                        <div class="row">
+                            <div class="col-md-12 form-group">
+                                <table class="table table-striped table-bordered" id="tbl_MultipleBanking">
+                                    <thead>
+                                        <tr>
+                                            <th>Facility Type</th>
+                                            <th>Bank Name</th>
+                                            <th>Sanctioned (lac)</th>
+                                            <th>Outstanding(lac)</th>
+                                            <th>ROI(%)</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+
+                                    @*<tr>
+                                    <td>
+                                    <label>HDFC Bank</label>
+                                    <select class="form-control custom-form-control">
+                                    <option>select</option>
+                                    </select>
+                                    </td>
+                                    <td>
+                                    <label>3 Lacks</label>
+                                    <input type="text" class="form-control custom-form-control" placeholder="Enter" />
+                                    </td>
+                                    <td>
+                                    <label>2 Lacks</label>
+                                    <input type="text" class="form-control custom-form-control" placeholder="Enter" />
+                                    </td>
+                                    <td>
+                                    <label>11%</label>
+                                    <input type="text" class="form-control custom-form-control" placeholder="Enter" />
+                                    </td>
+                                    </tr>*@
+                                </table>
+
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12 form-group">
+                                <input type="button" id="BtnAddBanking" value="Add" class="dynamic-control-add" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="accordion__item">
+                <div class="accordion__header collapsed style_two" data-toggle="collapse" data-target="#bordered_no-gutter_collapseNine">
+                    <span class="accordion__header--text">promoters, their family tree and group company</span>
+                    <span class="accordion__header--indicator"></span>
+                </div>
+                <div id="bordered_no-gutter_collapseNine" class="collapse accordion__body promotersDetails" data-parent="#createProposal">
+                    <div class="accordion__body--text">
+                        <div class="col-md-12 form-group">
+                            <label class="label-promoters">Primary Promoters</label>
+                            <table class="table table-striped table-bordered" id="tbl_Promoters">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Type</th>
+                                        <th>Acount With Us</th>
+                                        <th>Account No</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                        <div class="col-md-12 form-group">
+                            <input type="button" value="Add" id="BtnAddPromoters" class="dynamic-control-add" />
+                        </div>
+                        @*<div class="col-md-12 form-group">
+                        <button type="button" class="btn btn-primary" style="width:16%;" id="btn_AddCustomers">Add Customers</button>
+                        <br />
+                        </div>*@
+                        <div id="customers_Section">
+                            <div class="col-md-12 form-group">
+                                <label class="label-promoters">Relative Promoters</label>
+                                <table class="table table-striped table-bordered" id="tbl_customers">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Relationship</th>
+                                            <th>Relationship With</th>
+                                            @*<th>Type of Customer</th>*@
+                                            <th>Account</th>
+                                            <th>Account Number</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                            <div class="col-md-12 form-group">
+                                <input type="button" value="Add" id="BtnAddCustomers" class="dynamic-control-add" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="accordion__item" id="divResponseHistory" style="display:none">
+                <div class="accordion__header collapsed style_two" data-toggle="collapse" data-target="#bordered_no-gutter_collapseTen">
+                    <span class="accordion__header--text">Response History</span>
+                    <span class="accordion__header--indicator"></span>
+                </div>
+                <div id="bordered_no-gutter_collapseTen" class="collapse accordion__body" data-parent="#createProposal">
+                    <div class="accordion__body--text" style="padding:0;">
+
+                        <table id="tbl_ResponseHistory" class="table table-striped table-bordered"></table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="accordion__item">
+        <div class="accordion__header collapsed style_two">
+            <span class="accordion__header--text">Credit Protect Waived</span>
+            <div class="custom_radio">
+                <input type="radio" id="rbl_cpw_yes" value="1" name="CPW" checked><label for="rbl_cpw_yes">Yes</label>
+                <input type="radio" id="rbl_cpw_no" value="0" name="CPW"><label for="rbl_cpw_no">No</label>
+            </div>
+        </div>
+    </div>
+    <div class="row form-group">
+        <div class="col-md-8">
+            <label class="label-control" style="font-size:12px;">Justification</label>
+            @*<input type="text" id="txt_justification" class="form-control custom-form-control" placeholder="Enter" />*@
+            <textarea id="txt_justification" rows="5" class="form-control custom-form-control" placeholder="Enter.."></textarea>
+        </div>
+    </div>
+    <div class="row form-group">
+        <div class="col-md-8" id="divComments" style="display:none">
+            <label class="label-control">Comments</label>
+            <input type="text" id="txt_comments" class="form-control custom-form-control" readonly />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <label style="font-size:15px;" class="label-control">Recipient</label>
+        </div>
+    </div>
+    <div class="row form-group">
+        <div class="col-md-3">
+            <div class="form-group">
+                @*<input id="chk_level1" type="checkbox" checked />*@
+                <label class="label-control" style="display:inline-block">Cluster Head (L1)</label>
+                <select class="form-control custom-form-control" id="DropDown_Level1" multiple></select>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="form-group">
+                @*<input id="chk_level2" type="checkbox" value="" />*@
+                <label class="label-control" style="display:inline-block">Circle Head (L2)</label>
+                <select class="form-control custom-form-control" id="DropDown_Level2" multiple></select>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                @*<input id="chk_level3" type="checkbox" value="" />*@
+                <label class="label-control" style="display:inline-block">State Head (L3)</label>
+                <select class="form-control custom-form-control" id="DropDown_Level3" multiple></select>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                @*<input id="chk_level4" type="checkbox" value="" />*@
+                <label class="label-control" style="display:inline-block">Regional Head (L4)</label>
+                <select class="form-control custom-form-control" id="DropDown_Level4" multiple></select>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                @*<input id="chk_level5" type="checkbox" value="" />*@
+                <label class="label-control" style="display:inline-block">Zonal Head (L5)</label>
+                <select class="form-control custom-form-control" id="DropDown_Level5" multiple></select>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                @*<input id="chk_level6" type="checkbox" value="" />*@
+                <label class="label-control" style="display:inline-block">National Head (L6)</label>
+                <select class="form-control custom-form-control" id="DropDown_Level6" multiple></select>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                @*<input id="chk_level6" type="checkbox" value="" />*@
+                <label class="label-control" style="display:inline-block">Business Head (L7)</label>
+                <select class="form-control custom-form-control" id="DropDown_Level7" multiple></select>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label class="label-control" style="display:inline-block">Group Head (L8)</label>
+                <select class="form-control custom-form-control" id="DropDown_Level8" multiple></select>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="divAssetPricingView" style="display:none">
+    @************************************@
+    <div class="row">
+        <div class="col-md-10">
+            <h6 id="AlertMessage" style="color:red;display:none;font-weight: 700;">*Please re-validate</h6>
+        </div>
+        <div class="col-md-2">
+            <button id="btn_DownloadApproved" style="float:right;display:none;border: 0;background: transparent;"><i class="fa fa-download" aria-hidden="true" style="vertical-align: middle;color: #1c34b1; font-size:23px;"></i></button>
+        </div>
+    </div>
+    <div id="assetPricingViewForm" class="assetPricingViewForm">
+        @{
+            Html.RenderPartial("../Commercials/_AssetPricingView");
+        }
+    </div>
+
+
+</div>
+
+
+
+<div class="row">
+    @if (@Accessor.HttpContext.Session.GetString("UserRole") == "Relationship Manager")
+    {
+        <div class="col-md-3" style="margin-top: 15px;">
+            <button class="btn btn-primary" id="btn_Add_AssetPricing">Submit</button>
+        </div>
+    }
+    else
+    {
+        @*@if ((@Accessor.HttpContext.Session.GetString("UserRole") == "Cluster Head") && (@Accessor.HttpContext.Session.GetString("AssetProposalStatus") == "Rejected" || @Accessor.HttpContext.Session.GetString("AssetProposalStatus") == "Sent Back"))
+    {
+    <div class="col-md-3" style="margin-top: 15px;">
+    <button class="btn btn-primary" id="btn_Add_AssetPricing">Submit</button>
+    </div>
+    }*@
+        <div class="col-md-6" style="margin-top: 15px;">
+            <button class="btn btn-success" id="btn_approve" data-toggle="modal" data-target="#ApproveModal">Approve</button>
+            <button class="btn btn-warning" id="btn_sendback" data-toggle="modal" data-target="#SendBackModal">Send Back</button>
+            <button class="btn btn-danger" id="btn_reject" data-toggle="modal" data-target="#RejectModal">Reject</button>
+        </div>
+
+    }
+</div>
+
+
+
+
+<script src="~/js/jquery.min.js"></script>
+<script src="~/js/dataTable.min.js"></script>
+
+
+
+@*<script src="~/js/choosen.min.js"></script>
+    <script src="~/js/chosen.jquery.js"></script>
+    <script src="~/js/AssetPricing.js"></script>*@

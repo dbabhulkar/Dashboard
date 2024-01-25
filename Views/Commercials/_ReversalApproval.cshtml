@@ -1,0 +1,371 @@
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor Accessor
+
+<div class="row form-group">
+    <div class="col-md-4">
+        <label class="label-control">Proposal No.</label>
+        <input type="text" id="ReversalApproval_txtProposalNo" onkeypress="return isNumberOnlyKey(event)" class="form-control custom-form-control" />
+        <p id="ProposalNoMaxLen" style="display:none;color:red" class="label-control">Maximum 12 characters allowed</p>
+
+        <input type="text" hidden id="Reversal_status" />
+
+    </div>
+    <div class="col-md-1">
+        <button id="btn_fetchProposalNo" class="btn btn-primary btn-fetch"><i class="fa fa-chevron-right"></i></button>
+    </div>
+
+</div>
+<div class="row form-group">
+    <div id="reversalproposal" class="accordion accordion-no-gutter accordion-bordered">
+        <div class="accordion__item">
+            <div class="accordion__header collapsed style_two" data-toggle="collapse" data-target="#bordered_no-gutter_collapseOne">
+                <span class="accordion__header--text">
+                    Customer Details
+                </span>
+                <span class="accordion__header--indicator"></span>
+            </div>
+            <div id="bordered_no-gutter_collapseOne" class="collapse accordion__body show reversalCustomerDetails" data-parent="#reversalproposal">
+                <div class="accordion__body--text">
+                    <div class="row form-group">
+                        <div class="col-md-12">
+                            <div class="table-outer">
+                                <table class="responsive-table">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Customer Name</th>
+                                            <th scope="col">Client ID</th>
+                                            <th scope="col">Vintage (In Years)</th>
+                                            <th scope="col">RAROC (%)</th>
+                                            <th scope="col">APR PFY (In Lacs)</th>
+                                            <th scope="col">APR YTD (In Lacs)</th>
+                                            <th scope="col">CTI (%)</th>
+                                            <th scope="col">Limit (In Lacs)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td data-label="CustomerName"><label id="lbl_CustomerName"></label></td>
+                                            <td data-label="Client ID"><label id="lbl_ClientId"></label></td>
+                                            <td data-label="Vintage"><label id="lblVintage"></label></td>
+                                            <td data-label="RAROC"><label id="lblRAROC"></label></td>
+                                            <td data-label="APR PFY"><label id="lbl_APRPFY"></label></td>
+                                            <td data-label="APR YTD"><label id="lbl_APRYTD"></label></td>
+                                            <td data-label="CTI"><label id="lbl_CTI"></label></td>
+                                            <td data-label="Limit"><label id="lbl_Limit"></label></td>
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion__item">
+            <div class="accordion__header collapsed style_two" data-toggle="collapse" data-target="#bordered_no-gutter_collapseTwo">
+                <span class="accordion__header--text">
+                    Facility Details
+                </span>
+                <span class="accordion__header--indicator style_two"></span>
+            </div>
+            <div id="bordered_no-gutter_collapseTwo" class="collapse accordion__body reversalFacilityDetails" data-parent="#reversalproposal">
+                <div class="accordion__body--text">
+                    <div class="row form-group">
+                        <div class="col-md-8">
+                            <div class="table-outer">
+                                <table id="table_ReversalFacililty" class="responsive-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Facility Details</th>
+                                            <th>Amount in Lacs</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+
+                                </table>
+
+                                @*<table class="responsive-table" id="TBL_ReversalFacililty">
+                                <thead>
+                                <tr>
+                                <th>Facility Details</th>
+                                <th>Amount in Lacs</th>
+                                <th></th>
+                                </tr>
+                                </thead>
+                                <tbody></tbody>
+                                </table>*@
+                            </div>
+                        </div>
+                        <div class="col-md-12 form-group">
+                            <input type="button" id="btnAddNewReversalFacility" class="dynamic-control-add" style="margin-top:15px;" value="Add" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion__item">
+            <div class="accordion__header collapsed style_two" data-toggle="collapse" data-target="#bordered_no-gutter_collapseThree">
+                <span class="accordion__header--text">
+                    Reversal Details
+                </span>
+                <span class="accordion__header--indicator style_two"></span>
+            </div>
+            <div id="bordered_no-gutter_collapseThree" class="collapse accordion__body reversalDetails" data-parent="#reversalproposal">
+                <div class="accordion__body--text">
+                    <div class="row form-group">
+                        <div class="col-md-8">
+                            <div class="table-outer">
+                                <table class="responsive-table" id="Tbl_ReversalDetails">
+                                    <thead>
+                                        <tr>
+                                            <th>Nature of Reversal</th>
+                                            <th>Amount of Reversal</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <input type="button" id="btn_addReversalDetails" style="margin-top:15px;" class="dynamic-control-add" value="+ Add" />
+                        </div>
+                        <div class="row">
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion__item">
+            <div class="accordion__header collapsed style_two" data-toggle="collapse" data-target="#bordered_no-gutter_collapseFour">
+                <span class="accordion__header--text">
+                    Reversal amount breakdown
+                </span>
+                <span class="accordion__header--indicator"></span>
+            </div>
+            <div id="bordered_no-gutter_collapseFour" class="collapse accordion__body reversalBreakdownDetails" data-parent="#reversalproposal">
+                <div class="accordion__body--text">
+                    <div class="row form-group">
+                        <div class="col-md-12">
+                            <div class="table-outer">
+                                <table class="responsive-table" id="Tbl_ReversalAmtBreakdown">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Limits o/s</th>
+                                            <th scope="col">From Date</th>
+                                            <th scope="col">To Date</th>
+                                            <th scope="col">No of Days</th>
+                                            <th scope="col">Penal Interest</th>
+                                            <th scope="col">Penal Amount</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            @*<td data-label="Limits o/s">
+                                            <input type="text" class="form-control custom-form-control" />
+                                            </td>
+                                            <td data-label="From Date">
+                                            <div class="input-group">
+                                            <input type="text" id="dt_fromdate"  required class="form-control custom-form-control date">
+                                            <div class="input-group-addon">
+                                            <span class="icon-calendar"></span>
+                                            </div>
+                                            </div>
+                                            </td>
+                                            <td data-label="To Date">
+                                            <div class="input-group date" data-provide="datepicker">
+                                            <input type="text" id="dt_todate" required class="form-control custom-form-control">
+                                            <div class="input-group-addon">
+                                            <span class="icon-calendar"></span>
+                                            </div>
+                                            </div>
+                                            </td>
+                                            <td data-label="No of Days">
+                                            <input type="text" class="form-control custom-form-control"/>
+                                            </td>
+                                            <td data-label="Actual Int">
+                                            <input type="text" class="form-control custom-form-control" />
+                                            </td>
+                                            <td data-label="Penal Int Amt"></td>*@
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <input type="button" id="btn_addReversalAmtBreakdown" style="margin-top:15px;" class="dynamic-control-add" value="+ Add" />
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row form-group">
+    <div class="col-md-8">
+        <label class="label-control">Justification</label>
+        <textarea id="txt_ReversalJustification" rows="5" class="form-control custom-form-control" placeholder="Enter.."></textarea>
+        @*<input id="txt_ReversalJustification" class="form-control custom-form-control" />*@
+        <input type="text" id="ReversalAppoval_CustomerId" hidden />
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-8" id="divCommentsReversal" style="display:none">
+        <label class="label-control">Comments</label>
+        <input id="txt_ReversalComments" class="form-control custom-form-control" readonly />
+    </div>
+</div>
+<br />
+<div class="row">
+    <div class="col-md-3">
+        <label class="label-control">Recipient</label>
+    </div>
+</div>
+<div class="row form-group">
+    <div class="col-md-3">
+        <div class="form-group">
+
+            <label class="label-control" style="display:inline-block">Cluster Head (L1)</label>
+            <select class="form-control custom-form-control" id="DropDown_Reversal_Level1" multiple></select>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="form-group">
+            <label class="label-control" style="display:inline-block">Circle Head (L2)</label>
+            <select class="form-control custom-form-control" id="DropDown_Reversal_Level2" multiple></select>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="form-group">
+            <label class="label-control" style="display:inline-block">State Head (L3)</label>
+            <select class="form-control custom-form-control" id="DropDown_Reversal_Level3" multiple></select>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="form-group">
+            <label class="label-control" style="display:inline-block">Regional Head (L4)</label>
+            <select class="form-control custom-form-control" id="DropDown_Reversal_Level4" multiple></select>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="form-group">
+            <label class="label-control" style="display:inline-block">Zonal Head (L5)</label>
+            <select class="form-control custom-form-control" id="DropDown_Reversal_Level5" multiple></select>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="form-group">
+            <label class="label-control" style="display:inline-block">Business Head (L6)</label>
+            <select class="form-control custom-form-control" id="DropDown_Reversal_Level6" multiple></select>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="form-group">
+            <label class="label-control" style="display:inline-block">Group Head (L7)</label>
+            <select class="form-control custom-form-control" id="DropDown_Reversal_Level7" multiple></select>
+        </div>
+    </div>
+</div>
+<div class="row">
+
+    @if (@Accessor.HttpContext.Session.GetString("UserRole") == "Relationship Manager")
+    {
+        <div class="col-md-3" style="margin-top: 15px;">
+            <button class="btn btn-primary" id="btn_reversal_submit">Submit</button>
+        </div>
+    }
+    else
+    {
+        <div class="col-md-6" style="margin-top: 15px;">
+            <button class="btn btn-success" id="btn_approveReversal" data-toggle="modal" data-target="#ApproveModalReversal">Approve</button>
+            <button class="btn btn-warning" id="btn_sendbackReversal" data-toggle="modal" data-target="#SendBackModalReversal">Send Back</button>
+            <button class="btn btn-danger" id="btn_RejectReversal" data-toggle="modal" data-target="#RejectModalReversal">Reject</button>
+        </div>
+
+    }
+</div>
+<div class="modal fade" id="ApproveModalReversal" tabindex="-1" aria-labelledby="ApproveModalReversal" aria-hidden="true">
+    <div class="modal-dialog modal-sm" style="max-width: 610px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Add Approve Remark</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="label-control">Remark</label>
+                    <textarea class="form-control" id="txt_approve_remark_reversal" required rows="5"></textarea>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" id="BtnApproveReversal" class="btn btn-info">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="RejectModalReversal" tabindex="-1" aria-labelledby="RejectModalReversal" aria-hidden="true">
+    <div class="modal-dialog modal-sm" style="max-width: 610px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Add Reject Remark</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="label-control">Remark</label>
+                    <textarea class="form-control" id="txt_reject_remark_reversal" required rows="5"></textarea>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" id="BtnRejectReversal" class="btn btn-info">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="SendBackModalReversal" tabindex="-1" aria-labelledby="SendBackModalReversal" aria-hidden="true">
+    <div class="modal-dialog modal-sm" style="max-width: 610px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Add Send Back Remark</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="label-control">Remark</label>
+                    <textarea class="form-control" id="txt_sendback_remark_reversal" required rows="5"></textarea>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" id="BtnSendBackReversal" class="btn btn-info">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+@*<script src="~/js/jquery.min.js"></script>
+<script src="~/js/choosen.min.js"></script>
+<script src="~/js/chosen.jquery.js"></script>
+<script src="~/js/ReversalApproval.js"></script>*@
+
+
+

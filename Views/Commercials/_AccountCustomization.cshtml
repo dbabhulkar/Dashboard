@@ -1,0 +1,360 @@
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor Accessor
+
+<div class="row form-group">
+    <div class="col-md-3">
+        <lable class="label-control">APR Code</lable>
+
+        <input type="text" hidden id="AccountPricing_status" />
+
+        @*<input type="text" id="txt_APRCode" onkeypress='return isNumberOnlyKey(event)' class="form-control custom-form-control" placeholder="Enter" />*@
+
+        <input type="text" id="txt_APRCode" class="form-control custom-form-control" placeholder="Enter" />
+
+    </div>
+    <div class="col-md-1 mt-20">
+        <button id="btn_APR_Details" class="btn btn-primary btn-fetch"><i class="fa fa-chevron-right"></i></button>
+    </div>
+    <div class="col-md-2">
+        <lable class="label-control">PFY APR</lable>
+        <input type="text" class="form-control custom-form-control" disabled id="txt_PFY" />
+
+    </div>
+    <div class="col-md-3">
+        <lable class="label-control">YTD APR</lable>
+        <input type="text" class="form-control custom-form-control" disabled id="txt_YTD" />
+    </div>
+    <div class="col-md-3">
+        <lable class="label-control">Client ID</lable>
+        <input type="text" class="form-control custom-form-control" id="txt_ClientId_AC" />
+    </div>
+</div>
+<div class="row form-group">
+    <div class="col-md-3">
+        <lable class="label-control">Customer Name</lable>
+        <input type="text" id="txt_AC_CustomerName" class="form-control custom-form-control" placeholder="Enter" />
+
+    </div>
+
+    <div class="col-md-3">
+        <lable class="label-control">Account number</lable>
+        <input type="text" id="txt_AC_AccountNo" maxlength="16" onkeypress='return isNumberOnlyKey(event)' class="form-control custom-form-control" placeholder="Enter" />
+        <input type="hidden" id="AccountCustomization_CustomerId" />
+        <input type="hidden" id="createdById" />
+    </div>
+    <div class="col-md-3">
+        <lable class="label-control">Product Code</lable>
+        <input type="text" id="txt_ProductCode" onkeypress="return blockSpecialChar(event)" class="form-control custom-form-control" placeholder="Enter" />
+    </div>
+
+</div>
+
+<div class="row form-group">
+    <div id="accountcustomization" class="accordion accordion-no-gutter accordion-bordered">
+        <div class="accordion__item">
+            <div class="accordion__header collapsed style_two" data-toggle="collapse" data-target="#bordered_no-gutter_collapseOne">
+                <span class="accordion__header--text">
+                    WAIVER Details
+                </span>
+                <span class="accordion__header--indicator"></span>
+            </div>
+            <div id="bordered_no-gutter_collapseOne" class="collapse accordion__body show" data-parent="#accountcustomization">
+                <div class="accordion__body--text">
+                    <div class="row form-group">
+                        <div class="col-md-12">
+                            <div class="table-outer">
+                                <table class="responsive-table" id="tbl_waiverDetails">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Charge Type</th>
+                                            <th scope="col">Type of waiver</th>
+                                            <th scope="col">Values (In Rs)</th>
+                                            <th scope="col">No. of txn</th>
+                                            <th scope="col">AMB Commitment</th>
+                                            <th>Action</th>
+                                        </tr>
+
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <button id="btnAddWaiver" class="dynamic-control-add">+  Add Waivers</button>
+                        </div>
+                        <div class="col-md-6">
+                            <button class="btn btn-primary" style="float:right;width:13%;padding:3px 0;font-size:14px;" id="btn_save_waiverDetails">Save</button>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-md-12">
+                            <div class="table-outer">
+                                <table class="responsive-table" style="display:none" id="tbl_waiverTemp">
+                                    @*<thead>
+                                    <tr>
+                                    <th scope="col">Customer Name</th>
+                                    <th scope="col">Account No.</th>
+                                    <th scope="col">No. Of Charges</th>
+                                    <th scope="col">Value(in lac(s))</th>
+                                    <th scope="col">Action</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody></tbody>*@
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @*<div class="accordion__item">
+        <div class="accordion__header">
+        <span class="accordion__header--text">
+        ACCOUNT Details
+        </span>
+        <span class="accordion__header--indicator style_two" data-toggle="collapse" data-target="#bordered_no-gutter_collapseTwo"></span>
+        </div>
+        <div id="bordered_no-gutter_collapseTwo" class="collapse accordion__body" data-parent="#accountcustomization">
+        <div class="accordion__body--text">
+        <div class="row form-group">
+        <div class="col-md-12">
+        <div class="table-outer">
+        <table class="responsive-table">
+        <thead>
+        <tr>
+        <th scope="col">Charge type</th>
+        <th scope="col">Type of waiver</th>
+        <th scope="col">Values (In Rs)</th>
+        <th scope="col">No. of txn</th>
+        <th scope="col">AMB Commitment</th>
+        <th scope="col"></th>
+
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+        <td data-label="Charge type">
+        <select class="form-control custom-form-control">
+        <option></option>
+        </select>
+        </td>
+        <td data-label="Type of waiver">
+        <select class="form-control custom-form-control">
+        <option></option>
+        </select>
+        </td>
+        <td data-label="Values (In Rs)"></td>
+        <td data-label="No. of txn"></td>
+        <td data-label="AMB Commitment">NA</td>
+        <td>
+        <i class="fa fa-trash-o icon"></i>
+        </td>
+        </tr>
+        <tr>
+        <td data-label="Charge type">
+        <select class="form-control custom-form-control">
+        <option></option>
+        </select>
+        </td>
+        <td data-label="Type of waiver">
+        <select class="form-control custom-form-control">
+        <option></option>
+        </select>
+        </td>
+        <td data-label="Values (In Rs)"></td>
+        <td data-label="No. of txn"></td>
+        <td data-label="AMB Commitment">NA</td>
+        <td>
+        <i class="fa fa-trash-o icon"></i>
+        </td>
+        </tr>
+        </tbody>
+        </table>
+        </div>
+        </div>
+        </div>
+
+        <div class="row">
+        <div class="col-md-12">
+        <button class="btn btn-dash-primary">+  Add waivers</button>
+        </div>
+        </div>
+        </div>
+        </div>
+        </div>*@
+    </div>
+</div>
+<div class="row form-group" id="divCommentsAccount">
+    <div class="col-md-6">
+        <label class="label-control">Comments</label>
+        <input id="txt_AccountComments" class="form-control custom-form-control" readonly />
+    </div>
+</div>
+
+@*<div class="row form-group">
+        <div class="col-md-3" style="margin-top:1%">
+            <button class="btn btn-dash-primary" id="btn_addwaivers">+  Add waivers</button>
+        </div>
+    </div>*@
+@*<div class="row form-group recipient">
+
+    </div>*@
+
+<div class="row mb-5">
+    <div class="col-md-5">
+        <label class="label-control">Document</label>
+        <div class="fileUpload blue-btn btn width100">
+            <i class="fa fa-upload"></i><div class="file-name"></div>
+            <input type="file" id="documentupload" class="logoUpload" accept=".csv,.xlsx,.xlsm,.xls,.pdf">
+        </div>
+        @*<label  class="label-control">Justification</label>*@
+        @*<a id="txt_document"  class="form-control custom-form-control"></a>*@
+        <input type="text" style="height:20px; font-size:13px" readonly id="txt_document" class="form-control custom-form-control" />
+        <button type="submit" id="doc_download" class="btn_downloads">
+            <i class="fa fa-download"></i>
+        </button>
+    </div>
+
+</div>
+<div class="row form-group">
+    <div class="col-md-8">
+        <label class="label-control" style="font-size:12px;">Justification</label>
+        @*<input type="text" id="txt_justification" class="form-control custom-form-control" placeholder="Enter" />*@
+        <textarea id="txt_justificationAccountCustom" rows="5" class="form-control custom-form-control" placeholder="Enter.."></textarea>
+    </div>
+</div>
+<div class="row form-group">
+    <div class="col-md-3">
+        <div class="form-group">
+            <label class="label-control" style="display:inline-block">Cluster Head (L1)</label>
+            <select class="form-control custom-form-control" id="AC_DropDown_Level1" multiple></select>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="form-group">
+            <label class="label-control" style="display:inline-block">Circle Head (L2)</label>
+            <select class="form-control custom-form-control" id="AC_DropDown_Level2" multiple></select>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="form-group">
+            <label class="label-control" style="display:inline-block">State Head (L3)</label>
+            <select class="form-control custom-form-control" id="AC_DropDown_Level3" multiple></select>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="form-group">
+            <label class="label-control" style="display:inline-block">Regional Head (L4)</label>
+            <select class="form-control custom-form-control" id="AC_DropDown_Level4" multiple></select>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="form-group">
+            <label class="label-control" style="display:inline-block">Zonal Head (L5)</label>
+            <select class="form-control custom-form-control" id="AC_DropDown_Level5" multiple></select>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="form-group">
+            <label class="label-control" style="display:inline-block">Business Head (L6)</label>
+            <select class="form-control custom-form-control" id="AC_DropDown_Level6" multiple></select>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="form-group">
+            <label class="label-control" style="display:inline-block">Group Head (L7)</label>
+            <select class="form-control custom-form-control" id="AC_DropDown_Level7" multiple></select>
+        </div>
+    </div>
+</div>
+<div class="row">
+
+    @if (@Accessor.HttpContext.Session.GetString("UserRole") == "Relationship Manager")
+    {
+        <div class="col-md-3" style="margin-top: 15px;">
+            <button class="btn btn-primary" id="btn_accountsubmit">Submit</button>
+        </div>
+    }
+    else
+    {
+        <div class="col-md-6" style="margin-top: 15px;">
+            <button class="btn btn-success" id="btn_approveAccountCustomisation" data-toggle="modal" data-target="#ApproveModalAccountCustomisation">Approve</button>
+            <button class="btn btn-warning" id="btn_sendbackAccountCustomisation" data-toggle="modal" data-target="#SendBackModalAccountCustomisation">Send Back</button>
+            <button class="btn btn-danger" id="btn_RejectAccountCustomisation" data-toggle="modal" data-target="#RejectModalAccountCustomisation">Reject</button>
+        </div>
+
+    }
+</div>
+
+<div class="modal fade" id="ApproveModalAccountCustomisation" tabindex="-1" aria-labelledby="ApproveModalAccountCustomisation" aria-hidden="true">
+    <div class="modal-dialog modal-sm" style="max-width: 610px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Add Approve Remark</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="label-control">Remark</label>
+                    <textarea class="form-control" id="txt_approve_remark_AccountCustomisation" required rows="5"></textarea>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" id="BtnApproveAccountCustomisation" class="btn btn-info">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="RejectModalAccountCustomisation" tabindex="-1" aria-labelledby="RejectModalAccountCustomisation" aria-hidden="true">
+    <div class="modal-dialog modal-sm" style="max-width: 610px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Add Reject Remark</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="label-control">Remark</label>
+                    <textarea class="form-control" id="txt_reject_remark_AccountCustomisation" required rows="5"></textarea>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" id="BtnRejectAccountCustomisation" class="btn btn-info">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="SendBackModalAccountCustomisation" tabindex="-1" aria-labelledby="SendBackModalAccountCustomisation" aria-hidden="true">
+    <div class="modal-dialog modal-sm" style="max-width: 610px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Add Send Back Remark</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="label-control">Remark</label>
+                    <textarea class="form-control" id="txt_sendback_remark_AccountCustomisation" required rows="5"></textarea>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" id="BtnSendBackAccountCustomisation" class="btn btn-info">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/js/account-customization.js"></script>

@@ -1,49 +1,285 @@
-﻿<!DOCTYPE html>
-<html lang="en">
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor Accessor
+<!DOCTYPE html>
+<html>
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Dashboard</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/Dashboard.styles.css" asp-append-version="true" />
+
+    <link href="~/css/jquery-ui.css" rel="stylesheet" />
+    <link href="~/css/style.css" rel="stylesheet" />
+    <link href="~/css/responsive.css" rel="stylesheet" />
+    <link href="~/css/Gridmvc.css" rel="stylesheet" />
+    <link href="~/css/PagedList.css" rel="stylesheet" />
+    <link href="~/css/sweetalert.min.css" rel="stylesheet" />
+    <link href="~/css/Toaster.css" rel="stylesheet" />
+    <link href="~/css/datepicker3.css" rel="stylesheet" />
+    <link href="~/css/choosen.css" rel="stylesheet" />
+    <link href="~/css/chosen.css" rel="stylesheet" />
+    <link href="~/fonts/font-awesome-4.7.0/css/font-awesome.css" rel="stylesheet" />
+
+
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Dashboard</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
+    <div id="preloader">
+
+        @*<div class="sk-three-bounce">
+        <div class="sk-child sk-bounce1"></div>
+        <div class="sk-child sk-bounce2"></div>
+        <div class="sk-child sk-bounce3"></div>
+        </div>*@
+        <div class="spinner-border text-info" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+    @*<partial name="_SessionExpiry" />*@
+    <div id="main-wrapper">
+
+        <!-- Top Header Start -->
+        <div class="header">
+
+            @{
+                Html.RenderPartial("_TopHeader");
+            }
+
+        </div>
+        <!-- Top Header End -->
+        <!-- Sidebar Start -->
+        @{
+            Html.RenderPartial("_Sidebar");
+        }
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2024 - Dashboard - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+
+
+
+    <div class="content-body" id="js-page-content">
+        <div class="container-fluid">
+            @RenderBody()
+
         </div>
-    </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
+    </div>
+
+
+    <!-- Quick Links Sidebar -->
+
+    <div class="side-wrapper" id="sidebar_quicklinks">
+        <div class="side-content" style="width: 500px;">
+            <div class="modal-header custom-header">
+                <h3 class="sidebar-header">Quick Links</h3>
+                @*<label class="sidebar-header">Create Proposal</label>*@
+                <button class="close-btn" id="close_modal">
+                    <div class="line"></div>
+                    <div class="line"></div>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                @{
+                    Html.RenderPartial("../Home/_QuickLinks");
+                }
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="notification" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content bulletin-content">
+                @*<div class="modal-header bulletin-header">
+                <h5 class="modal-title bulletin-title" id="exampleModalLabel">Urgent Bulletins</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+                </div>*@
+
+                <div class="modal-body bulletin-body">
+                    <ul class="list-unstyled" id="NotificationList"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="quicklink" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog quicklinks_modal" role="document">
+            <div class="modal-content quicklink-content">
+                <div class="modal-body quicklink-body">
+                    <div class="row form-group" style="border-bottom:3px solid #fff;">
+                        <div class="col-md-6 form-group">
+                            <div class="quicklink_right">
+                                <input class="form-control custom-form-control" id="txt_QuickLinkSearch" placeholder="Search Links" style="width: 325px;" />
+                                @if (@Accessor.HttpContext.Session.GetString("CMUserRole") == "Admin")
+                                {
+                                    <button id="btnAddLinkNew" value="Add Link" class="btn btn-primary btnAddLink" style="display:inline-block;width: 88px;font-size: 13px; margin-left: 20px;">Add Link</button>
+                                }
+                                <input type="text" id="UserRoleHidden" value="@Accessor.HttpContext.Session.GetString("CMUserRole")" hidden />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="border-bottom:3px solid #fff;" id="addquicklinks">
+                        <h6>
+                            Add Link
+                        </h6>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <input type="text" id="txtRecordIdnew" hidden />
+                                    <label id="lblNameNew" class="label-control" style="display: inline-block;">Name</label>
+                                    <span style="color: red;display: inline-block;">*</span>
+                                    <input type="text" class="form-control custom-form-control" id="txtNameNew" />
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label id="lblurlLinkNew" class="label-control" style="display:inline-block;">Link</label>
+                                    <span style="color: red; display: inline-block;">*</span>
+                                    <input type="text" class="form-control custom-form-control" id="txturlLinkNew" />
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label id="lbl_frequentlyUsed" class="label-control">Is Frequently Used</label>
+                                    <input type="checkbox" id="IsFrequentlyUsed" name="IsFrequentlyUsed" />
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="button" id="btnSaveLinkNew" value="Save" class="btn btn-outline-primary" />
+                                <input type="button" id="btnDeleteLinkNew" style="visibility:hidden" value="Delete" class="btn btn-outline-danger" />
+                            </div>
+
+                            <div class="col-md-12" style="display:none">
+                                <div class="form-group">
+                                    <label id="lbldescriptionNew" class="label-control">Description</label>
+                                    <input type="text" class="form-control custom-form-control" id="txtDescriptionNew" />
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class=" form-group" id="frequentlyBlock" style="border-bottom:3px solid #fff;display:none" runat="server">
+
+                        <h6>
+                            Frequently Visited
+                        </h6>
+                        <div class="row" id="frequentlyUsedRow" style="min-height: 145px;">
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="AllLinks" style="border-bottom:3px solid #fff;">
+                        <h6>System Links</h6>
+                        <div id="noDataFound"></div>
+                        <div class="row" id="linkRow" style="min-height: 145px;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*
+    <script src="~/lib/jquery/dist/jquery-1.8.3.min.js"></script>*@
+    @*<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>*@
+    <script src="~/js/jquery.min.js"></script>
+    @*<script src="~/js/jquery-1.10.0.min.js"></script>*@
+    <script src="~/js/global.min.js"></script>
+    <script src="~/js/custom.min.js"></script>
+    <script src="~/js/gridmvc.min.js"></script>
+    <script src="~/js/sweetalert.min.js"></script>
+    <script src="~/js/Toaster.js"></script>
+    <script src="~/js/common.js"></script>
+    <script src="~/js/jquery-ui.min.js"></script>
+    <script src="~/js/bootstrap-datepicker.js"></script>
+    <script src="~/js/isotope.pkgd.js"></script>
+    <script src="~/js/accordion.js"></script>
+    <script src="~/js/quickLink.js"></script>
+    <script src="~/js/dataTable.min.js"></script>
+    <script src="~/js/choosen.min.js"></script>
+    <script src="~/js/chosen.jquery.js"></script>
+    <script src="~/js/Chart.bundle.min.js"></script>
+    <script src="~/js/jquery.dataTables.min.js"></script>
+    <script src="~/js/multiselect.min.js"></script>
+
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+        @*debugger;
+                var UserRole = @Accessor.HttpContext.Session.GetString("UserRole");
+                if (UserRole != 'BH' || UserRole != 'Business Head') {
+                $(".btn-edit").css("display", "none");
+                }*@
+                });
+
+        (function ($) {
+            "use strict"
+
+            new quixSettings({
+                typography: "roboto",
+                version: "light",
+                layout: "vertical",
+                headerBg: "color_1",
+                navheaderBg: "color_1",
+                sidebarBg: "color_1",
+                sidebarStyle: "full",
+                sidebarPosition: "fixed",
+                headerPosition: "fixed",
+                containerLayout: "wide",
+                direction: "ltr",
+                extendedTimeOut: 0
+            });
+
+
+        })(jQuery);
+    </script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            toastr.options = {
+                "closeButton": true,
+                "newestOnTop": false,
+                "progressBar": true,
+                "positionClass": "toast-top-right",
+                "preventDuplicates": false,
+                "onclick": null,
+                //"showDuration": "3000",
+                //"hideDuration": "1000",
+                "timeOut": "0",
+                "extendedTimeOut": "0",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+            }
+
+
+            $('.date').datepicker({
+                startDate: new Date(),
+                format: 'dd/mm/yyyy',
+                autoclose: true,
+                todayHighlight: true,
+
+
+            });
+
+            $('.uploadedDate').datepicker({
+                endDate: new Date(),
+                format: 'dd/mm/yyyy',
+                autoclose: true,
+                todayHighlight: true,
+
+
+            });
+        });
+
+
+    </script>
+
+
 </body>
 </html>

@@ -1,0 +1,380 @@
+﻿@{
+    ViewData["Title"] = "Dashboard";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="wrapper">
+    <div class="row form-group">
+        <div class="col-md-12">
+            <div class="dash-card">
+                <h2 class="card-header-title">
+                    To-do List
+                </h2>
+                <div class="card-header-right">
+                    <ul class="to-do-status">
+                        <li>
+                            <div class="idication overdue"></div> Overdue
+                        </li>
+                        <li>
+                            <div class="idication duesoon"></div> Due Soon
+                        </li>
+                        <li>
+                            <div class="idication duelater"></div> Due Later
+                        </li>
+                    </ul>
+
+                    @*@Html.ActionLink("View all", "#", null, null, new { @class = "link" })*@
+                    <a href='@Url.Action("#","#")' class="link">View all <i class="fa fa-chevron-right"></i></a>
+                </div>
+                <div class="dash-card-body">
+                    <div class="cust-table" style="padding: 5%;">
+                        @*<table class="table table-borderless table-hover table-striped form-group">
+                            <tr>
+                                <th></th>
+                                <th>Due On</th>
+                                <th>Item</th>
+                                <th>Action</th>
+                            </tr>
+                            <tr class="overdue-item">
+                                <td><div class="idication overdue"></div></td>
+                                <td>
+                                    <lable class="due-dt">Jan 01</lable>
+                                </td>
+                                <td>
+                                    <lable class="item">Urgent Bulletins(<label id="lbl_count"></label>)</lable>
+                                </td>
+                                <td>
+                                    <button class="link" id="btn_read_bulletin" style="border: none;background-color: transparent;" data-toggle="modal" data-target="#bulletinModal">Read</button>
+
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><div class="idication duesoon"></div></td>
+                                <td>
+                                    <lable class="due-dt">Dec 25</lable>
+                                </td>
+                                <td>
+                                    <lable>This is another item</lable>
+                                </td>
+                                <td>
+                                    @Html.ActionLink("Action Link", "#", null, null, new { @class = "link" })
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><div class="idication duesoon"></div></td>
+                                <td>
+                                    <lable class="due-dt">Dec 22</lable>
+                                </td>
+                                <td>
+                                    <lable>This is another item</lable>
+                                </td>
+                                <td>
+                                    @Html.ActionLink("Action Link", "#", null, null, new { @class = "link" })
+                                </td>
+                            </tr>
+                        </table>
+
+                        <div class="col-md-12 form-group">
+                            <button type="button" class="btn btn-outline-primary" id="new_bulletin">New Bulletin</button>
+                        </div>*@
+
+
+                        <h4>Coming Soon ....</h4>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row form-group">
+        <div class="col-md-12">
+            <div class="dash-card">
+                <div class="row form-group">
+                    <div class="col-md-6">
+                        <h2 class="card-header-title">
+                            Overview
+                        </h2>
+
+                        <ul class="nav nav-tabs overview-tab" role="tablist">
+                            <li class="nav-item overview-item">
+                                <a class="nav-link active overview-active" data-toggle="tab" href="#Segment" id="lnkSegment">Segment</a>
+                            </li>
+                            <li class="nav-item overview-item">
+                                <a class="nav-link" data-toggle="tab" href="#Hub">Hub</a>
+                            </li>
+
+                        </ul>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="input-group">
+
+                                    @*<input type="text" id="month" required class="form-control custom-form-control month" data-provide="datepicker">
+                                    <div class="input-group-addon">
+                                        <span class="icon-arrow-down"></span>
+                                    </div>*@
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="input-group">
+                                    @*<input type="text" id="year" required class="form-control custom-form-control year" data-provide="datepicker">
+                                    <div class="input-group-addon">
+                                        <span class="icon-arrow-down"></span>
+                                    </div>*@
+                                    <input type="text" id="month" required class="form-control custom-form-control month" data-provide="datepicker">
+                                    <div class="input-group-addon">
+                                        <span class="icon-arrow-down"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="Segment" role="tabpanel">
+                        <div class="row form-group">
+                            <div class="col-md-6">
+                                <div class="custom-card">
+                                    <div class="custom-header-title">
+                                        <h2>
+                                            Portfolio
+                                        </h2>
+
+                                    </div>
+                                    @*@using (Html.BeginForm("Portfolio", "CM", FormMethod.Get))
+                                    {
+                                    <button class="btnDot" id="btnPortfolio"> <i class="fa fa-ellipsis-v"></i></button>
+                                    }*@
+                                    <div class="custom-card-body">
+                                        <p style="text-align:center; margin-bottom: 0;margin-top: 10px;" id="pPortfolio">No Records Found</p>
+
+                                        <div class="row" id="dvMainPortfolio">
+                                            <div class="col-md-4">
+                                                <div class="canvas-con">
+                                                    <h6 id="piChartValue"></h6><span>CR</span>
+                                                    <p>Total</p>
+                                                    <div class="canvas-con-inner">
+                                                        <canvas id="portfolio-chart"></canvas>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <div class="table-outer">
+                                                    <table class="table table-borderless table-hover table-striped form-group chart-table" id="tblPortFolio"></table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="custom-card" id="lchuCanv">
+                                    <div class="custom-header-title">
+                                        <h2>
+                                            LCHU
+                                        </h2>
+                                    </div>
+                                    <div class="custom-card-body">
+                                        <p style="text-align:center; margin-bottom: 0;margin-top: 10px;" id="pLCHU">No Records Found</p>
+                                        <div class="row" id="dvMainLCHU">
+                                            <div class="col-md-4">
+                                                <div class="canvas-con">
+                                                    <h6 id="lcuhTotal"></h6><span>CR</span>
+                                                    <p>Total</p>
+                                                    <div class="canvas-con-inner">
+                                                        <canvas id="lchu-chart"></canvas>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <div class="table-outer">
+                                                    <table class="table table-borderless table-hover table-striped table-responsive form-group chart-table" id="tblLUCH"></table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="row form-group">
+                            <div class="col-md-6">
+                                <div class="custom-card" id="delinquencyCanv">
+                                    <div class="custom-header-title">
+                                        <h2>
+                                            Delinquency
+                                        </h2>
+                                        <select class="form-control custom-form-control chart-dropdown" id="delDrop">
+                                            <option value="7P" selected>7+</option>
+                                            <option value="15P">15+</option>
+                                            <option value="30P">30+</option>
+                                            <option value="60P">60+</option>
+                                        </select>
+                                    </div>
+                                    <div class="custom-card-body">
+                                        <p style="text-align:center; margin-bottom: 0;margin-top: 10px;" id="pDelq">No Records Found</p>
+                                        <div class="row" id="dvMainDelq">
+                                            <div class="col-md-4">
+                                                <div class="canvas-con">
+                                                    <h6 id="delinquencyTotal"></h6><span>CR</span>
+                                                    <p>Total</p>
+                                                    <div class="canvas-con-inner">
+                                                        <canvas id="delinquency-chart"></canvas>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <div class="table-outer">
+                                                    <table class="table table-borderless table-hover table-striped table-responsive form-group chart-table" id="tblDelinquency"></table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="custom-card">
+                                    <div class="custom-header-title">
+                                        <h2>
+                                            AUR
+                                        </h2>
+                                    </div>
+                                    <div class="custom-card-body">
+                                        <p style="text-align:center; margin-bottom: 0;margin-top: 10px;" id="pAUR">No Records Found</p>
+                                        <div class="row" id="dvMainAUR">
+                                            <div class="col-md-4">
+                                                <div class="canvas-con">
+                                                    <h6 id="AURTotal"></h6><span>CR</span>
+                                                    <p>Total</p>
+                                                    <div class="canvas-con-inner" id="aurCanv">
+                                                        <canvas id="aur-chart"></canvas>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <div class="table-outer">
+                                                    <table class="table table-borderless table-hover table-striped table-responsive form-group chart-table" id="tblAUR"></table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                    </div>
+                    <div class="tab-pane fade" id="Hub" role="tabpanel">
+                        <div class="row form-group">
+                            <div class="col-md-6">
+                                <div class="custom-card">
+                                    <div class="custom-header-title">
+                                        <h2>
+                                            Portfolio
+                                        </h2>
+                                    </div>
+                                    <div class="custom-card-body" id="portfolioChart">
+                                        <p style="text-align:center; margin-bottom: 0;margin-top: 10px;" id="pHubPort">No Records Found</p>
+                                        <div class="row" id="dvHubMainPort">
+                                            <div class="col-md-12">
+                                                <canvas id="portfolio_hub_chart"></canvas>
+                                                <div id="portfolio_hub_legend" class="legendvalue"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="custom-card">
+                                    <div class="custom-header-title">
+                                        <h2>
+                                            LCHU
+                                        </h2>
+                                    </div>
+                                    <div class="custom-card-body" id="lchuChart">
+                                        <p style="text-align:center; margin-bottom: 0;margin-top: 10px;" id="pHubLCHU">No Records Found</p>
+                                        <div class="row" id="dvHubMainLCHU">
+                                            <div class="col-md-12">
+                                                <canvas id="lchu_hub_chart"></canvas>
+                                                <div id="lchu_hub_legend" class="legendvalue"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row form-group">
+                            <div class="col-md-6">
+                                <div class="custom-card">
+                                    <div class="custom-header-title">
+                                        <h2>
+                                            Delinquency
+                                        </h2>
+
+
+                                    </div>
+                                    <div class="custom-card-body" id="delinquencyChart">
+                                        <p style="text-align:center; margin-bottom: 0;margin-top: 10px;" id="pHubDelq">No Records Found</p>
+                                        <div class="row" id="dvHubMainDelq">
+                                            <div class="col-md-12">
+                                                <canvas id="delinquency_hub_chart"></canvas>
+                                                <div id="delinquency_hub_legend" class="legendvalue"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="custom-card">
+                                    <div class="custom-header-title">
+                                        <h2>
+                                            AUR
+                                        </h2>
+                                    </div>
+                                    <div class="custom-card-body" id="aurChart">
+                                        <p style="text-align:center; margin-bottom: 0;margin-top: 10px;" id="pHubAUR">No Records Found</p>
+                                        <div class="row" id="dvHubMainAUR">
+                                            <div class="col-md-12">
+                                                <canvas id="aur_hub_chart"></canvas>
+                                                <div id="aur_hub_legend" class="legendvalue"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="row form-group">
+        <div class="col-md-12">
+            <h2 class="card-header-title">
+                Housekeeping
+            </h2>
+            <div class="custom-card" id="hkChart">
+                <p style="text-align:center; margin-bottom: 0;margin-top: 10px;" id="pHubHK">No Records Found</p>
+                <div class="custom-card-body" id="dvHKChart">
+                    <canvas id="housekeeping_chart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/js/DasboardJS.js"></script>
+
+

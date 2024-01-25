@@ -61,5 +61,4 @@ namespace Dashboard.Models
             public string Count { get; set; }
             public string Value { get; set; }
         }
-    }
 }

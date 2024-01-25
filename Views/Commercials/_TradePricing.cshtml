@@ -1,0 +1,2559 @@
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor Accessor
+<div class="row form-group">
+    <div class="col-md-12">
+        <div class="custom_radio tradepricingcustomRadio" style="margin-left:0">
+            <input type="radio" id="rbl_ntb" value="0" name="TradePriceType" checked=""><label for="rbl_ntb">NTB</label>
+            <input type="radio" id="rbl_extisting" value="1" name="TradePriceType"><label for="rbl_extisting">Existing</label>
+
+        </div>
+    </div>
+</div>
+
+<div class="row form-group">
+    <div class="col-md-3 rblexisting" style="display:none" id="dv_aprCode">
+        <lable class="label-control">APR Code</lable>
+        <input type="text" id="txt_tradeAprcode" onkeypress='return TradeAPRCodeValidate()' class="form-control custom-form-control" placeholder="Enter" />
+    </div>
+    <div class="col-md-1 mt-20 rblexisting" id="BtnGetCustomerInfo_dv" style="display:none">
+        <button id="BtnGetCustomerInfo" class="btn btn-primary btn-fetch"><i class="fa fa-chevron-right"></i></button>
+    </div>
+    <div class="col-md-3">
+        <lable class="label-control">Customer Name</lable>
+        <input type="text" class="form-control custom-form-control" id="txtCutomerName" placeholder="Enter" />
+        <input type="text" hidden id="TradePricing_CustomerId" />
+        <input type="text" hidden id="TradePricing_status" />
+    </div>
+    <div class="col-md-3">
+        <lable class="label-control">PAN Number</lable>
+        <input type="text" maxlength="16" class="form-control custom-form-control" onkeypress="return blockSpecialChar(event)" id="txtPanNo" placeholder="Enter" />
+
+        @*<input type="text" maxlength="16" class="form-control custom-form-control" style="text-transform:uppercase" onchange='return PanValidation(event)' id="txtPanNo" placeholder="Enter" />*@
+
+    </div>
+
+
+    <div class="col-md-1 mt-20">
+        <button id="BtnSaveTradePricingDetails" class="btn btn-primary btn-fetch"><i class="fa fa-chevron-right"></i></button>
+    </div>
+    @*<div class="col-md-3 rblexisting" style="display:none" id="dv_clientId">
+    <lable class="label-control">Client ID</lable>
+    <input type="text" class="form-control custom-form-control" placeholder="Enter" />
+    </div>*@
+</div>
+
+<div class="row">
+    <div id="tradepricing" class="accordion accordion-no-gutter accordion-bordered">
+        <div class="accordion__item " style="display:none" id="accordian_customerdetails">
+            <div class="accordion__header collapsed style_two" data-toggle="collapse" data-target="#bordered_no-gutter_collapseElevn">
+                <span class="accordion__header--text">
+                    Customer Details
+                </span>
+                <span class="accordion__header--indicator"></span>
+            </div>
+            <div id="bordered_no-gutter_collapseElevn" class="collapse accordion__body show" data-parent="#tradepricing">
+                <div class="accordion__body--text">
+                    <div class="row form-group">
+                        <div class="col-md-12">
+                            <div class="table-outer">
+                                <table class="responsive-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Proposal Number</th>
+                                            <th>Client ID</th>
+                                            <th>APR PFY</th>
+                                            <th>APR YTD</th>
+                                            <th>Vintage</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><label id="lbl_trade_proposalNo"></label></td>
+                                            <td><label id="lbl_trade_clientId"></label></td>
+                                            <td><label id="lbl_trade_APRPFY"></label></td>
+                                            <td><label id="lbl_trade_APRYTD"></label></td>
+                                            <td><label id="lbl_trade_Vintage"></label></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row form-group" style="display:none;">
+                        <div class="col-md-12">
+                            <div class="table-outer">
+                                <table class="responsive-table">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Customer Name</th>
+                                            <th scope="col">Initiated By</th>
+                                            <th scope="col">Sent To</th>
+                                            <th scope="col">Status</th>
+                                            <th scope="col">Date</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td data-label="Customer Name"></td>
+                                            <td data-label="Initiated By"></td>
+                                            <td data-label="Sent To"></td>
+                                            <td data-label="Status"></td>
+                                            <td data-label="Date"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion__item">
+            <div class="accordion__header collapsed style_two" data-toggle="collapse" data-target="#bordered_no-gutter_collapseOne">
+                <span class="accordion__header--text">
+                    Letter of Credit
+                </span>
+                <span class="accordion__header--indicator"></span>
+            </div>
+            <div id="bordered_no-gutter_collapseOne" class="collapse accordion__body show" data-parent="#tradepricing">
+                <div class="accordion__body--text">
+                    <div class="row form-group">
+                        <div class="col-md-12">
+                            <div class="table-outer">
+                                <table id="tbl_TradePricing_LetterOfCredit" class="responsive-table">
+                                    @*<thead>
+                                    <tr>
+                                    <th scope="col">Pricing Category</th>
+                                    <th scope="col">Charges/Commission</th>
+                                    <th scope="col">Standard Pricing</th>
+                                    <th scope="col">Existing Pricing</th>
+                                    <th scope="col">Proposed Pricing</th>
+
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+
+                                    <td data-label="Pricing Category">Letter of Credit FCY issuance (FCY/LCY)</td>
+                                    <td data-label="Charges/Commission">Charges</td>
+                                    <td data-label="Standard Pricing">Documentation charge - 1500 (only for Retail)</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" id="txtLetterOfCreditIssueance_Charges_ExistingPricing" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" id="txtLetterOfCreditIssueance_Charges_ProposedPricing" />
+                                    </td>
+
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Pricing Category">Letter of Credit FCY issuance (FCY/LCY)</td>
+                                    <td data-label="Charges/Commission">SWIFT/Courier</td>
+                                    <td data-label="Standard Pricing">FCY - 2000</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" id="txtLetterOfCreditIssueance_SWIFTCourier_ExistingPricing" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" id="txtLetterOfCreditIssueance_SWIFTCourier_ProposedPricing" />
+                                    </td>
+
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Pricing Category">Letter of Credit FCY amendment (FCY/LCY)</td>
+                                    <td data-label="Charges/Commission">Charges</td>
+                                    <td data-label="Standard Pricing">NIL</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" id="txtLetterOfamendment_Charges_ExistingPricing" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" id="txtLetterOfamendment_Charges_ProposedPricing" />
+                                    </td>
+
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Pricing Category">Letter of Credit FCY amendment (FCY/LCY)</td>
+                                    <td data-label="Charges/Commission">Commission</td>
+                                    <td data-label="Standard Pricing">FEDAI/IBA, min 1500 </td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" id="txtLetterOfamendment_Commission_ExistingPricing" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" id="txtLetterOfamendment_Commission_ProposedPricing" />
+                                    </td>
+
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Pricing Category">Letter of Credit FCY amendment (FCY/LCY)</td>
+                                    <td data-label="Charges/Commission">SWIFT/Courier</td>
+                                    <td data-label="Standard Pricing">NIL</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" id="txtLetterOfamendment_SWIFTCourier_ExistingPricing" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" id="txtLetterOfamendment_SWIFTCourier_ProposedPricing" />
+                                    </td>
+
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Pricing Category">Cancellation of LC(both before and after expiry)</td>
+                                    <td data-label="Charges/Commission">Charges</td>
+                                    <td data-label="Standard Pricing">NIL</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" id="txtCancellationofLC_Charges_ExistingPricing" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" id="txtCancellationofLC_Charges_ProposedPricing" />
+                                    </td>
+
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Pricing Category">Cancellation of LC(both before and after expiry)</td>
+                                    <td data-label="Charges/Commission">Commission</td>
+                                    <td data-label="Standard Pricing">1000</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" id="txtCancellationofLC_Commission_ExistingPricing" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" id="txtCancellationofLC_Commission_ProposedPricing" />
+                                    </td>
+
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Pricing Category">Cancellation of LC(both before and after expiry)</td>
+                                    <td data-label="Charges/Commission">SWIFT/Courier</td>
+                                    <td data-label="Standard Pricing">NIL </td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" id="txtCancellationofLC_SWIFTCourier_ExistingPricing" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" id="txtCancellationofLC_SWIFTCourier_ProposedPricing" />
+                                    </td>
+
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Pricing Category">SBLC Amendment (FCY/LCY)</td>
+                                    <td data-label="Charges/Commission">Charges</td>
+                                    <td data-label="Standard Pricing"> Documentation charge - 1500 (only for Retail) </td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" id="txtSBLCAmendmentC_Charges_ExistingPricing" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" id="txtSBLCAmendmentC_Charges_ProposedPricing" />
+                                    </td>
+
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Pricing Category">SBLC Amendment (FCY/LCY)</td>
+                                    <td data-label="Charges/Commission">SWIFT/Courier</td>
+                                    <td data-label="Standard Pricing">
+                                    FCY  -  750 SFMS / LCY - 500
+                                    </td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" id="txtSBLCAmendmentC_SWIFTCourier_ExistingPricing" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" Existing />
+                                    </td>
+
+                                    </tr>
+                                    <tr>
+
+                                    <td data-label="Pricing Category">LC Confirmation</td>
+                                    <td data-label="Charges/Commission">Charges</td>
+                                    <td data-label="Standard Pricing">NIL</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" id="txtLCConfirmation_Charges_ExistingPricing" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" id="txtLCConfirmation_Charges_ProposedPricing" />
+                                    </td>
+
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Pricing Category">LC Confirmation</td>
+                                    <td data-label="Charges/Commission">SWIFT/Courier</td>
+                                    <td data-label="Standard Pricing"> Same as LC</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" id="txtLCConfirmation_SWIFTCourier_ExistingPricing" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" id="txtLCConfirmation_SWIFTCourier_ProposedPricing" />
+                                    </td>
+
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Pricing Category">LC advising (FCY/LCY)</td>
+                                    <td data-label="Charges/Commission">Charges</td>
+                                    <td data-label="Standard Pricing"> NIL</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" id="txtLCadvising_Charges_ExistingPricing" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" id="txtLCadvising_Charges_ProposedPricing" />
+                                    </td>
+
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Pricing Category">LC advising (FCY/LCY)</td>
+                                    <td data-label="Charges/Commission">Commission</td>
+                                    <td data-label="Standard Pricing">Customer LC 1500/1000 Amd 1000/750 Non Customer 2500/1500 Amnd 1500/ 100 </td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" id="txtLCadvising_Commission_ExistingPricing" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" id="txtLCadvising_Commission_ProposedPricing" />
+                                    </td>
+
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Pricing Category">LC advising (FCY/LCY)</td>
+                                    <td data-label="Charges/Commission">SWIFT/Courier</td>
+                                    <td data-label="Standard Pricing">NIL </td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" id="txtLCadvising_SWIFTCourier_ExistingPricing" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" id="txtLCadvising_SWIFTCourier_ProposedPricing" />
+                                    </td>
+
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Pricing Category">LC Transfer</td>
+                                    <td data-label="Charges/Commission">Charges</td>
+                                    <td data-label="Standard Pricing">LC trf 2000 LC Amendment 1000</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" id="txtLCTransfer_Charges_ExistingPricing" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" id="txtLCTransfer_Charges_ProposedPricing" />
+                                    </td>
+
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Pricing Category">LC Transfer</td>
+                                    <td data-label="Charges/Commission">SWIFT/Courier</td>
+                                    <td data-label="Standard Pricing">Swift charges of LC to be recovered in case of involvement of Swift</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" id="txtLCTransfer_SWIFTCourier_ExistingPricing" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" id="txtLCTransfer_SWIFTCourier_ProposedPricing" />
+                                    </td>
+
+                                    </tr>
+                                    </tbody>*@
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    @if (@Accessor.HttpContext.Session.GetString("UserRole") == "Relationship Manager" || @Accessor.HttpContext.Session.GetString("UserRole") == "Cluster Head")
+                    {
+                        <div class="row">
+                            <div class="col-md-12 text-right">
+                                <button class="btn btn-primary isEnable" id="btnSave_TradePricing_LetterOfCredit" style="width: 140px;">Save</button>
+                            </div>
+                        </div>
+                    }
+
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion__item">
+            <div class="accordion__header collapsed style_two" data-toggle="collapse" data-target="#bordered_no-gutter_collapseTwo">
+                <span class="accordion__header--text">
+                    Guarantee
+                </span>
+                <span class="accordion__header--indicator"></span>
+            </div>
+            <div id="bordered_no-gutter_collapseTwo" class="collapse accordion__body" data-parent="#tradepricing">
+                <div class="accordion__body--text">
+                    <div class="row form-group">
+                        <div class="col-md-12">
+                            <div class="table-outer">
+                                <table class="responsive-table" style="width:100%!important" id="tbl_TradePricing_Guarantee">
+                                    @*<thead>
+                                    <tr>
+                                    <th scope="col">Pricing Category</th>
+                                    <th scope="col">Charges/Commission</th>
+                                    <th scope="col">Standard Pricing</th>
+                                    <th scope="col">Existing Pricing</th>
+                                    <th scope="col">Proposed Pricing</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                    <td data-label="Pricing Category" rowspan="3">
+                                    Guarantee issuance (Financial, Performance)
+
+                                    </td>
+                                    <td data-label="Charges/Commission">Charges</td>
+                                    <td data-label="Standard Pricing">Documentation charge - 1500 (only for Retail)</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Charges/Commission">Commission</td>
+                                    <td data-label="Standard Pricing">1.8%, min 2000</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Charges/Commission">SWIFT/Courier</td>
+                                    <td data-label="Standard Pricing">1000</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Pricing Category" rowspan="2">
+                                    Guarantee amendment (Financial, Performance)
+                                    </td>
+                                    <td data-label="Charges/Commission">Charges</td>
+                                    <td data-label="Standard Pricing">NIL</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Charges/Commission">SWIFT/Courier</td>
+                                    <td data-label="Standard Pricing">1000</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+
+                                    <tr>
+                                    <td data-label="Pricing Category">Guarantee cancellation</td>
+                                    <td data-label="Charges/Commission">Charges</td>
+                                    <td data-label="Standard Pricing">1000 for live BG cancellation proicessing charges (before expiry)</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+
+                                    <tr>
+                                    <td data-label="Pricing Category" rowspan="3">
+                                    Guarantee Advising
+
+                                    </td>
+                                    <td data-label="Charges/Commission">Charges</td>
+                                    <td data-label="Standard Pricing">1500</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Charges/Commission">Commission</td>
+                                    <td data-label="Standard Pricing">
+                                    Nil
+                                    </td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Charges/Commission">SWIFT/Courier</td>
+                                    <td data-label="Standard Pricing">
+                                    Nil
+                                    </td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Pricing Category" rowspan="2">
+                                    Shipping Guarantee
+                                    </td>
+                                    <td data-label="Charges/Commission">Charges</td>
+                                    <td data-label="Standard Pricing">
+                                    "1000,
+                                    Documentation charges (Only for Retail) - 1500"
+                                    </td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Charges/Commission">Commission</td>
+                                    <td data-label="Standard Pricing">
+                                    Nil
+                                    </td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+
+                                    </tbody>*@
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    @if (@Accessor.HttpContext.Session.GetString("UserRole") == "Relationship Manager" || @Accessor.HttpContext.Session.GetString("UserRole") == "Cluster Head")
+                    {
+                        <div class="row">
+                            <div class="col-md-12 text-right">
+                                <button class="btn btn-primary isEnable" id="btnSave_TradePricing_Guarantee" style="width: 140px;">Save</button>
+                            </div>
+                        </div>
+                    }
+
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion__item">
+            <div class="accordion__header collapsed style_two" data-toggle="collapse" data-target="#bordered_no-gutter_collapseThree">
+                <span class="accordion__header--text">
+                    Import Bills Collection/Under LC/Buyer's Credit/DO
+                </span>
+                <span class="accordion__header--indicator"></span>
+            </div>
+            <div id="bordered_no-gutter_collapseThree" class="collapse accordion__body" data-parent="#tradepricing">
+                <div class="accordion__body--text">
+                    <div class="row form-group">
+                        <div class="col-md-12">
+                            <div class="table-outer">
+                                <table class="responsive-table" style="width:100%!important" id="tbl_TradePricing_ImportBillsCollection">
+                                    @*<thead>
+                                    <tr>
+                                    <th scope="col">Pricing Category</th>
+                                    <th scope="col">Charges/Commission</th>
+                                    <th scope="col">Standard Pricing</th>
+                                    <th scope="col">Existing Pricing</th>
+                                    <th scope="col">Proposed Pricing</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                    <td data-label="Pricing Category" rowspan="3">
+                                    "Import Bills for Collection processing
+                                    (to be considered at the time of booking itself. Liquidation charges to be taken as per direct import payment)"
+
+
+                                    </td>
+                                    <td data-label="Charges/Commission">Charges</td>
+                                    <td data-label="Standard Pricing">Nil</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Charges/Commission">Commission</td>
+                                    <td data-label="Standard Pricing">0.25% min 2000</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Charges/Commission">SWIFT/Courier</td>
+                                    <td data-label="Standard Pricing">1000</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Pricing Category" rowspan="3">
+                                    Import Bills for Collection return of docs
+
+
+                                    </td>
+                                    <td data-label="Charges/Commission">Charges</td>
+                                    <td data-label="Standard Pricing">1500 or USD 200 if claimed from Remitting Bank</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Charges/Commission">Commission</td>
+                                    <td data-label="Standard Pricing">Nil</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Charges/Commission">SWIFT/Courier</td>
+                                    <td data-label="Standard Pricing">500/1000</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Pricing Category" rowspan="3">
+                                    Import direct/advance payment
+                                    </td>
+                                    <td data-label="Charges/Commission">Charges</td>
+                                    <td data-label="Standard Pricing">Nil                                                   </td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Charges/Commission">Commission</td>
+                                    <td data-label="Standard Pricing">
+                                    0.125% Min 1250
+                                    </td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Charges/Commission">SWIFT/Courier</td>
+                                    <td data-label="Standard Pricing">
+                                    500
+                                    </td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Pricing Category" rowspan="3">
+                                    Import Bills under LC processing
+                                    </td>
+                                    <td data-label="Charges/Commission">Charges</td>
+                                    <td data-label="Standard Pricing">
+                                    If discrepant overdue import bill  paid after due date - addl charges of non-import remittance to be recovered
+                                    </td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Charges/Commission">Commission</td>
+                                    <td data-label="Standard Pricing">
+                                    0.25% min 2000
+                                    </td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Charges/Commission">SWIFT/Courier</td>
+                                    <td data-label="Standard Pricing">
+                                    1000
+                                    </td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Pricing Category">
+                                    Discrepancy Fee
+                                    </td>
+                                    <td data-label="Charges/Commission">Charges</td>
+                                    <td data-label="Standard Pricing">
+                                    USD 75 or its equivalent
+                                    </td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Pricing Category">
+                                    Penalty for non submission of Bill of Entry
+                                    </td>
+                                    <td data-label="Charges/Commission">Charges</td>
+                                    <td data-label="Standard Pricing">
+                                    Rs 500 Half Yearly  per BOE
+                                    </td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Pricing Category" rowspan="3">
+                                    Delivery Order
+                                    </td>
+                                    <td data-label="Charges/Commission">Charges</td>
+                                    <td data-label="Standard Pricing">
+                                    1000
+                                    </td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Charges/Commission">Commission</td>
+                                    <td data-label="Standard Pricing">
+                                    Nil
+                                    </td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Charges/Commission">SWIFT/Courier</td>
+                                    <td data-label="Standard Pricing">
+                                    Nil
+                                    </td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Pricing Category" rowspan="2">
+                                    Buyer's Credit processing charges
+                                    </td>
+                                    <td data-label="Charges/Commission">Charges</td>
+                                    <td data-label="Standard Pricing">
+                                    Nil
+                                    </td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Charges/Commission">SWIFT/Courier</td>
+                                    <td data-label="Standard Pricing">
+                                    2000
+                                    </td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Pricing Category">
+                                    NOC issued to other Bank for Buyer's Credit
+                                    </td>
+                                    <td data-label="Charges/Commission">Charges</td>
+                                    <td data-label="Standard Pricing">
+                                    5000
+                                    </td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Pricing Category" rowspan="3">
+                                    "Countersigning/co-acceptance/availisation of
+                                    import bills"
+                                    </td>
+                                    <td data-label="Charges/Commission">Charges</td>
+                                    <td data-label="Standard Pricing">
+                                    Nil
+                                    </td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Charges/Commission">Commission</td>
+                                    <td data-label="Standard Pricing">
+                                    1.8 % per annum Min. Rs.1000
+                                    </td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Charges/Commission">SWIFT/Courier</td>
+                                    <td data-label="Standard Pricing">
+                                    Nil
+                                    </td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Pricing Category">
+                                    NOC issued to other Bank for Buyer's Credit
+                                    </td>
+                                    <td data-label="Charges/Commission">Charges</td>
+                                    <td data-label="Standard Pricing">
+                                    5000
+                                    </td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    </tbody>*@
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    @if (@Accessor.HttpContext.Session.GetString("UserRole") == "Relationship Manager" || @Accessor.HttpContext.Session.GetString("UserRole") == "Cluster Head")
+                    {
+                        <div class="row">
+                            <div class="col-md-12 text-right">
+                                <button class="btn btn-primary isEnable" id="btn_TradePricing_ImportBillsCollection" style="width: 140px;">Save</button>
+                            </div>
+                        </div>
+                    }
+
+
+                </div>
+            </div>
+        </div>
+        <div class="accordion__item">
+            <div class="accordion__header collapsed style_two" data-toggle="collapse" data-target="#bordered_no-gutter_collapseFour">
+                <span class="accordion__header--text">
+                    Non Import Remittances
+                </span>
+                <span class="accordion__header--indicator style_two"></span>
+            </div>
+            <div id="bordered_no-gutter_collapseFour" class="collapse accordion__body" data-parent="#tradepricing">
+                <div class="accordion__body--text">
+                    <div class="row form-group">
+                        <div class="col-md-12">
+                            <div class="table-outer">
+                                <table class="responsive-table" style="width:100%!important" id="tbl_TradePricing_NonImportRemittances">
+                                    @*<thead>
+                                    <tr>
+                                    <th scope="col">Pricing Category</th>
+                                    <th scope="col">Charges/Commission</th>
+                                    <th scope="col">Standard Pricing</th>
+                                    <th scope="col">Existing Pricing</th>
+                                    <th scope="col">Proposed Pricing</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                    <td data-label="Pricing Category" rowspan="3">
+                                    Non import payment TT
+                                    </td>
+                                    <td data-label="Charges/Commission">Charges</td>
+                                    <td data-label="Standard Pricing">Nil</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Charges/Commission">Commission</td>
+                                    <td data-label="Standard Pricing">0.20% min Rs 1000</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Charges/Commission">SWIFT/Courier</td>
+                                    <td data-label="Standard Pricing">500</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Pricing Category" rowspan="3">
+                                    Non import payment DD
+                                    </td>
+                                    <td data-label="Charges/Commission">Charges</td>
+                                    <td data-label="Standard Pricing">Nil</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Charges/Commission">Commission</td>
+                                    <td data-label="Standard Pricing">0.25% min 2000</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Charges/Commission">SWIFT/Courier</td>
+                                    <td data-label="Standard Pricing">500</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+
+                                    </tbody>*@
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    @if (@Accessor.HttpContext.Session.GetString("UserRole") == "Relationship Manager")
+                    {
+                        <div class="row">
+                            <div class="col-md-12 text-right">
+                                <button class="btn btn-primary isEnable" id="btn_TradePricing_NonImportRemittances" style="width: 140px;">Save</button>
+                            </div>
+                        </div>
+                    }
+
+
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion__item">
+            <div class="accordion__header collapsed style_two" data-toggle="collapse" data-target="#bordered_no-gutter_collapseFive">
+                <span class="accordion__header--text">
+                    Export Bills for Collection/Discount/GR waiver
+                </span>
+                <span class="accordion__header--indicator style_two"></span>
+            </div>
+            <div id="bordered_no-gutter_collapseFive" class="collapse accordion__body" data-parent="#tradepricing">
+                <div class="accordion__body--text">
+                    <div class="row form-group">
+                        <div class="col-md-12">
+                            <div class="table-outer">
+                                <table class="responsive-table" style="width:100%!important" id="tbl_TradePricing_ExportBillsForCollection">
+                                    @*<thead>
+                                    <tr>
+                                    <th scope="col">Pricing Category</th>
+                                    <th scope="col">Charges/Commission</th>
+                                    <th scope="col">Standard Pricing</th>
+                                    <th scope="col">Existing Pricing</th>
+                                    <th scope="col">Proposed Pricing</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                    <td data-label="Pricing Category" rowspan="3">
+                                    Exports Bills despatch
+                                    </td>
+                                    <td data-label="Charges/Commission">Charges</td>
+                                    <td data-label="Standard Pricing">Nil</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Charges/Commission">Commission</td>
+                                    <td data-label="Standard Pricing">0.0625% Min Rs 1500</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Charges/Commission">SWIFT/Courier</td>
+                                    <td data-label="Standard Pricing">1000</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Pricing Category" rowspan="3">
+                                    Export Bills Discounting/Purchase
+                                    </td>
+                                    <td data-label="Charges/Commission">Charges</td>
+                                    <td data-label="Standard Pricing">Nil</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Charges/Commission">Commission</td>
+                                    <td data-label="Standard Pricing">0.1%, min 2000</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Charges/Commission">SWIFT/Courier</td>
+                                    <td data-label="Standard Pricing">1000</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Pricing Category" rowspan="3">
+                                    Export Collection to Discount
+                                    </td>
+                                    <td data-label="Charges/Commission">Charges</td>
+                                    <td data-label="Standard Pricing">750</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Charges/Commission">Commission</td>
+                                    <td data-label="Standard Pricing">Nil</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Charges/Commission">SWIFT/Courier</td>
+                                    <td data-label="Standard Pricing">Nil</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Pricing Category" rowspan="3">
+                                    OverDue Export Bills (Late payment/XOS reporting)
+                                    </td>
+                                    <td data-label="Charges/Commission">Charges</td>
+                                    <td data-label="Standard Pricing">500 Half Yearly </td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Charges/Commission">Commission</td>
+                                    <td data-label="Standard Pricing">Nil</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Charges/Commission">SWIFT/Courier</td>
+                                    <td data-label="Standard Pricing">Nil</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Pricing Category" rowspan="3">
+                                    Exports Bills non despatch
+                                    </td>
+                                    <td data-label="Charges/Commission">Charges</td>
+                                    <td data-label="Standard Pricing">Nil</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Charges/Commission">Commission</td>
+                                    <td data-label="Standard Pricing">0.15% min 2000</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Charges/Commission">SWIFT/Courier</td>
+                                    <td data-label="Standard Pricing">Nil</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Pricing Category" rowspan="3">
+                                    Charges
+                                    </td>
+                                    <td data-label="Charges/Commission">Charges</td>
+                                    <td data-label="Standard Pricing">Nil</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Charges/Commission">Commission</td>
+                                    <td data-label="Standard Pricing">0.0625% min Rs 1500 (same for realisation from other bank)</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Charges/Commission">SWIFT/Courier</td>
+                                    <td data-label="Standard Pricing">Nil</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Pricing Category">
+                                    Charges
+                                    </td>
+                                    <td data-label="Charges/Commission">Charges</td>
+                                    <td data-label="Standard Pricing">1500</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Pricing Category">
+                                    BRC issuance (per Shipping Bill)
+                                    </td>
+                                    <td data-label="Charges/Commission">Charges</td>
+                                    <td data-label="Standard Pricing">150</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Pricing Category">
+                                    Crystallisation Fee
+                                    </td>
+                                    <td data-label="Charges/Commission">Commission</td>
+                                    <td data-label="Standard Pricing">Nil</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Pricing Category" rowspan="3">
+                                    Bills returned unpaid
+                                    </td>
+                                    <td data-label="Charges/Commission">Charges</td>
+                                    <td data-label="Standard Pricing">1000</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+
+                                    <td data-label="Charges/Commission">Commission</td>
+                                    <td data-label="Standard Pricing">Nil</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+
+                                    <td data-label="Charges/Commission">SWIFT/Courier</td>
+                                    <td data-label="Standard Pricing">Nil</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Pricing Category" rowspan="3">
+                                    Extension
+                                    </td>
+                                    <td data-label="Charges/Commission">Charges</td>
+                                    <td data-label="Standard Pricing">1000</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+
+                                    <td data-label="Charges/Commission">Commission</td>
+                                    <td data-label="Standard Pricing">Nil</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+
+                                    <td data-label="Charges/Commission">SWIFT/Courier</td>
+                                    <td data-label="Standard Pricing">Nil</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Pricing Category">
+                                    Write off
+                                    </td>
+                                    <td data-label="Charges/Commission">Charges</td>
+                                    <td data-label="Standard Pricing">1000</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Pricing Category" rowspan="3">
+                                    Agency Commission
+                                    </td>
+                                    <td data-label="Charges/Commission">Charges</td>
+                                    <td data-label="Standard Pricing">Nil</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+
+                                    <td data-label="Charges/Commission">Commission</td>
+                                    <td data-label="Standard Pricing">0.25% min 2000</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+
+                                    <td data-label="Charges/Commission">SWIFT/Courier</td>
+                                    <td data-label="Standard Pricing">1000</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Pricing Category" rowspan="3">
+                                    Advising discrepancy
+                                    </td>
+                                    <td data-label="Charges/Commission">Charges</td>
+                                    <td data-label="Standard Pricing">1000</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+
+                                    <td data-label="Charges/Commission">Commission</td>
+                                    <td data-label="Standard Pricing">Nil</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+
+                                    <td data-label="Charges/Commission">SWIFT/Courier</td>
+                                    <td data-label="Standard Pricing">Nil</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Pricing Category">
+                                    Late submission of documents (after 21 days)
+                                    </td>
+                                    <td data-label="Charges/Commission">Charges</td>
+                                    <td data-label="Standard Pricing">
+                                    "1000
+                                    to be charged after 21 days"
+                                    </td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Pricing Category">
+                                    Exporter follow-up docs submssion for advance remittance (each and every advance remittance received)
+                                    </td>
+                                    <td data-label="Charges/Commission">Charges</td>
+                                    <td data-label="Standard Pricing">
+                                    1000
+                                    </td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Pricing Category" rowspan="2">
+                                    NOC for discounting with other Bank
+                                    </td>
+                                    <td data-label="Charges/Commission">Charges</td>
+                                    <td data-label="Standard Pricing">
+                                    5000
+                                    </td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Charges/Commission">Commission</td>
+                                    <td data-label="Standard Pricing">
+                                    Nil
+                                    </td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Pricing Category" rowspan="2">
+                                    Crystallisation Fee
+                                    </td>
+                                    <td data-label="Charges/Commission">Charges</td>
+                                    <td data-label="Standard Pricing">
+                                    2000
+                                    </td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Charges/Commission">Commission</td>
+                                    <td data-label="Standard Pricing">
+                                    Nil
+                                    </td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Pricing Category" rowspan="2">
+                                    Export loan disbursement
+                                    </td>
+                                    <td data-label="Charges/Commission">Charges</td>
+                                    <td data-label="Standard Pricing">
+                                    2000
+                                    </td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Charges/Commission">Commission</td>
+                                    <td data-label="Standard Pricing">
+                                    Nil
+                                    </td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Pricing Category" rowspan="2">
+                                    Issuance of various export performance certificate
+                                    </td>
+                                    <td data-label="Charges/Commission">Charges</td>
+                                    <td data-label="Standard Pricing">
+                                    500
+                                    </td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Charges/Commission">Commission</td>
+                                    <td data-label="Standard Pricing">
+                                    Nil
+                                    </td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Pricing Category" rowspan="3">
+                                    Export set off against Import payment
+                                    </td>
+                                    <td data-label="Charges/Commission">Charges</td>
+                                    <td data-label="Standard Pricing">
+                                    Nil
+                                    </td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Charges/Commission">Commission</td>
+                                    <td data-label="Standard Pricing">
+                                    "0.40% min 2000
+                                    Individually applicable for both legs"
+                                    </td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Charges/Commission">SWIFT/Courier</td>
+                                    <td data-label="Standard Pricing">
+                                    500
+                                    </td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Pricing Category">
+                                    Attestation of Invoice
+                                    </td>
+                                    <td data-label="Charges/Commission">Charges</td>
+                                    <td data-label="Standard Pricing">
+                                    250
+                                    </td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Pricing Category">
+                                    Bank Certification for application of IEC
+                                    </td>
+                                    <td data-label="Charges/Commission">Charges</td>
+                                    <td data-label="Standard Pricing">
+                                    500
+                                    </td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Pricing Category">
+                                    Project Export Approvals
+                                    </td>
+                                    <td data-label="Charges/Commission">Charges</td>
+                                    <td data-label="Standard Pricing">
+                                    5000
+                                    </td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    </tbody>*@
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    @if (@Accessor.HttpContext.Session.GetString("UserRole") == "Relationship Manager" || @Accessor.HttpContext.Session.GetString("UserRole") == "Cluster Head")
+                    {
+                        <div class="row">
+                            <div class="col-md-12 text-right">
+                                <button class="btn btn-primary isEnable" id="btn_TradePricing_ExportBillsForCollection" style="width: 140px;">Save</button>
+                            </div>
+                        </div>
+                    }
+
+
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion__item">
+            <div class="accordion__header collapsed style_two" data-toggle="collapse" data-target="#bordered_no-gutter_collapseSix">
+                <span class="accordion__header--text">
+                    Local Bills
+                </span>
+                <span class="accordion__header--indicator style_two"></span>
+            </div>
+            <div id="bordered_no-gutter_collapseSix" class="collapse accordion__body" data-parent="#tradepricing">
+                <div class="accordion__body--text">
+                    <div class="row form-group">
+                        <div class="col-md-12">
+                            <div class="table-outer">
+                                <table class="responsive-table" style="width:100%!important" id="tbl_TradePricing_LocalBills">
+                                    @*<thead>
+                                    <tr>
+                                    <th scope="col">Pricing Category</th>
+                                    <th scope="col">Charges/Commission</th>
+                                    <th scope="col">Standard Pricing</th>
+                                    <th scope="col">Existing Pricing</th>
+                                    <th scope="col">Proposed Pricing</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                    <td data-label="Pricing Category" rowspan="3">
+                                    Local Bills for Collection (Outward)
+                                    </td>
+                                    <td data-label="Charges/Commission">Charges</td>
+                                    <td data-label="Standard Pricing">Nil</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Charges/Commission">Commission</td>
+                                    <td data-label="Standard Pricing">0.35% min 1000</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Charges/Commission">SWIFT/Courier</td>
+                                    <td data-label="Standard Pricing">100</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Pricing Category" rowspan="3">
+                                    Local Bills received (under our LC/collection)
+                                    </td>
+                                    <td data-label="Charges/Commission">Charges</td>
+                                    <td data-label="Standard Pricing">Nil</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Charges/Commission">Commission</td>
+                                    <td data-label="Standard Pricing">0.35% min 1000</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Charges/Commission">SWIFT/Courier</td>
+                                    <td data-label="Standard Pricing">100</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Pricing Category" rowspan="3">
+                                    Local Bills received (under our LC/collection)
+                                    </td>
+                                    <td data-label="Charges/Commission">Charges</td>
+                                    <td data-label="Standard Pricing">Nil</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Charges/Commission">Commission</td>
+                                    <td data-label="Standard Pricing">0.35% min 1000</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Charges/Commission">SWIFT/Courier</td>
+                                    <td data-label="Standard Pricing">100</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Pricing Category">
+                                    Discrepancy Fee
+                                    </td>
+                                    <td data-label="Charges/Commission">Charges</td>
+                                    <td data-label="Standard Pricing">2500</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Pricing Category" rowspan="3">
+                                    Return of Bills unpaid
+                                    </td>
+                                    <td data-label="Charges/Commission">Charges</td>
+                                    <td data-label="Standard Pricing">Nil</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Charges/Commission">Commission</td>
+                                    <td data-label="Standard Pricing">
+                                    "Under LC - 1000
+                                    Under Coll - 0.35%, min 2000"
+                                    </td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Charges/Commission">SWIFT/Courier</td>
+                                    <td data-label="Standard Pricing">100</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Pricing Category">
+                                    Extension of Inland Bills
+                                    </td>
+                                    <td data-label="Charges/Commission">Charges</td>
+                                    <td data-label="Standard Pricing">1000</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Pricing Category" rowspan="3">
+                                    DRUL
+                                    </td>
+                                    <td data-label="Charges/Commission">Charges</td>
+                                    <td data-label="Standard Pricing">Nil</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Charges/Commission">Commission</td>
+                                    <td data-label="Standard Pricing">
+                                    0.25%, min 1000
+                                    </td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Charges/Commission">SWIFT/Courier</td>
+                                    <td data-label="Standard Pricing">100</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Pricing Category">
+                                    Signature verification charges (LC issued by us)
+                                    </td>
+                                    <td data-label="Charges/Commission">Charges</td>
+                                    <td data-label="Standard Pricing">Rs.250</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Pricing Category">
+                                    Overdue collection bills ( late payment received)
+                                    </td>
+                                    <td data-label="Charges/Commission">Charges</td>
+                                    <td data-label="Standard Pricing">Rs.500 per half-year</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    </tbody>*@
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    @if (@Accessor.HttpContext.Session.GetString("UserRole") == "Relationship Manager" || @Accessor.HttpContext.Session.GetString("UserRole") == "Cluster Head")
+                    {
+                        <div class="row">
+                            <div class="col-md-12 text-right">
+                                <button class="btn btn-primary isEnable" id="btn_TradePricing_LocalBills" style="width: 140px;">Save</button>
+                            </div>
+                        </div>
+                    }
+
+
+                </div>
+            </div>
+        </div>
+        <div class="accordion__item">
+            <div class="accordion__header collapsed style_two" data-toggle="collapse" data-target="#bordered_no-gutter_collapseSeven">
+                <span class="accordion__header--text">
+                    Inward Remittance
+                </span>
+                <span class="accordion__header--indicator style_two"></span>
+            </div>
+            <div id="bordered_no-gutter_collapseSeven" class="collapse accordion__body" data-parent="#tradepricing">
+                <div class="accordion__body--text">
+                    <div class="row form-group">
+                        <div class="col-md-12">
+                            <div class="table-outer">
+                                <table class="responsive-table" style="width:100%!important" id="tbl_TradePricing_InwardRemittance">
+                                    @*<thead>
+                                    <tr>
+                                    <th scope="col">Pricing Category</th>
+                                    <th scope="col">Charges/Commission</th>
+                                    <th scope="col">Standard Pricing</th>
+                                    <th scope="col">Existing Pricing</th>
+                                    <th scope="col">Proposed Pricing</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                    <td data-label="Pricing Category" rowspan="3">
+                                    Inward Remittance
+                                    </td>
+                                    <td data-label="Charges/Commission">Charges</td>
+                                    <td data-label="Standard Pricing">Nil</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Charges/Commission">Commission</td>
+                                    <td data-label="Standard Pricing">Nil</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Charges/Commission">SWIFT/Courier</td>
+                                    <td data-label="Standard Pricing">Nil</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Pricing Category" rowspan="3">
+                                    Inward Remittance return of funds
+                                    </td>
+                                    <td data-label="Charges/Commission">Charges</td>
+                                    <td data-label="Standard Pricing">USD 50</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Charges/Commission">Commission</td>
+                                    <td data-label="Standard Pricing">Nil</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Charges/Commission">SWIFT/Courier</td>
+                                    <td data-label="Standard Pricing">Nil</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Pricing Category">
+                                    FIRC charges
+                                    </td>
+                                    <td data-label="Charges/Commission">Charges</td>
+                                    <td data-label="Standard Pricing">
+                                    "200, duplicate 500
+                                    For Credit Advise sent by email centrally by e-mail (in lieu of FIRC ) should be charged to Rs 50 for current account only"
+                                    </td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Pricing Category" rowspan="3">
+                                    Processing of Inward remittances bene acc / name mismatch
+                                    </td>
+                                    <td data-label="Charges/Commission">Charges</td>
+                                    <td data-label="Standard Pricing">
+                                    NIL
+                                    </td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Charges/Commission">Commission</td>
+                                    <td data-label="Standard Pricing">NIL</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Charges/Commission">SWIFT/Courier</td>
+                                    <td data-label="Standard Pricing">Rs. 250 per swift on upon application of funds</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+
+                                    </tbody>*@
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    @if (@Accessor.HttpContext.Session.GetString("UserRole") == "Relationship Manager" || @Accessor.HttpContext.Session.GetString("UserRole") == "Cluster Head")
+                    {
+                        <div class="row">
+                            <div class="col-md-12 text-right">
+                                <button class="btn btn-primary isEnable" id="btn_TradePricing_InwardRemittance" style="width: 140px;">Save</button>
+                            </div>
+                        </div>
+                    }
+
+
+                </div>
+            </div>
+        </div>
+        <div class="accordion__item">
+            <div class="accordion__header collapsed style_two" data-toggle="collapse" data-target="#bordered_no-gutter_collapseEight">
+                <span class="accordion__header--text">
+                    Capital Account transactions
+                </span>
+                <span class="accordion__header--indicator"></span>
+            </div>
+            <div id="bordered_no-gutter_collapseEight" class="collapse accordion__body" data-parent="#tradepricing">
+                <div class="accordion__body--text">
+                    <div class="row form-group">
+                        <div class="col-md-12">
+                            <div class="table-outer">
+                                <table class="responsive-table" style="width:100%!important" id="tbl_TradePricing_CapitalAccountTransaction">
+                                    @*<thead>
+                                    <tr>
+                                    <th scope="col">Pricing Category</th>
+                                    <th scope="col">Charges/Commission</th>
+                                    <th scope="col">Standard Pricing</th>
+                                    <th scope="col">Existing Pricing</th>
+                                    <th scope="col">Proposed Pricing</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                    <td data-label="Pricing Category" rowspan="2">
+                                    FCGPR, FCGTR (to be taken at the time of first reporting to RBI like Annex 6 )
+                                    </td>
+                                    <td data-label="Charges/Commission">Charges</td>
+                                    <td data-label="Standard Pricing">10000</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Charges/Commission">Commission</td>
+                                    <td data-label="Standard Pricing">Nil</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+
+                                    <tr>
+                                    <td data-label="Pricing Category">
+                                    FCGPR,FCTRS (where funds received from other bank)
+                                    </td>
+                                    <td data-label="Charges/Commission">Charges</td>
+                                    <td data-label="Standard Pricing">30000</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Pricing Category">
+                                    ODI Scrutiny /  filing (to be taken at the time of first remittance)
+                                    </td>
+                                    <td data-label="Charges/Commission">Charges</td>
+                                    <td data-label="Standard Pricing">10000</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Pricing Category">
+                                    ODI Scrutiny /  filing (where funds received from other bank)
+                                    </td>
+                                    <td data-label="Charges/Commission">Charges</td>
+                                    <td data-label="Standard Pricing">30000</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Pricing Category" rowspan="2">
+                                    ECB (form 83 scrutiny)
+                                    </td>
+                                    <td data-label="Charges/Commission">Charges</td>
+                                    <td data-label="Standard Pricing">
+                                    10000
+                                    </td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+
+                                    <td data-label="Charges/Commission">Commission</td>
+                                    <td data-label="Standard Pricing">
+                                    Nil
+                                    </td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Pricing Category">
+                                    Weekly / Monthly / Annual Filing with RBI like ECB II /APR/part 4 / Commodity Hedging/ Annual activity cert of branch & liaison office, etc
+                                    </td>
+                                    <td data-label="Charges/Commission">Charges</td>
+                                    <td data-label="Standard Pricing">
+                                    1000
+                                    </td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Pricing Category">
+                                    Approval issued by Bank - Hedging, Overseas Branch, etc
+                                    </td>
+                                    <td data-label="Charges/Commission">Charges</td>
+                                    <td data-label="Standard Pricing">5000</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Pricing Category">
+                                    Transfer of existing UIN / LRN from /to another AD
+                                    </td>
+                                    <td data-label="Charges/Commission">Charges</td>
+                                    <td data-label="Standard Pricing">Rs.25000</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+
+                                    </tbody>*@
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    @if (@Accessor.HttpContext.Session.GetString("UserRole") == "Relationship Manager" || @Accessor.HttpContext.Session.GetString("UserRole") == "Cluster Head")
+                    {
+                        <div class="row">
+                            <div class="col-md-12 text-right">
+                                <button class="btn btn-primary isEnable" id="btn_TradePricing_CapitalAccountTransaction" style="width: 140px;">Save</button>
+                            </div>
+                        </div>
+                    }
+
+
+
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion__item">
+            <div class="accordion__header collapsed style_two" data-toggle="collapse" data-target="#bordered_no-gutter_collapseNine">
+                <span class="accordion__header--text">
+                    All Products
+                </span>
+                <span class="accordion__header--indicator style_two"></span>
+            </div>
+            <div id="bordered_no-gutter_collapseNine" class="collapse accordion__body" data-parent="#tradepricing">
+                <div class="accordion__body--text">
+                    <div class="row form-group">
+                        <div class="col-md-12">
+                            <div class="table-outer">
+                                <table class="responsive-table" style="width:100%!important" id="tbl_TradePricing_AllProduct">
+                                    @*<thead>
+                                    <tr>
+                                    <th scope="col">Pricing Category</th>
+                                    <th scope="col">Charges/Commission</th>
+                                    <th scope="col">Standard Pricing</th>
+                                    <th scope="col">Existing Pricing</th>
+                                    <th scope="col">Proposed Pricing</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                    <td data-label="Pricing Category" rowspan="3">
+                                    Funds trf Nostro to Nostro
+                                    </td>
+                                    <td data-label="Charges/Commission">Charges</td>
+                                    <td data-label="Standard Pricing">Nil</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Charges/Commission">Commission</td>
+                                    <td data-label="Standard Pricing">0.25% min 2000</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Charges/Commission">SWIFT/Courier</td>
+                                    <td data-label="Standard Pricing">500</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Pricing Category">
+                                    Additional Reminder - SWIFT
+                                    </td>
+                                    <td data-label="Charges/Commission">SWIFT/Courier</td>
+                                    <td data-label="Standard Pricing">500</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Pricing Category">
+                                    Additional Commission (over regular charges) in lieu of Non Conversion
+                                    </td>
+                                    <td data-label="Charges/Commission">Commission</td>
+                                    <td data-label="Standard Pricing">0.15% for EEFC, min 500</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+
+                                    </tbody>*@
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    @if (@Accessor.HttpContext.Session.GetString("UserRole") == "Relationship Manager" || @Accessor.HttpContext.Session.GetString("UserRole") == "Cluster Head")
+                    {
+                        <div class="row">
+                            <div class="col-md-12 text-right">
+                                <button class="btn btn-primary isEnable" id="btn_TradePricing_AllProduct" style="width: 140px;">Save</button>
+                            </div>
+                        </div>
+                    }
+
+                </div>
+            </div>
+        </div>
+        <div class="accordion__item">
+            <div class="accordion__header collapsed style_two" data-toggle="collapse" data-target="#bordered_no-gutter_collapseTen">
+                <span class="accordion__header--text">
+                    Miscellaneous
+                </span>
+                <span class="accordion__header--indicator style_two"></span>
+            </div>
+            <div id="bordered_no-gutter_collapseTen" class="collapse accordion__body" data-parent="#tradepricing">
+                <div class="accordion__body--text">
+                    <div class="row form-group">
+                        <div class="col-md-12">
+                            <div class="table-outer">
+                                <table class="responsive-table" style="width:100%!important" id="tbl_TradePricing_Miscellaneous">
+                                    @*<thead>
+                                    <tr>
+                                    <th scope="col">Pricing Category</th>
+                                    <th scope="col">Charges/Commission</th>
+                                    <th scope="col">Standard Pricing</th>
+                                    <th scope="col">Existing Pricing</th>
+                                    <th scope="col">Proposed Pricing</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                    <td data-label="Pricing Category">
+                                    Request for approval forwarding to Regulators or Authorised dealers
+                                    </td>
+                                    <td data-label="Charges/Commission">Charges</td>
+                                    <td data-label="Standard Pricing">1000</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Pricing Category">
+                                    Enquiry related to records more than 1 year old
+                                    </td>
+                                    <td data-label="Charges/Commission">Charges</td>
+                                    <td data-label="Standard Pricing">750 per record</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Pricing Category">
+                                    All other NOCs issued / received to /from other Banks (for Pledge of shares / collections docs, etc)
+                                    </td>
+                                    <td data-label="Charges/Commission">Charges</td>
+                                    <td data-label="Standard Pricing">Rs.1000</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Pricing Category">
+                                    AD Code Certificate issuance
+                                    </td>
+                                    <td data-label="Charges/Commission">Charges</td>
+                                    <td data-label="Standard Pricing">Rs.500</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td data-label="Pricing Category">
+                                    Service tax certificate / Duplicate Advices
+                                    </td>
+                                    <td data-label="Charges/Commission">Charges</td>
+                                    <td data-label="Standard Pricing">Rs.250</td>
+                                    <td data-label="Existing Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    <td data-label="Proposed Pricing">
+                                    <input type="text" />
+                                    </td>
+                                    </tr>
+
+                                    </tbody>*@
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    @if (@Accessor.HttpContext.Session.GetString("UserRole") == "Relationship Manager" || @Accessor.HttpContext.Session.GetString("UserRole") == "Cluster Head")
+                    {
+                        <div class="row">
+                            <div class="col-md-12 text-right">
+                                <button class="btn btn-primary isEnable" id="btn_TradePricing_Miscellaneous" style="width: 140px;">Save</button>
+                            </div>
+                        </div>
+                    }
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<br />
+<div class="row">
+    <div class="col-md-8">
+        <lable class="label-control">Remark</lable>
+        <textarea id="txt_Remark_TradePricing" rows="5" class="form-control custom-form-control" placeholder="Enter.."></textarea>
+        @*<input type="text" class="form-control custom-form-control" id="txt_Remark_TradePricing" onkeypress="return blockSpecialChar(event)" placeholder="Enter" />*@
+
+    </div>
+</div>
+<br />
+<div class="row form-group">
+    <div class="col-md-8" id="divCommentsTrade" style="display:none">
+        <lable class="label-control">Comments</lable>
+        <input type="text" class="form-control custom-form-control" id="txt_Comments_TradePricing" readonly />
+
+    </div>
+    <div class="col-md-4">
+        <lable class="label-control">Approval</lable>
+        <select class="form-control custom-form-control" id="TP_DropDown_Level1" multiple></select>
+    </div>
+
+</div>
+
+<div class="row form-group">
+    @if (@Accessor.HttpContext.Session.GetString("UserRole") == "Relationship Manager")
+    {
+        <div class="col-md-3">
+            <button class="btn btn-primary" id="btn_Add_TradePricing">Submit</button>
+        </div>
+    }
+    else
+    {
+        <div class="col-md-5">
+            <button class="btn btn-success" data-toggle="modal" data-target="#ApproveModalTradePricing" id="btn_Approve_tradePricing">Approve</button>
+            <button class="btn btn-danger" data-toggle="modal" data-target="#RejectModalTradePricing" id="btn_Rejected_tradePricing">Reject</button>
+        </div>
+
+    }
+
+</div>
+
+
+<div class="modal fade" id="ApproveModalTradePricing" tabindex="-1" aria-labelledby="ApproveModalTradePricing" aria-hidden="true">
+    <div class="modal-dialog modal-sm" style="max-width: 610px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Add Approve Remark</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="label-control">Remark</label>
+                    <textarea class="form-control" id="txt_approve_remark_trade" required rows="5"></textarea>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" id="BtnApproveTradePricing" class="btn btn-info">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="RejectModalTradePricing" tabindex="-1" aria-labelledby="RejectModalTradePricing" aria-hidden="true">
+    <div class="modal-dialog modal-sm" style="max-width: 610px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Add Reject Remark</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="label-control">Remark</label>
+                    <textarea class="form-control" id="txt_reject_remark_trade" required rows="5"></textarea>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" id="BtnRejectTradePricing" class="btn btn-info">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script src="~/js/dataTable.min.js"></script>
+<script src="~/js/Toaster.js"></script>
+<script src="~/js/tradePricing.js"></script>
+<script src="~/js/choosen.min.js"></script>
+<script src="~/js/chosen.jquery.js"></script>

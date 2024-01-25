@@ -1,0 +1,583 @@
+﻿@using Dashboard.Models
+@model Dashboard.Models.OVIView;
+
+@{
+    ViewData["Title"] = "One View Indicator";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@*@Html.AntiForgeryToken()*@
+@using (Html.BeginForm("CMOneView", "ProjectMaster"))
+{
+    <div class="wrapper">
+        <div class="row form-group">
+
+            <div class="col-md-12">
+                <div class="dash-card">
+                    <div class="row form-group">
+                        <div class="col-md-5">
+                            <label class="label-control">Enter Customer Name / LS ID</label>
+                            <div class="txtContainer">
+                                @Html.TextBoxFor(m => m.txt_custname, new { @class = "form-control custom-form-control" })
+                                @if (Model.customerDetails != null)
+                                {
+                                    <a class="btn_remove_txtSearch"><i class="fa fa-times"></i></a>
+                                }
+
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-md-6">
+                            <div class="custom-card" style="margin-bottom:20px;">
+                                <div class="custom-header-title">
+                                    <div class="col-md-12">
+                                        <h2>
+                                            Customer Details
+                                        </h2>
+                                    </div>
+                                </div>
+                                <div class="custom-card-body">
+                                    <div class="row">
+                                        <div class="col-md-12" style="height:126px;overflow:auto">
+                                            <table class="table table-borderless table-hover table-striped form-group chart-table cust-detail-table">
+                                                <tr>
+                                                    <th>Action</th>
+                                                    <th>Customer Name</th>
+                                                    <th>LSID</th>
+                                                </tr>
+                                                @if (Model.customerDetails != null)
+                                                {
+                                                    @foreach (var item in Model.customerDetails)
+                                                    {
+                                                        <tr>
+                                                            <td>
+                                                                @Html.ActionLink(
+                                                                         linkText: "View",
+                                                                         actionName: "CMOneView",
+                                                                         controllerName: "CMOneView",
+                                                                         routeValues: new { id = item.LSID, SearchText = item.CustomerName },
+                                                                         htmlAttributes: new { @class = "btn btn-info" }
+                                                                         )
+                                                            </td>
+                                                            <td>@item.CustomerName</td>
+                                                            <td>@item.LSID</td>
+                                                        </tr>
+                                                    }
+                                                }
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="custom-card">
+                                <div class="custom-card-body">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <table class="table table-borderless table-hover table-striped form-group chart-table cust-detail-table">
+                                                <tr>
+                                                    <th>City</th>
+                                                    <th>Region</th>
+                                                    <th>LaserSoft ID</th>
+                                                </tr>
+                                                @if (Model.demographicReports != null)
+                                                {
+                                                    @foreach (var item in Model.demographicReports)
+                                                    {
+                                                        <tr>
+                                                            <td>@item.City</td>
+                                                            <td>@item.Region</td>
+                                                            <td>@item.Lasersoft_Id</td>
+                                                        </tr>
+                                                    }
+                                                }
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="custom-card">
+                                <div class="custom-card-body">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <table class="table table-borderless table-hover table-striped form-group chart-table cust-detail-table">
+                                                <tr>
+                                                    <th>Facility</th>
+                                                    <th>Limit</th>
+                                                    <th>OS</th>
+                                                    <th>AC Limit Set Date</th>
+                                                    <th>Initial Limit Set Date</th>
+                                                </tr>
+                                                @if (Model.faciltyDtlReports != null)
+                                                {
+                                                    @foreach (var item in Model.faciltyDtlReports)
+                                                    {
+                                                        <tr>
+                                                            <td>@item.Facility</td>
+                                                            <td>@item.Limit</td>
+                                                            <td>@item.OS</td>
+                                                            <td>@item.AC_Limit_Set_Date</td>
+                                                            <td>@item.Initial_Limit_Set_Date</td>
+                                                        </tr>
+                                                    }
+                                                }
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row form-group">
+                        <div class="col-md-12">
+                            <div class="custom-card" style="margin-bottom:20px;">
+                                <div class="custom-card-body">
+
+                                    @if (Model.oneViewIndicatorReports != null)
+                                    {
+                                        @foreach (var item in Model.oneViewIndicatorReports)
+                                        {
+                                            <div class="row form-group">
+                                                <div class="col-md-4">
+                                                    <label class="label-control">First time 7+ dpd date</label>
+                                                    @*<input type="text" id="dpddate" class="form-control custom-form-control" disabled>*@
+
+                                                    @Html.TextBoxFor(m => item.First_time_7_dpd_date, new { @class = "form-control custom-form-control", @readonly = "true" })
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label class="label-control">First time 30+ dpd date</label>
+                                                    @*<input type="text" id="dpd_date" class="form-control custom-form-control" disabled>*@
+                                                    @Html.TextBoxFor(m => item.First_time_30_dpd_date, new { @class = "form-control custom-form-control", @readonly = "true" })
+
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label class="label-control">First time pot NPA</label>
+                                                    @*<input type="text" id="potnpa" class="form-control custom-form-control" disabled>*@
+                                                    @Html.TextBoxFor(m => item.First_time_Pot_NPA, new { @class = "form-control custom-form-control", @readonly = "true" })
+
+                                                </div>
+                                            </div>
+                                            <div class="row form-group">
+                                                <div class="col-md-4">
+                                                    <label class="label-control">Current Watchlist</label>
+                                                    @*<input type="text" id="CurrentWatchlist" class="form-control custom-form-control" disabled>*@
+                                                    @Html.TextBoxFor(m => item.Current_Watchlist, new { @class = "form-control custom-form-control", @readonly = "true" })
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label class="label-control">No.of times in last 6 M</label>
+                                                    @*<input type="text" id="dpddate" class="form-control custom-form-control" disabled>*@
+                                                    @Html.TextBoxFor(m => item.No_of_times_last_6_Watchlist, new { @class = "form-control custom-form-control", @readonly = "true" })
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label class="label-control">Months</label>
+                                                    @*<input type="text" id="Months" class="form-control custom-form-control" disabled>*@
+                                                    @Html.TextBoxFor(m => item.Watchlist_Months, new { @class = "form-control custom-form-control", @readonly = "true" })
+                                                </div>
+                                            </div>
+                                            <div class="row form-group">
+                                                <div class="col-md-4">
+                                                    <label class="label-control">Current low churning</label>
+                                                    @*<input type="text" id="lowchurning" class="form-control custom-form-control" disabled>*@
+                                                    @Html.TextBoxFor(m => item.Current_Low_Churning, new { @class = "form-control custom-form-control", @readonly = "true" })
+
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label class="label-control">No.of times in last 6 M</label>
+                                                    @*<input type="text" id="CurrentWatchlist" class="form-control custom-form-control" disabled>*@
+                                                    @Html.TextBoxFor(m => item.No_times_Last_6_Churn, new { @class = "form-control custom-form-control", @readonly = "true" })
+
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label class="label-control">months</label>
+                                                    @*<input type="text" id="months2" class="form-control custom-form-control" disabled>*@
+                                                    @Html.TextBoxFor(m => item.Low_Churn_Months, new { @class = "form-control custom-form-control", @readonly = "true" })
+                                                </div>
+                                            </div>
+                                            <div class="row form-group">
+                                                <div class="col-md-4">
+                                                    <label class="label-control">Exit</label>
+                                                    @*<input type="text" id="Exit" class="form-control custom-form-control" disabled>*@
+                                                    @Html.TextBoxFor(m => item.Exit1, new { @class = "form-control custom-form-control", @readonly = "true" })
+
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label class="label-control">Plan Avb</label>
+                                                    @*<input type="text" id="planavb" class="form-control custom-form-control" disabled>*@
+                                                    @Html.TextBoxFor(m => item.Plan_Avb, new { @class = "form-control custom-form-control", @readonly = "true" })
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label class="label-control">Plan</label>
+                                                    @*<input type="text" id="plan" class="form-control custom-form-control" disabled>*@
+                                                    @Html.TextBoxFor(m => item.Plan1, new { @class = "form-control custom-form-control", @readonly = "true" })
+                                                </div>
+                                            </div>
+                                            <div class="row form-group">
+                                                <div class="col-md-4">
+                                                    <label class="label-control">Current pot NPA</label>
+                                                    @*<input type="text" id="currentpotnpa" class="form-control custom-form-control" disabled>*@
+                                                    @Html.TextBoxFor(m => item.Current_Pot_NPA, new { @class = "form-control custom-form-control", @readonly = "true" })
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label class="label-control">No. of times in last 6 M</label>
+                                                    @*<input type="text" id="" class="form-control custom-form-control" disabled>*@
+                                                    @Html.TextBoxFor(m => item.No_times_last_6_NPA, new { @class = "form-control custom-form-control", @readonly = "true" })
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label class="label-control">Months</label>
+                                                    @*<input type="text" id="months" class="form-control custom-form-control" disabled>*@
+                                                    @Html.TextBoxFor(m => item.Pot_NPA_Months, new { @class = "form-control custom-form-control", @readonly = "true" })
+                                                </div>
+
+                                            </div>
+                                        }
+                                    }
+                                    @*<div class="row form-group">
+                                <div class="col-md-4">
+                                <label class="label-control">First time 7+ dpd date</label>
+                                <input type="text" id="dpddate" class="form-control custom-form-control" disabled>
+                                </div>
+                                <div class="col-md-4">
+                                <label class="label-control">First time 30+ dpd date</label>
+                                <input type="text" id="dpd_date" class="form-control custom-form-control" disabled>
+
+                                </div>
+                                <div class="col-md-4">
+                                <label class="label-control">First time pot NPA</label>
+                                <input type="text" id="potnpa" class="form-control custom-form-control" disabled>
+
+                                </div>
+
+                                </div>
+                                <div class="row form-group">
+                                <div class="col-md-4">
+                                <label class="label-control">Current Watchlist</label>
+                                <input type="text" id="CurrentWatchlist" class="form-control custom-form-control" disabled>
+
+                                </div>
+                                <div class="col-md-4">
+                                <label class="label-control">No.of times in last 6 M</label>
+                                <input type="text" id="dpddate" class="form-control custom-form-control" disabled>
+                                </div>
+                                <div class="col-md-4">
+                                <label class="label-control">Months</label>
+                                <input type="text" id="Months" class="form-control custom-form-control" disabled>
+
+                                </div>
+
+                                </div>
+                                <div class="row form-group">
+                                <div class="col-md-4">
+                                <label class="label-control">Current low churning</label>
+                                <input type="text" id="lowchurning" class="form-control custom-form-control" disabled>
+
+                                </div>
+                                <div class="col-md-4">
+                                <label class="label-control">No.of times in last 6 M</label>
+                                <input type="text" id="CurrentWatchlist" class="form-control custom-form-control" disabled>
+
+                                </div>
+                                <div class="col-md-4">
+                                <label class="label-control">months</label>
+                                <input type="text" id="months2" class="form-control custom-form-control" disabled>
+                                </div>
+                                </div>
+                                <div class="row form-group">
+
+                                <div class="col-md-4">
+                                <label class="label-control">Exit</label>
+                                <input type="text" id="Exit" class="form-control custom-form-control" disabled>
+
+                                </div>
+                                <div class="col-md-4">
+                                <label class="label-control">Plan Avb</label>
+                                <input type="text" id="planavb" class="form-control custom-form-control" disabled>
+
+                                </div>
+                                <div class="col-md-4">
+                                <label class="label-control">Plan</label>
+                                <input type="text" id="plan" class="form-control custom-form-control" disabled>
+
+                                </div>
+                                </div>
+                                <div class="row form-group">
+                                <div class="col-md-4">
+                                <label class="label-control">Current pot NPA</label>
+                                <input type="text" id="currentpotnpa" class="form-control custom-form-control" disabled>
+                                </div>
+                                <div class="col-md-4">
+                                <label class="label-control">No. of times in last 6 M</label>
+                                <input type="text" id="" class="form-control custom-form-control" disabled>
+
+                                </div>
+                                <div class="col-md-4">
+                                <label class="label-control">Months</label>
+                                <input type="text" id="months" class="form-control custom-form-control" disabled>
+                                </div>
+
+                                </div>*@
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row form-group">
+                        <div class="col-md-12">
+                            <div class="custom-card">
+                                <div class="custom-card-body">
+                                    <div class="custom-header-title">
+                                        <h2>Delinquency</h2>
+                                    </div>
+                                    <table id="tbl_delinquency" class="display delinquency__tbl nowrap" style="width:100%;">
+                                        <thead>
+                                            <tr>
+                                                <th>Account No.</th>
+                                                <th>Customer name</th>
+                                                <th>SME Client Id</th>
+                                                <th>Date of TOD</th>
+                                                <th>Curr Overdue AMT</th>
+                                                <th>DPD</th>
+                                                <th>Nature of delinquency</th>
+                                                <th>Currency App PDO Loans Bills</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if (Model.delinquencies != null)
+                                            {
+                                                @foreach (var item in Model.delinquencies)
+                                                {
+                                                    <tr>
+                                                        <td>@item.AC_Contract_No</td>
+                                                        <td>@item.Customer_Name</td>
+                                                        <td>@item.SME_Client_ID</td>
+                                                        <td>@item.DateOfTOD</td>
+                                                        <td>@item.Curr_Overdue_AMT</td>
+                                                        <td>@item.DPD</td>
+                                                        <td>@item.Nature_of_Delq</td>
+                                                        <td>@item.Currency_App_PDO_Loans_Bills</td>
+                                                    </tr>
+                                                }
+                                            }
+                                            @*<tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        </tr>*@
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row form-group">
+                        <div class="col-md-6">
+                            <div class="custom-header-title">
+                                <h2>House Keeping</h2>
+                            </div>
+                            <div class="custom-card">
+
+                                <div class="custom-card-body">
+                                    <table id="tbl_housekeeping" class="table table-borderless table-hover table-striped form-group chart-table cust-detail-table" style="width:100%;">
+                                        <thead>
+                                            <tr>
+                                                <th>HouseKeeping Item </th>
+                                                <th>Due Date</th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if (Model.housekeepingReports != null)
+                                            {
+                                                @foreach (var item in Model.housekeepingReports)
+                                                {
+                                                    <tr>
+                                                        <td>@item.Doc_Name</td>
+                                                        <td>@item.Due_Date</td>
+                                                    </tr>
+                                                }
+                                            }
+                                            @*<tr>
+                                        <td></td>
+                                        <td></td>
+
+                                        </tr>*@
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="custom-header-title">
+                                <h2>BG invocation Details</h2>
+                            </div>
+                            <div class="custom-card">
+
+                                <div class="custom-card-body">
+                                    <table id="tbl_housekeeping" class="table table-borderless table-hover table-striped form-group chart-table cust-detail-table" style="width:100%;">
+                                        <thead>
+                                            <tr>
+                                                <th>LS ID</th>
+                                                <th>Contract Reff No. </th>
+                                                <th>App</th>
+                                                <th>BEN</th>
+                                                <th>Availment Amount</th>
+                                                <th>Segment</th>
+                                                <th>Availment Date</th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if (Model.bGUploads != null)
+                                            {
+                                                @foreach (var item in Model.bGUploads)
+                                                {
+                                                    <tr>
+                                                        <td>@item.LS_ID</td>
+                                                        <td>@item.CONTRACT_REF_NO</td>
+                                                        <td>@item.APP</td>
+                                                        <td>@item.BEN</td>
+                                                        <td>@item.AVAILMENT_AMT</td>
+                                                        <td>@item.Segment</td>
+                                                        <td>@item.AVAILMENT_DATE</td>
+                                                    </tr>
+                                                }
+                                            }
+                                            @*<tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        </tr>*@
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row form-group">
+                        <div class="col-md-6">
+                            <div class="custom-header-title">
+                                <h2>SMA-02</h2>
+                            </div>
+                            <div class="custom-card">
+
+                                <div class="custom-card-body">
+                                    <table id="tbl_housekeeping" class="table table-borderless table-hover table-striped form-group chart-table cust-detail-table" style="width:100%;">
+                                        <thead>
+                                            <tr>
+                                                <th>LS ID</th>
+                                                <th>Customer name</th>
+                                                <th>PAN</th>
+                                                <th>Bank Name</th>
+                                                <th>Month</th>
+                                                <th>Date Interested</th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if (Model.sANTransactions != null)
+                                            {
+                                                @foreach (var item in Model.sANTransactions)
+                                                {
+                                                    <tr>
+                                                        <td>@item.LSID</td>
+                                                        <td>@item.Cust_Name</td>
+                                                        <td>@item.PAN</td>
+                                                        <td>@item.BANK_NAME</td>
+                                                        <td>@item.Month</td>
+                                                        <td>@item.DATE_inserted</td>
+                                                    </tr>
+                                                }
+                                            }
+                                            @*<tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        </tr>*@
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="custom-header-title">
+                                <h2>GST Transaction</h2>
+                            </div>
+                            <div class="custom-card">
+
+                                <div class="custom-card-body">
+                                    <table id="tbl_housekeeping" class="table table-borderless table-hover table-striped form-group chart-table cust-detail-table" style="width:100%;">
+                                        <thead>
+                                            <tr>
+                                                <th>Month</th>
+                                                <th>Name</th>
+                                                <th>Acc no</th>
+                                                <th>LSID</th>
+                                                <th>GST Amount</th>
+                                                <th>Date Interested</th>
+
+
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if (Model.gSTTransactions != null)
+                                            {
+                                                @foreach (var item in Model.gSTTransactions)
+                                                {
+                                                    <tr>
+                                                        <td>@item.Month</td>
+                                                        <td>@item.Name</td>
+                                                        <td>@item.Accmo</td>
+                                                        <td>@item.LSID</td>
+                                                        <td>@item.Gst_AMOUNT</td>
+                                                        <td>@item.DATE_inserted</td>
+                                                    </tr>
+                                                }
+                                            }
+                                            @*<tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+
+                                        </tr>*@
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+<script src="~/js/cmoneview.js"></script>
+<script src="~/js/CMOVI.js"></script>

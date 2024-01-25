@@ -1,0 +1,218 @@
+﻿@{
+    ViewData["Title"] = "Portfolio";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="wrapper">
+    <div class="row form-group">
+        <div class="col-md-12">
+            <div class="dash-card">
+                <div class="row form-group">
+                    <div class="col-md-2">
+                        <h2 class="card-header-title">
+                            Overview
+                        </h2>
+
+                    </div>
+                    <div class="col-md-3">
+                        <div class="input-group">
+                            @*<input type="text" id="month" required class="form-control custom-form-control month" data-provide="datepicker">
+                            <div class="input-group-addon">
+                            <span class="icon-arrow-down"></span>
+                            </div>*@
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="input-group">
+                            @*<input type="text" id="year" required class="form-control custom-form-control year" data-provide="datepicker">
+                            <div class="input-group-addon">
+                            <span class="icon-arrow-down"></span>
+                            </div>*@
+                            <input type="text" id="month" required class="form-control custom-form-control month" data-provide="datepicker">
+                            <div class="input-group-addon">
+                                <span class="icon-arrow-down"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row form-group">
+        <div class="col-md-12">
+            <div class="custom-card">
+                <div class="custom-header-title">
+                    <h2>
+                        By Segment
+                    </h2>
+                </div>
+                <div class="custom-card-body">
+                    <p style="text-align:center; margin-bottom: 0;margin-top: 10px;" id="pSegment">No Records Found</p>
+                    <div class="row" id="dvSegment">
+                        <div class="col-md-4">
+                            <div class="canvas-con">
+                                <h6 id="piChartValue"></h6><span>CR</span>
+                                <p>Total</p>
+                                <div class="canvas-con-inner">
+                                    <canvas id="portfolio-chart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="table-outer">
+                                <table class="table table-borderless table-hover table-striped form-group chart-table" id="tblPortFolio"></table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+    <div class="row form-group">
+        <div class="col-md-12">
+            <div class="custom-card">
+                <div class="custom-header-title">
+                    <h2>
+                        Industry Wise Exposure
+                    </h2>
+                </div>
+                <div class="custom-card-body">
+                    <p style="text-align:center; margin-bottom: 0;margin-top: 10px;" id="pIndustrywise">No Records Found</p>
+                    <div class="row" id="dvIndustrywise" style="max-height: 500px; overflow: auto;">
+                        <div class="col-md-4">
+                            <div class="canvas-con">
+                                <h6 style="left: 197px;" id="totalOfIndusryCount"></h6>
+                                <p>Total</p>
+                                <div class="canvas-con-inner">
+                                    <canvas id="industry-chart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-8">
+                            <div class="table-outer">
+                                <table class="table table-borderless table-hover table-striped form-group chart-table chart-ind industry-table" id="tblIndustry"></table>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="custom-card">
+                <div class="custom-header-title">
+                    <h2>
+                        Risk Categories
+                    </h2>
+                </div>
+                <p style="text-align:center; margin-bottom: 0;margin-top: 10px;" id="pRiskCat">No Records Found</p>
+                <div class="custom-card-body" id="dvRiskCat">
+                    <div class="table-outer">
+                        <table class="table table-borderless table-hover table-striped form-group chart-table" id="tblRiskCategories"></table>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="custom-card">
+                <div class="custom-header-title">
+                    <h2>
+                        ABC Categories
+                    </h2>
+                </div>
+                <p style="text-align:center; margin-bottom: 0;margin-top: 10px;" id="pABCCategories">No Records Found</p>
+                <div class="custom-card-body" id="dvABCCategories">
+                    <div class="table-outer">
+                        <table class="table table-borderless table-hover table-striped form-group chart-table text-center" id="tblABCCat"></table>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+
+    <div class="row form-group">
+        <div class="col-md-12">
+            <div class="dash-card">
+                <div class="row form-group">
+                    <div class="col-md-2">
+                        <h2 class="card-header-title">
+                            Trend
+                        </h2>
+                    </div>
+
+                </div>
+                <div class="row">
+
+                    <div class="col-md-12 trendchart">
+                        <div class="custom-card">
+                            <p style="text-align:center; margin-bottom: 0;margin-top: 10px;" id="pTrend">No Records Found</p>
+                            <div class="custom-card-body" id="dvTrend">
+                                <canvas id="TrendChart"></canvas>
+                                <div id="legend" class="legendvalue"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row form-group">
+        <div class="col-md-12">
+            <div class="dash-card">
+                <div class="row form-group">
+                    <div class="col-md-3">
+                        <h2 class="card-header-title">
+                            Portfolio Summary
+                        </h2>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="input-group">
+                            @*<input type="text" id="summary_month" required class="form-control custom-form-control month" data-provide="datepicker">
+                            <div class="input-group-addon">
+                            <span class="icon-arrow-down"></span>
+                            </div>*@
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="input-group">
+                            @*<input type="text" id="summary_year" required class="form-control custom-form-control year" data-provide="datepicker">
+                            <div class="input-group-addon">
+                            <span class="icon-arrow-down"></span>
+                            </div>*@
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+
+                    <div class="col-md-12">
+                        <div class="custom-card">
+                            <p style="text-align:center; margin-bottom: 0;margin-top: 10px;" id="pSummary">No Records Found</p>
+                            <div class="custom-card-body display" id="dvSummary">
+                                <table class="table table-borderless table-striped table-td-border table-hover display portfolio-summary-table" style="width:100%" id="tblPortfolioSummary"></table>
+                            </div>
+
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script src="~/js/Portfolio.js"></script>
