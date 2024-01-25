@@ -1,0 +1,25 @@
+﻿namespace Dashboard.Models
+{
+    public class clsConnectionString
+    {
+        public static int ITGRCCode = 1498634;
+        public static string[] sValues = new[] { "App_Web", "OneViewIndicator" };
+        public static string NewDbVaultIdMail = "iAqVthouwQjXoc3FRUUEhQ==";
+        public static string NewDbVaultId = "gTGE/RRRz2ocdWgCJYJjsg==";
+
+
+        public static string GetConnectionString()
+        {
+            string result = string.Empty;
+
+            //UAT ConString
+            result = "Data Source = 10.229.195.89,1989; Database = OneViewIndicator_Dev; User Id =VC_Developer; Password =Sde$%6543;";
+
+            //Live ConString
+            //result = ConnectionDB.getConString("1408481", string.Empty, "gTGE/RRRz2ocdWgCJYJjsg==");
+
+            //result=result+ "Column Encryption Setting = enabled";
+            return result;
+        }
+    }
+}
