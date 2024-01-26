@@ -16,6 +16,11 @@
   <ItemGroup>
     <Folder Include="Files\" />
     <Folder Include="UrgentBulletin\" />
+    <Folder Include="wwwroot\AccountCustomizationFiles\" />
+    <Folder Include="wwwroot\Logs\" />
+    <Folder Include="wwwroot\FacilityFiles\" />
+    <Folder Include="wwwroot\fonts\" />
+    <Folder Include="wwwroot\SampleFiles\" />
   </ItemGroup>
 
 </Project>

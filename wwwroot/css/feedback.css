@@ -1,0 +1,696 @@
+﻿/********* UI rating *****/
+
+
+
+.ui__rating {
+    padding-bottom: 0.375em;
+    position: relative;
+}
+
+    .ui__rating .rating {
+        margin: auto;
+    }
+
+    .ui__rating .rating__display {
+        font-size: 1em;
+        font-weight: 500;
+        min-height: 1.25em;
+        /*position: absolute;*/
+        top: 7px;
+        width: 100%;
+        margin-bottom: 0;
+        display: block;
+        color: #333;
+        /*text-align: center;*/
+    }
+
+    /*.rating__stars {
+            padding-bottom: 0.375em;
+            position: relative;
+        }*/
+
+    .ui__rating .rating__star {
+        display: block;
+        overflow: visible;
+        pointer-events: none;
+        width: 2em;
+        height: 2em;
+    }
+
+    .ui__rating.rating__star-ring, .ui__rating .rating__star-fill, .ui__rating .rating__star-line, .ui__rating .rating__star-stroke {
+        animation-duration: 1s;
+        animation-timing-function: ease-in-out;
+        animation-fill-mode: forwards;
+    }
+
+    .ui__rating .rating__star-ring, .ui__rating .rating__star-fill, .ui__rating .rating__star-line {
+        stroke: #7860e2;
+    }
+
+    .ui__rating .rating__star-fill {
+        fill: #7860e2;
+        transform: scale(0);
+        transition: fill var(--trans-dur) var(--bezier), transform var(--trans-dur) var(--bezier);
+    }
+
+    .ui__rating .rating__star-stroke {
+        stroke: #7860e2;
+        transition: stroke var(--trans-dur);
+    }
+
+    .ui__rating .rating__label {
+        cursor: pointer;
+        padding: 0.125em;
+        margin-bottom: 0;
+    }
+
+    .ui__rating .rating__label--delay1 .rating__star-ring, .ui__rating .rating__label--delay1 .rating__star-fill, .ui__rating .rating__label--delay1 .rating__star-line, .ui__rating .rating__label--delay1 .rating__star-stroke {
+        animation-delay: 0.05s;
+    }
+
+    .ui__rating .rating__label--delay2 .rating__star-ring, .ui__rating .rating__label--delay2 .rating__star-fill, .ui__rating .rating__label--delay2 .rating__star-line, .ui__rating .rating__label--delay2 .rating__star-stroke {
+        animation-delay: 0.1s;
+    }
+
+    .ui__rating .rating__label--delay3 .rating__star-ring, .ui__rating .rating__label--delay3 .rating__star-fill, .ui__rating .rating__label--delay3 .rating__star-line, .ui__rating .rating__label--delay3 .rating__star-stroke {
+        animation-delay: 0.15s;
+    }
+
+    .ui__rating .rating__label--delay4 .rating__star-ring, .ui__rating .rating__label--delay4 .rating__star-fill, .ui__rating .rating__label--delay4 .rating__star-line, .ui__rating .rating__label--delay4 .rating__star-stroke {
+        animation-delay: 0.2s;
+    }
+
+    .ui__rating .rating__input {
+        -webkit-appearance: none;
+        appearance: none;
+    }
+
+        .ui__rating .rating__input:hover ~ [data-rating]:not([hidden]) {
+            display: none;
+        }
+
+        .ui__rating .rating__input-1:hover ~ [data-rating="1"][hidden], .ui__rating .rating__input-2:hover ~ [data-rating="2"][hidden], .ui__rating .rating__input-3:hover ~ [data-rating="3"][hidden], .ui__rating .rating__input-4:hover ~ [data-rating="4"][hidden], .ui__rating .rating__input-5:hover ~ [data-rating="5"][hidden], .ui__rating .rating__input:checked:hover ~ [data-rating]:not([hidden]) {
+            display: block !important;
+        }
+
+    .ui__rating .rating__input-1:hover ~ .rating__label:first-of-type .rating__star-stroke, .ui__rating .rating__input-2:hover ~ .rating__label:nth-of-type(-n + 2) .rating__star-stroke, .ui__rating .rating__input-3:hover ~ .rating__label:nth-of-type(-n + 3) .rating__star-stroke, .ui__rating .rating__input-4:hover ~ .rating__label:nth-of-type(-n + 4) .rating__star-stroke, .rating__input-5:hover ~ .rating__label:nth-of-type(-n + 5) .rating__star-stroke {
+        stroke: #009371;
+        transform: scale(1);
+    }
+
+    .ui__rating .rating__input-1:checked ~ .rating__label:first-of-type .rating__star-ring, .ui__rating .rating__input-2:checked ~ .rating__label:nth-of-type(-n + 2) .rating__star-ring, .ui__rating .rating__input-3:checked ~ .rating__label:nth-of-type(-n + 3) .rating__star-ring, .ui__rating .rating__input-4:checked ~ .rating__label:nth-of-type(-n + 4) .rating__star-ring, .ui__rating .rating__input-5:checked ~ .rating__label:nth-of-type(-n + 5) .rating__star-ring {
+        animation-name: starRing;
+    }
+
+    .ui__rating .rating__input-1:checked ~ .rating__label:first-of-type .rating__star-stroke, .ui__rating .rating__input-2:checked ~ .rating__label:nth-of-type(-n + 2) .rating__star-stroke, .ui__rating .rating__input-3:checked ~ .rating__label:nth-of-type(-n + 3) .rating__star-stroke, .ui__rating .rating__input-4:checked ~ .rating__label:nth-of-type(-n + 4) .rating__star-stroke, .ui__rating .rating__input-5:checked ~ .rating__label:nth-of-type(-n + 5) .rating__star-stroke {
+        animation-name: starStroke;
+    }
+
+    .ui__rating .rating__input-1:checked ~ .rating__label:first-of-type .rating__star-line, .ui__rating .rating__input-2:checked ~ .rating__label:nth-of-type(-n + 2) .rating__star-line, .ui__rating .rating__input-3:checked ~ .rating__label:nth-of-type(-n + 3) .rating__star-line, .ui__rating .ui__rating .rating__input-4:checked ~ .rating__label:nth-of-type(-n + 4) .rating__star-line, .ui__rating .rating__input-5:checked ~ .rating__label:nth-of-type(-n + 5) .rating__star-line {
+        animation-name: starLine;
+    }
+
+    .ui__rating .rating__input-1:checked ~ .rating__label:first-of-type .rating__star-fill, .ui__rating .rating__input-2:checked ~ .rating__label:nth-of-type(-n + 2) .rating__star-fill, .ui__rating .rating__input-3:checked ~ .rating__label:nth-of-type(-n + 3) .rating__star-fill, .ui__rating .rating__input-4:checked ~ .rating__label:nth-of-type(-n + 4) .rating__star-fill, .ui__rating .rating__input-5:checked ~ .rating__label:nth-of-type(-n + 5) .rating__star-fill {
+        animation-name: starFill;
+    }
+
+    .ui__rating .rating__input-1:not(:checked):hover ~ .rating__label:first-of-type .rating__star-fill, .ui__rating .rating__input-2:not(:checked):hover ~ .rating__label:nth-of-type(2) .rating__star-fill, .ui__rating .rating__input-3:not(:checked):hover ~ .rating__label:nth-of-type(3) .rating__star-fill, .ui__rating .rating__input-4:not(:checked):hover ~ .rating__label:nth-of-type(4) .rating__star-fill, .ui__rating .rating__input-5:not(:checked):hover ~ .rating__label:nth-of-type(5) .rating__star-fill {
+        fill: #593bdb;
+    }
+
+    .ui__rating .rating__sr {
+        clip: rect(1px, 1px, 1px, 1px);
+        overflow: hidden;
+        position: absolute;
+        width: 1px;
+        height: 1px;
+    }
+
+/********* Performance Rating******/
+
+.performance__rating {
+    padding-bottom: 0.375em;
+    position: relative;
+}
+
+    .performance__rating .rating {
+        margin: auto;
+    }
+
+    .performance__rating .rating__display {
+        font-size: 1em;
+        font-weight: 500;
+        min-height: 1.25em;
+        /*position: absolute;*/
+        top: 100%;
+        width: 100%;
+        margin-bottom: 0;
+        display: block;
+        color: #333;
+        /*text-align: center;*/
+    }
+
+    .performance__rating .rating__star {
+        display: block;
+        overflow: visible;
+        pointer-events: none;
+        width: 2em;
+        height: 2em;
+    }
+
+    .performance__rating.rating__star-ring, .performance__rating .rating__star-fill, .performance__rating .rating__star-line, .performance__rating .rating__star-stroke {
+        animation-duration: 1s;
+        animation-timing-function: ease-in-out;
+        animation-fill-mode: forwards;
+    }
+
+    .performance__rating .rating__star-ring, .performance__rating .rating__star-fill, .performance__rating .rating__star-line {
+        stroke: #7860e2;
+    }
+
+    .performance__rating .rating__star-fill {
+        fill: #7860e2;
+        transform: scale(0);
+        transition: fill var(--trans-dur) var(--bezier), transform var(--trans-dur) var(--bezier);
+    }
+
+    .performance__rating .rating__star-stroke {
+        stroke: #7860e2;
+        transition: stroke var(--trans-dur);
+    }
+
+    .performance__rating .rating__label {
+        cursor: pointer;
+        padding: 0.125em;
+        margin-bottom: 0;
+    }
+
+    .performance__rating .rating__label--delay1 .rating__star-ring, .performance__rating .rating__label--delay1 .rating__star-fill, .performance__rating .rating__label--delay1 .rating__star-line, .performance__rating .rating__label--delay1 .rating__star-stroke {
+        animation-delay: 0.05s;
+    }
+
+    .performance__rating .rating__label--delay2 .rating__star-ring, .performance__rating .rating__label--delay2 .rating__star-fill, .performance__rating .rating__label--delay2 .rating__star-line, .performance__rating .rating__label--delay2 .rating__star-stroke {
+        animation-delay: 0.1s;
+    }
+
+    .performance__rating .rating__label--delay3 .rating__star-ring, .performance__rating .rating__label--delay3 .rating__star-fill, .performance__rating .rating__label--delay3 .rating__star-line, .performance__rating .rating__label--delay3 .rating__star-stroke {
+        animation-delay: 0.15s;
+    }
+
+    .performance__rating .rating__label--delay4 .rating__star-ring, .performance__rating .rating__label--delay4 .rating__star-fill, .performance__rating .rating__label--delay4 .rating__star-line, .performance__rating .rating__label--delay4 .rating__star-stroke {
+        animation-delay: 0.2s;
+    }
+
+    .performance__rating .rating__input {
+        -webkit-appearance: none;
+        appearance: none;
+    }
+
+        .performance__rating .rating__input:hover ~ [data-rating]:not([hidden]) {
+            display: none;
+        }
+
+        .performance__rating .rating__input-1:hover ~ [data-rating="1"][hidden], .performance__rating .rating__input-2:hover ~ [data-rating="2"][hidden], .performance__rating .rating__input-3:hover ~ [data-rating="3"][hidden], .performance__rating .rating__input-4:hover ~ [data-rating="4"][hidden], .performance__rating .rating__input-5:hover ~ [data-rating="5"][hidden], .performance__rating .rating__input:checked:hover ~ [data-rating]:not([hidden]) {
+            display: block !important;
+        }
+
+    .performance__rating .rating__input-1:hover ~ .rating__label:first-of-type .rating__star-stroke, .performance__rating .rating__input-2:hover ~ .rating__label:nth-of-type(-n + 2) .rating__star-stroke, .performance__rating .rating__input-3:hover ~ .rating__label:nth-of-type(-n + 3) .rating__star-stroke, .performance__rating .rating__input-4:hover ~ .rating__label:nth-of-type(-n + 4) .rating__star-stroke, .rating__input-5:hover ~ .rating__label:nth-of-type(-n + 5) .rating__star-stroke {
+        stroke: #009371;
+        transform: scale(1);
+    }
+
+    .performance__rating .rating__input-1:checked ~ .rating__label:first-of-type .rating__star-ring, .performance__rating .rating__input-2:checked ~ .rating__label:nth-of-type(-n + 2) .rating__star-ring, .performance__rating .rating__input-3:checked ~ .rating__label:nth-of-type(-n + 3) .rating__star-ring, .performance__rating .rating__input-4:checked ~ .rating__label:nth-of-type(-n + 4) .rating__star-ring, .performance__rating .rating__input-5:checked ~ .rating__label:nth-of-type(-n + 5) .rating__star-ring {
+        animation-name: starRing;
+    }
+
+    .performance__rating .rating__input-1:checked ~ .rating__label:first-of-type .rating__star-stroke, .performance__rating .rating__input-2:checked ~ .rating__label:nth-of-type(-n + 2) .rating__star-stroke, .performance__rating .rating__input-3:checked ~ .rating__label:nth-of-type(-n + 3) .rating__star-stroke, .performance__rating .rating__input-4:checked ~ .rating__label:nth-of-type(-n + 4) .rating__star-stroke, .performance__rating .rating__input-5:checked ~ .rating__label:nth-of-type(-n + 5) .rating__star-stroke {
+        animation-name: starStroke;
+    }
+
+    .performance__rating .rating__input-1:checked ~ .rating__label:first-of-type .rating__star-line, .performance__rating .rating__input-2:checked ~ .rating__label:nth-of-type(-n + 2) .rating__star-line, .performance__rating .rating__input-3:checked ~ .rating__label:nth-of-type(-n + 3) .rating__star-line, .performance__rating .rating__input-4:checked ~ .rating__label:nth-of-type(-n + 4) .rating__star-line, .ui__rating .rating__input-5:checked ~ .rating__label:nth-of-type(-n + 5) .rating__star-line {
+        animation-name: starLine;
+    }
+
+    .performance__rating .rating__input-1:checked ~ .rating__label:first-of-type .rating__star-fill, .performance__rating .rating__input-2:checked ~ .rating__label:nth-of-type(-n + 2) .rating__star-fill, .performance__rating .rating__input-3:checked ~ .rating__label:nth-of-type(-n + 3) .rating__star-fill, .performance__rating .rating__input-4:checked ~ .rating__label:nth-of-type(-n + 4) .rating__star-fill, .performance__rating .rating__input-5:checked ~ .rating__label:nth-of-type(-n + 5) .rating__star-fill {
+        animation-name: starFill;
+    }
+
+    .performance__rating .rating__input-1:not(:checked):hover ~ .rating__label:first-of-type .rating__star-fill, .performance__rating .rating__input-2:not(:checked):hover ~ .rating__label:nth-of-type(2) .rating__star-fill, .performance__rating .rating__input-3:not(:checked):hover ~ .rating__label:nth-of-type(3) .rating__star-fill, .performance__rating .rating__input-4:not(:checked):hover ~ .rating__label:nth-of-type(4) .rating__star-fill, .performance__rating .rating__input-5:not(:checked):hover ~ .rating__label:nth-of-type(5) .rating__star-fill {
+        fill: #593bdb;
+    }
+
+    .performance__rating .rating__sr {
+        clip: rect(1px, 1px, 1px, 1px);
+        overflow: hidden;
+        position: absolute;
+        width: 1px;
+        height: 1px;
+    }
+
+
+/********* userfreindly Rating******/
+
+.userfreindly__rating {
+    padding-bottom: 0.375em;
+    position: relative;
+}
+
+    .userfreindly__rating .rating {
+        margin: auto;
+    }
+
+    .userfreindly__rating .rating__display {
+        font-size: 1em;
+        font-weight: 500;
+        min-height: 1.25em;
+        /*position: absolute;*/
+        top: 100%;
+        width: 100%;
+        margin-bottom: 0;
+        display: block;
+        color: #333;
+        /*text-align: center;*/
+    }
+
+    .userfreindly__rating .rating__star {
+        display: block;
+        overflow: visible;
+        pointer-events: none;
+        width: 2em;
+        height: 2em;
+    }
+
+    .userfreindly__rating.rating__star-ring, .userfreindly__rating .rating__star-fill, .userfreindly__rating .rating__star-line, .userfreindly__rating .rating__star-stroke {
+        animation-duration: 1s;
+        animation-timing-function: ease-in-out;
+        animation-fill-mode: forwards;
+    }
+
+    .userfreindly__rating .rating__star-ring, .userfreindly__rating .rating__star-fill, .userfreindly__rating .rating__star-line {
+        stroke: #7860e2;
+    }
+
+    .userfreindly__rating .rating__star-fill {
+        fill: #7860e2;
+        transform: scale(0);
+        transition: fill var(--trans-dur) var(--bezier), transform var(--trans-dur) var(--bezier);
+    }
+
+    .userfreindly__rating .rating__star-stroke {
+        stroke: #7860e2;
+        transition: stroke var(--trans-dur);
+    }
+
+    .userfreindly__rating .rating__label {
+        cursor: pointer;
+        padding: 0.125em;
+        margin-bottom: 0;
+    }
+
+    .userfreindly__rating .rating__label--delay1 .rating__star-ring, .userfreindly__rating .rating__label--delay1 .rating__star-fill, .userfreindly__rating .rating__label--delay1 .rating__star-line, .userfreindly__rating .rating__label--delay1 .rating__star-stroke {
+        animation-delay: 0.05s;
+    }
+
+    .userfreindly__rating .rating__label--delay2 .rating__star-ring, .userfreindly__rating .rating__label--delay2 .rating__star-fill, .userfreindly__rating .rating__label--delay2 .rating__star-line, .userfreindly__rating .rating__label--delay2 .rating__star-stroke {
+        animation-delay: 0.1s;
+    }
+
+    .userfreindly__rating .rating__label--delay3 .rating__star-ring, .userfreindly__rating .rating__label--delay3 .rating__star-fill, .userfreindly__rating .rating__label--delay3 .rating__star-line, .userfreindly__rating .rating__label--delay3 .rating__star-stroke {
+        animation-delay: 0.15s;
+    }
+
+    .userfreindly__rating .rating__label--delay4 .rating__star-ring, .userfreindly__rating .rating__label--delay4 .rating__star-fill, .userfreindly__rating .rating__label--delay4 .rating__star-line, .userfreindly__rating .rating__label--delay4 .rating__star-stroke {
+        animation-delay: 0.2s;
+    }
+
+    .userfreindly__rating .rating__input {
+        -webkit-appearance: none;
+        appearance: none;
+    }
+
+        .userfreindly__rating .rating__input:hover ~ [data-rating]:not([hidden]) {
+            display: none;
+        }
+
+        .userfreindly__rating .rating__input-1:hover ~ [data-rating="1"][hidden], .userfreindly__rating .rating__input-2:hover ~ [data-rating="2"][hidden], .userfreindly__rating .rating__input-3:hover ~ [data-rating="3"][hidden], .userfreindly__rating .rating__input-4:hover ~ [data-rating="4"][hidden], .userfreindly__rating .rating__input-5:hover ~ [data-rating="5"][hidden], .userfreindly__rating .rating__input:checked:hover ~ [data-rating]:not([hidden]) {
+            display: block !important;
+        }
+
+    .userfreindly__rating .rating__input-1:hover ~ .rating__label:first-of-type .rating__star-stroke, .userfreindly__rating .rating__input-2:hover ~ .rating__label:nth-of-type(-n + 2) .rating__star-stroke, .userfreindly__rating .rating__input-3:hover ~ .rating__label:nth-of-type(-n + 3) .rating__star-stroke, .userfreindly__rating .rating__input-4:hover ~ .rating__label:nth-of-type(-n + 4) .rating__star-stroke, .rating__input-5:hover ~ .rating__label:nth-of-type(-n + 5) .rating__star-stroke {
+        stroke: #009371;
+        transform: scale(1);
+    }
+
+    .userfreindly__rating .rating__input-1:checked ~ .rating__label:first-of-type .rating__star-ring, .userfreindly__rating .rating__input-2:checked ~ .rating__label:nth-of-type(-n + 2) .rating__star-ring, .userfreindly__rating .rating__input-3:checked ~ .rating__label:nth-of-type(-n + 3) .rating__star-ring, .userfreindly__rating .rating__input-4:checked ~ .rating__label:nth-of-type(-n + 4) .rating__star-ring, .userfreindly__rating .rating__input-5:checked ~ .rating__label:nth-of-type(-n + 5) .rating__star-ring {
+        animation-name: starRing;
+    }
+
+    .userfreindly__rating .rating__input-1:checked ~ .rating__label:first-of-type .rating__star-stroke, .userfreindly__rating .rating__input-2:checked ~ .rating__label:nth-of-type(-n + 2) .rating__star-stroke, .userfreindly__rating .rating__input-3:checked ~ .rating__label:nth-of-type(-n + 3) .rating__star-stroke, .userfreindly__rating .rating__input-4:checked ~ .rating__label:nth-of-type(-n + 4) .rating__star-stroke, .userfreindly__rating .rating__input-5:checked ~ .rating__label:nth-of-type(-n + 5) .rating__star-stroke {
+        animation-name: starStroke;
+    }
+
+    .userfreindly__rating .rating__input-1:checked ~ .rating__label:first-of-type .rating__star-line, .userfreindly__rating .rating__input-2:checked ~ .rating__label:nth-of-type(-n + 2) .rating__star-line, .userfreindly__rating .rating__input-3:checked ~ .rating__label:nth-of-type(-n + 3) .rating__star-line, .userfreindly__rating .rating__input-4:checked ~ .rating__label:nth-of-type(-n + 4) .rating__star-line, .ui__rating .rating__input-5:checked ~ .rating__label:nth-of-type(-n + 5) .rating__star-line {
+        animation-name: starLine;
+    }
+
+    .userfreindly__rating .rating__input-1:checked ~ .rating__label:first-of-type .rating__star-fill, .userfreindly__rating .rating__input-2:checked ~ .rating__label:nth-of-type(-n + 2) .rating__star-fill, .userfreindly__rating .rating__input-3:checked ~ .rating__label:nth-of-type(-n + 3) .rating__star-fill, .userfreindly__rating .rating__input-4:checked ~ .rating__label:nth-of-type(-n + 4) .rating__star-fill, .userfreindly__rating .rating__input-5:checked ~ .rating__label:nth-of-type(-n + 5) .rating__star-fill {
+        animation-name: starFill;
+    }
+
+    .userfreindly__rating .rating__input-1:not(:checked):hover ~ .rating__label:first-of-type .rating__star-fill, .userfreindly__rating .rating__input-2:not(:checked):hover ~ .rating__label:nth-of-type(2) .rating__star-fill, .userfreindly__rating .rating__input-3:not(:checked):hover ~ .rating__label:nth-of-type(3) .rating__star-fill, .userfreindly__rating .rating__input-4:not(:checked):hover ~ .rating__label:nth-of-type(4) .rating__star-fill, .userfreindly__rating .rating__input-5:not(:checked):hover ~ .rating__label:nth-of-type(5) .rating__star-fill {
+        fill: #593bdb;
+    }
+
+    .userfreindly__rating .rating__sr {
+        clip: rect(1px, 1px, 1px, 1px);
+        overflow: hidden;
+        position: absolute;
+        width: 1px;
+        height: 1px;
+    }
+
+
+/********* experience Rating******/
+
+.experience__rating {
+    padding-bottom: 0.375em;
+    position: relative;
+}
+
+    .experience__rating .rating {
+        margin: auto;
+    }
+
+    .experience__rating .rating__display {
+        font-size: 1em;
+        font-weight: 500;
+        min-height: 1.25em;
+        /*position: absolute;*/
+        top: 100%;
+        width: 100%;
+        margin-bottom: 0;
+        display: block;
+        color: #333;
+        /*text-align: center;*/
+    }
+
+    .experience__rating .rating__star {
+        display: block;
+        overflow: visible;
+        pointer-events: none;
+        width: 2em;
+        height: 2em;
+    }
+
+    .experience__rating.rating__star-ring, .experience__rating .rating__star-fill, .experience__rating .rating__star-line, .experience__rating .rating__star-stroke {
+        animation-duration: 1s;
+        animation-timing-function: ease-in-out;
+        animation-fill-mode: forwards;
+    }
+
+    .experience__rating .rating__star-ring, .experience__rating .rating__star-fill, .experience__rating .rating__star-line {
+        stroke: #7860e2;
+    }
+
+    .experience__rating .rating__star-fill {
+        fill: #7860e2;
+        transform: scale(0);
+        transition: fill var(--trans-dur) var(--bezier), transform var(--trans-dur) var(--bezier);
+    }
+
+    .experience__rating .rating__star-stroke {
+        stroke: #7860e2;
+        transition: stroke var(--trans-dur);
+    }
+
+    .experience__rating .rating__label {
+        cursor: pointer;
+        padding: 0.125em;
+        margin-bottom: 0;
+    }
+
+    .experience__rating .rating__label--delay1 .rating__star-ring, .experience__rating .rating__label--delay1 .rating__star-fill, .experience__rating .rating__label--delay1 .rating__star-line, .experience__rating .rating__label--delay1 .rating__star-stroke {
+        animation-delay: 0.05s;
+    }
+
+    .experience__rating .rating__label--delay2 .rating__star-ring, .experience__rating .rating__label--delay2 .rating__star-fill, .experience__rating .rating__label--delay2 .rating__star-line, .experience__rating .rating__label--delay2 .rating__star-stroke {
+        animation-delay: 0.1s;
+    }
+
+    .experience__rating .rating__label--delay3 .rating__star-ring, .experience__rating .rating__label--delay3 .rating__star-fill, .experience__rating .rating__label--delay3 .rating__star-line, .experience__rating .rating__label--delay3 .rating__star-stroke {
+        animation-delay: 0.15s;
+    }
+
+    .experience__rating .rating__label--delay4 .rating__star-ring, .experience__rating .rating__label--delay4 .rating__star-fill, .experience__rating .rating__label--delay4 .rating__star-line, .experience__rating .rating__label--delay4 .rating__star-stroke {
+        animation-delay: 0.2s;
+    }
+
+    .experience__rating .rating__input {
+        -webkit-appearance: none;
+        appearance: none;
+    }
+
+        .experience__rating .rating__input:hover ~ [data-rating]:not([hidden]) {
+            display: none;
+        }
+
+        .experience__rating .rating__input-1:hover ~ [data-rating="1"][hidden], .experience__rating .rating__input-2:hover ~ [data-rating="2"][hidden], .experience__rating .rating__input-3:hover ~ [data-rating="3"][hidden], .experience__rating .rating__input-4:hover ~ [data-rating="4"][hidden], .experience__rating .rating__input-5:hover ~ [data-rating="5"][hidden], .experience__rating .rating__input:checked:hover ~ [data-rating]:not([hidden]) {
+            display: block !important;
+        }
+
+    .experience__rating .rating__input-1:hover ~ .rating__label:first-of-type .rating__star-stroke, .experience__rating .rating__input-2:hover ~ .rating__label:nth-of-type(-n + 2) .rating__star-stroke, .experience__rating .rating__input-3:hover ~ .rating__label:nth-of-type(-n + 3) .rating__star-stroke, .experience__rating .rating__input-4:hover ~ .rating__label:nth-of-type(-n + 4) .rating__star-stroke, .rating__input-5:hover ~ .rating__label:nth-of-type(-n + 5) .rating__star-stroke {
+        stroke: #009371;
+        transform: scale(1);
+    }
+
+    .experience__rating .rating__input-1:checked ~ .rating__label:first-of-type .rating__star-ring, .experience__rating .rating__input-2:checked ~ .rating__label:nth-of-type(-n + 2) .rating__star-ring, .experience__rating .rating__input-3:checked ~ .rating__label:nth-of-type(-n + 3) .rating__star-ring, .experience__rating .rating__input-4:checked ~ .rating__label:nth-of-type(-n + 4) .rating__star-ring, .experience__rating .rating__input-5:checked ~ .rating__label:nth-of-type(-n + 5) .rating__star-ring {
+        animation-name: starRing;
+    }
+
+    .experience__rating .rating__input-1:checked ~ .rating__label:first-of-type .rating__star-stroke, .experience__rating .rating__input-2:checked ~ .rating__label:nth-of-type(-n + 2) .rating__star-stroke, .experience__rating .rating__input-3:checked ~ .rating__label:nth-of-type(-n + 3) .rating__star-stroke, .experience__rating .rating__input-4:checked ~ .rating__label:nth-of-type(-n + 4) .rating__star-stroke, .experience__rating .rating__input-5:checked ~ .rating__label:nth-of-type(-n + 5) .rating__star-stroke {
+        animation-name: starStroke;
+    }
+
+    .experience__rating .rating__input-1:checked ~ .rating__label:first-of-type .rating__star-line, .experience__rating .rating__input-2:checked ~ .rating__label:nth-of-type(-n + 2) .rating__star-line, .experience__rating .rating__input-3:checked ~ .rating__label:nth-of-type(-n + 3) .rating__star-line, .experience__rating .rating__input-4:checked ~ .rating__label:nth-of-type(-n + 4) .rating__star-line, .ui__rating .rating__input-5:checked ~ .rating__label:nth-of-type(-n + 5) .rating__star-line {
+        animation-name: starLine;
+    }
+
+    .experience__rating .rating__input-1:checked ~ .rating__label:first-of-type .rating__star-fill, .experience__rating .rating__input-2:checked ~ .rating__label:nth-of-type(-n + 2) .rating__star-fill, .experience__rating .rating__input-3:checked ~ .rating__label:nth-of-type(-n + 3) .rating__star-fill, .experience__rating .rating__input-4:checked ~ .rating__label:nth-of-type(-n + 4) .rating__star-fill, .experience__rating .rating__input-5:checked ~ .rating__label:nth-of-type(-n + 5) .rating__star-fill {
+        animation-name: starFill;
+    }
+
+    .experience__rating .rating__input-1:not(:checked):hover ~ .rating__label:first-of-type .rating__star-fill, .experience__rating .rating__input-2:not(:checked):hover ~ .rating__label:nth-of-type(2) .rating__star-fill, .experience__rating .rating__input-3:not(:checked):hover ~ .rating__label:nth-of-type(3) .rating__star-fill, .experience__rating .rating__input-4:not(:checked):hover ~ .rating__label:nth-of-type(4) .rating__star-fill, .experience__rating .rating__input-5:not(:checked):hover ~ .rating__label:nth-of-type(5) .rating__star-fill {
+        fill: #593bdb;
+    }
+
+    .experience__rating .rating__sr {
+        clip: rect(1px, 1px, 1px, 1px);
+        overflow: hidden;
+        position: absolute;
+        width: 1px;
+        height: 1px;
+    }
+
+/********* revelvance Rating******/
+
+.revelvance__rating {
+    padding-bottom: 0.375em;
+    position: relative;
+}
+
+    .revelvance__rating .rating {
+        margin: auto;
+    }
+
+    .revelvance__rating .rating__display {
+        font-size: 1em;
+        font-weight: 500;
+        min-height: 1.25em;
+        /*position: absolute;*/
+        top: 100%;
+        width: 100%;
+        margin-bottom: 0;
+        display: block;
+        color: #333;
+        /*text-align: center;*/
+    }
+
+    .revelvance__rating .rating__star {
+        display: block;
+        overflow: visible;
+        pointer-events: none;
+        width: 2em;
+        height: 2em;
+    }
+
+    .revelvance__rating.rating__star-ring, .revelvance__rating .rating__star-fill, .revelvance__rating .rating__star-line, .revelvance__rating .rating__star-stroke {
+        animation-duration: 1s;
+        animation-timing-function: ease-in-out;
+        animation-fill-mode: forwards;
+    }
+
+    .v .rating__star-ring, .experience__rating .rating__star-fill, .revelvance__rating .rating__star-line {
+        stroke: #7860e2;
+    }
+
+    .revelvance__rating .rating__star-fill {
+        fill: #7860e2;
+        transform: scale(0);
+        transition: fill var(--trans-dur) var(--bezier), transform var(--trans-dur) var(--bezier);
+    }
+
+    .revelvance__rating .rating__star-stroke {
+        stroke: #7860e2;
+        transition: stroke var(--trans-dur);
+    }
+
+    .revelvance__rating .rating__label {
+        cursor: pointer;
+        padding: 0.125em;
+        margin-bottom: 0;
+    }
+
+    .revelvance__rating .rating__label--delay1 .rating__star-ring, .revelvance__rating .rating__label--delay1 .rating__star-fill, .revelvance__rating .rating__label--delay1 .rating__star-line, .revelvance__rating .rating__label--delay1 .rating__star-stroke {
+        animation-delay: 0.05s;
+    }
+
+    .revelvance__rating .rating__label--delay2 .rating__star-ring, .revelvance__rating .rating__label--delay2 .rating__star-fill, .revelvance__rating .rating__label--delay2 .rating__star-line, .revelvance__rating .rating__label--delay2 .rating__star-stroke {
+        animation-delay: 0.1s;
+    }
+
+    .revelvance__rating .rating__label--delay3 .rating__star-ring, .revelvance__rating .rating__label--delay3 .rating__star-fill, .revelvance__rating .rating__label--delay3 .rating__star-line, .revelvance__rating .rating__label--delay3 .rating__star-stroke {
+        animation-delay: 0.15s;
+    }
+
+    .revelvance__rating .rating__label--delay4 .rating__star-ring, .revelvance__rating .rating__label--delay4 .rating__star-fill, .revelvance__rating .rating__label--delay4 .rating__star-line, .revelvance__rating .rating__label--delay4 .rating__star-stroke {
+        animation-delay: 0.2s;
+    }
+
+    .revelvance__rating .rating__input {
+        -webkit-appearance: none;
+        appearance: none;
+    }
+
+        .revelvance__rating .rating__input:hover ~ [data-rating]:not([hidden]) {
+            display: none;
+        }
+
+        .revelvance__rating .rating__input-1:hover ~ [data-rating="1"][hidden], .revelvance__rating .rating__input-2:hover ~ [data-rating="2"][hidden], .revelvance__rating .rating__input-3:hover ~ [data-rating="3"][hidden], .revelvance__rating .rating__input-4:hover ~ [data-rating="4"][hidden], .revelvance__rating .rating__input-5:hover ~ [data-rating="5"][hidden], .revelvance__rating .rating__input:checked:hover ~ [data-rating]:not([hidden]) {
+            display: block !important;
+        }
+
+    .revelvance__rating .rating__input-1:hover ~ .rating__label:first-of-type .rating__star-stroke, .revelvance__rating .rating__input-2:hover ~ .rating__label:nth-of-type(-n + 2) .rating__star-stroke, .revelvance__rating .rating__input-3:hover ~ .rating__label:nth-of-type(-n + 3) .rating__star-stroke, .revelvance__rating .rating__input-4:hover ~ .rating__label:nth-of-type(-n + 4) .rating__star-stroke, .rating__input-5:hover ~ .rating__label:nth-of-type(-n + 5) .rating__star-stroke {
+        stroke: #009371;
+        transform: scale(1);
+    }
+
+    .revelvance__rating .rating__input-1:checked ~ .rating__label:first-of-type .rating__star-ring, .revelvance__rating .rating__input-2:checked ~ .rating__label:nth-of-type(-n + 2) .rating__star-ring, .revelvance__rating .rating__input-3:checked ~ .rating__label:nth-of-type(-n + 3) .rating__star-ring, .revelvance__rating .rating__input-4:checked ~ .rating__label:nth-of-type(-n + 4) .rating__star-ring, .revelvance__rating .rating__input-5:checked ~ .rating__label:nth-of-type(-n + 5) .rating__star-ring {
+        animation-name: starRing;
+    }
+
+    .revelvance__rating .rating__input-1:checked ~ .rating__label:first-of-type .rating__star-stroke, .revelvance__rating .rating__input-2:checked ~ .rating__label:nth-of-type(-n + 2) .rating__star-stroke, .revelvance__rating .rating__input-3:checked ~ .rating__label:nth-of-type(-n + 3) .rating__star-stroke, .revelvance__rating .rating__input-4:checked ~ .rating__label:nth-of-type(-n + 4) .rating__star-stroke, .revelvance__rating .rating__input-5:checked ~ .rating__label:nth-of-type(-n + 5) .rating__star-stroke {
+        animation-name: starStroke;
+    }
+
+    .revelvance__rating .rating__input-1:checked ~ .rating__label:first-of-type .rating__star-line, .revelvance__rating .rating__input-2:checked ~ .rating__label:nth-of-type(-n + 2) .rating__star-line, .revelvance__rating .rating__input-3:checked ~ .rating__label:nth-of-type(-n + 3) .rating__star-line, .revelvance__rating .rating__input-4:checked ~ .rating__label:nth-of-type(-n + 4) .rating__star-line, .ui__rating .rating__input-5:checked ~ .rating__label:nth-of-type(-n + 5) .rating__star-line {
+        animation-name: starLine;
+    }
+
+    .revelvance__rating .rating__input-1:checked ~ .rating__label:first-of-type .rating__star-fill, .revelvance__rating .rating__input-2:checked ~ .rating__label:nth-of-type(-n + 2) .rating__star-fill, .revelvance__rating .rating__input-3:checked ~ .rating__label:nth-of-type(-n + 3) .rating__star-fill, .revelvance__rating .rating__input-4:checked ~ .rating__label:nth-of-type(-n + 4) .rating__star-fill, .revelvance__rating .rating__input-5:checked ~ .rating__label:nth-of-type(-n + 5) .rating__star-fill {
+        animation-name: starFill;
+    }
+
+    .revelvance__rating .rating__input-1:not(:checked):hover ~ .rating__label:first-of-type .rating__star-fill, .revelvance__rating .rating__input-2:not(:checked):hover ~ .rating__label:nth-of-type(2) .rating__star-fill, .revelvance__rating .rating__input-3:not(:checked):hover ~ .rating__label:nth-of-type(3) .rating__star-fill, .revelvance__rating .rating__input-4:not(:checked):hover ~ .rating__label:nth-of-type(4) .rating__star-fill, .revelvance__rating .rating__input-5:not(:checked):hover ~ .rating__label:nth-of-type(5) .rating__star-fill {
+        fill: #593bdb;
+    }
+
+    .revelvance__rating .rating__sr {
+        clip: rect(1px, 1px, 1px, 1px);
+        overflow: hidden;
+        position: absolute;
+        width: 1px;
+        height: 1px;
+    }
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg: #17181c;
+        --fg: #e3e4e8;
+    }
+
+    .rating {
+        margin: auto;
+    }
+
+    .rating__star-stroke {
+        stroke: #454954;
+    }
+}
+
+@keyframes starRing {
+    from, 20% {
+        animation-timing-function: ease-in;
+        opacity: 1;
+        r: 8px;
+        stroke-width: 16px;
+        transform: scale(0);
+    }
+
+    35% {
+        animation-timing-function: ease-out;
+        opacity: 0.5;
+        r: 8px;
+        stroke-width: 16px;
+        transform: scale(1);
+    }
+
+    50%, to {
+        opacity: 0;
+        r: 16px;
+        stroke-width: 0;
+        transform: scale(1);
+    }
+}
+
+@keyframes starFill {
+    from, 40% {
+        animation-timing-function: ease-out;
+        transform: scale(0);
+    }
+
+    60% {
+        animation-timing-function: ease-in-out;
+        transform: scale(1.2);
+    }
+
+    80% {
+        transform: scale(0.9);
+    }
+
+    to {
+        transform: scale(1);
+    }
+}
+
+@keyframes starStroke {
+    from {
+        transform: scale(1);
+    }
+
+    20%, to {
+        transform: scale(0);
+    }
+}
+
+@keyframes starLine {
+    from, 40% {
+        animation-timing-function: ease-out;
+        stroke-dasharray: 1 23;
+        stroke-dashoffset: 1;
+    }
+
+    60%, to {
+        stroke-dasharray: 12 12;
+        stroke-dashoffset: -12;
+    }
+}
