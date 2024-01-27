@@ -13,7 +13,7 @@
             string result = string.Empty;
 
             //UAT ConString
-            result = "Data Source = 10.229.195.89,1989; Database = OneViewIndicator_Dev; User Id =VC_Developer; Password =Sde$%6543;";
+            result = "Data Source = DESKTOP-D2NU5KD\\SQLEXPRESS; Database = DashBoard; Integrated Security=SSPI;";
 
             //Live ConString
             //result = ConnectionDB.getConString("1408481", string.Empty, "gTGE/RRRz2ocdWgCJYJjsg==");

@@ -7,7 +7,7 @@ namespace Dashboard.Repositories
 {
     public class DashboardRepository : IDashboard
     {
-        SqlConnection sqlCon = new SqlConnection("clsConnectionString");
+        SqlConnection sqlCon = new SqlConnection(clsConnectionString.GetConnectionString());
         public DelinquencyDaysCount GetDelinquencyDaysCount(string UserId)
         {
             DelinquencyDaysCount Days_count = new DelinquencyDaysCount();

@@ -15,7 +15,7 @@ namespace Dashboard.Controllers
         // SqlConnection sqlCon = DataHelper.SqlHelper.openCon();
         DataSet chkstatus = new DataSet();
         ResponseContent message = new ResponseContent();
-        SqlConnection sqlCon = new SqlConnection("clsConnectionString");
+        SqlConnection sqlCon = new SqlConnection(clsConnectionString.GetConnectionString());
         DBClass dBClass = new DBClass();
         private readonly IDashboard _dashboard;
         SqlCommand cmdcount = null;
