@@ -18,8 +18,8 @@ Emp id 52646 Corporate id 4390 Wipro@2020
 TDS Dibakar220165
 3i Infotech  104858 Infotech@0824
 incometaxreturn shine full
-100953300758=
-100138722346
+100953300758 shine
+100138722346 swift
 MHBAN200250070670
 Deluxe Mh29Q9073
 7057849700
