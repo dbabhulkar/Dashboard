@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **One View Indicator (OVI) Dashboard** — internal banking/credit-risk web app for Relationship Managers (RM) and Commercial Managers (CM). ASP.NET Core 8.0 MVC (monolithic), SQL Server backend, Razor/jQuery UI.
 
-See [SoftwareSpecification.md](SoftwareSpecification.md) and [ArchitectureDiagram.md](ArchitectureDiagram.md) for functional scope and layered diagrams.
+See [docs/SoftwareSpecification.md](docs/SoftwareSpecification.md) and [docs/ArchitectureDiagram.md](docs/ArchitectureDiagram.md) for functional scope and layered diagrams. [docs/DesignSystem.md](docs/DesignSystem.md) documents the UI framework, colors, and component patterns.
 
 ## Commands
 
@@ -29,7 +29,7 @@ No test project, lint config, or CI is present in this repo — don't assume `do
 1. `Login/Index` accepts a pre-authenticated `USERID` (and `IP`) via query string, calls `SP_OVI_ValidateUser` to load the user's `BusinessRole(s)` into session, then redirects to `Home/Dashboard` (RM) or `CM/CMDashboard` (CM) based on role. LDAP fallback lives in the same controller.
 2. Every authenticated action is decorated with `[CustomFilter]` ([Models/CustomFilter.cs](Models/CustomFilter.cs)) which checks `Session["EmpId"]` and redirects to `Common/SessionExpiry` when missing. Session lifetime is 30 minutes ([Program.cs:23-26](Program.cs#L23-L26)).
 3. Controllers call stored procedures directly via `SqlCommand` + `SqlDataAdapter`/`DataTable` — there is no ORM. `Interfaces/IDashboard` + `Repositories/DashboardRepository` is the one repository-pattern seam; most other controllers do data access inline.
-4. Views are server-rendered Razor (`.cshtml`) with Bootstrap 5, jQuery, DataTables, Chosen/Select2. AJAX endpoints return `JsonResult` / `ResponseContent`.
+4. Views are server-rendered Razor (`.cshtml`) with Bootstrap 4.3.1 (bundled inline in `wwwroot/css/style.css`, not CDN), jQuery, DataTables, Chosen/Select2, and the Quix Admin Template (app shell: sidebar, header, preloader). AJAX endpoints return `JsonResult` / `ResponseContent`.
 
 ### RM vs CM data flow
 - **RM modules** (`Home`, `Delinquency`, `Upload`) do data access directly in the controller or via `DashboardRepository`.
