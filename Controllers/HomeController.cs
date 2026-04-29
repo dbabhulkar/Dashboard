@@ -1,7 +1,7 @@
 using Dashboard.Models;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using System.Data.SqlClient;
+using MySqlConnector;
 using System.Data;
 using System.Diagnostics;
 using System.Net;
@@ -16,7 +16,7 @@ namespace Dashboard.Controllers
         public static int ITGRCCode = 997003;
         public static string loginID;
         public static string NewDbVaultId = "U5EokPqGwwv+FXX3sb0WnA==";
-        SqlConnection sqlCon = new SqlConnection(clsConnectionString.GetConnectionString());
+        MySqlConnection sqlCon = new MySqlConnection(clsConnectionString.GetConnectionString());
 
         private readonly IDashboardRepository _dashboardRepository;
 
@@ -64,7 +64,7 @@ namespace Dashboard.Controllers
             if (DecryIP == CurrentIP)
             {
 
-                SqlCommand cmdCentral = new SqlCommand("SP_OVI_ValidateUser", sqlCon);
+                MySqlCommand cmdCentral = new MySqlCommand("SP_OVI_ValidateUser", sqlCon);
                 cmdCentral.CommandType = CommandType.StoredProcedure;
                 cmdCentral.Parameters.AddWithValue("@UserId", DescUserId);
                 sqlCon.Open();
@@ -107,12 +107,12 @@ namespace Dashboard.Controllers
 
             Login log = new Login();
             DataSet ds = new DataSet();
-            SqlCommand sqlcmd = new SqlCommand("sp_Login_New", sqlCon);
+            MySqlCommand sqlcmd = new MySqlCommand("sp_Login_New", sqlCon);
             sqlcmd.CommandTimeout = 0;
             sqlcmd.CommandType = CommandType.StoredProcedure;
-            sqlcmd.Parameters.Add("@Type", SqlDbType.VarChar).Value = 5;
-            sqlcmd.Parameters.Add("@Empcode", SqlDbType.VarChar).Value = userName;
-            SqlDataAdapter da = new SqlDataAdapter(sqlcmd);
+            sqlcmd.Parameters.Add("@Type", MySqlDbType.VarChar).Value = 5;
+            sqlcmd.Parameters.Add("@Empcode", MySqlDbType.VarChar).Value = userName;
+            MySqlDataAdapter da = new MySqlDataAdapter(sqlcmd);
             da.Fill(ds);
             da.Dispose();
             sqlcmd.Dispose();
@@ -172,11 +172,11 @@ namespace Dashboard.Controllers
                 PortfolioCount obj_count = new PortfolioCount();
                 DataSet ds = new DataSet();
                 DataTable dt_count = new DataTable();
-                SqlCommand cmd = new SqlCommand("SP_OVI_Get_Dashboard_Records", sqlCon);
+                MySqlCommand cmd = new MySqlCommand("SP_OVI_Get_Dashboard_Records", sqlCon);
                 cmd.Parameters.AddWithValue("@UserId", HttpContext.Session.GetString("EmpId").ToString());
                 cmd.Parameters.AddWithValue("@IdentFlag", "Portfolio_Count");
                 cmd.CommandType = CommandType.StoredProcedure;
-                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                MySqlDataAdapter da = new MySqlDataAdapter(cmd);
                 if (sqlCon.State == ConnectionState.Closed)
                 {
                     sqlCon.Open();
@@ -267,12 +267,12 @@ namespace Dashboard.Controllers
         public string ValidateUrl(int recordId, string urlLink)
         {
 
-            SqlCommand cmdcounter = null;
+            MySqlCommand cmdcounter = null;
             string Msg = string.Empty;
             try
             {
 
-                cmdcounter = new SqlCommand("SP_OVI_LinkMaster_Credit", sqlCon);
+                cmdcounter = new MySqlCommand("SP_OVI_LinkMaster_Credit", sqlCon);
                 cmdcounter.CommandType = CommandType.StoredProcedure;
                 cmdcounter.Parameters.AddWithValue("@Action", "isUrlExists");
                 cmdcounter.Parameters.AddWithValue("@RecordId", recordId);
@@ -300,11 +300,11 @@ namespace Dashboard.Controllers
         public Int32 saveRecord(Int32 recordId, string urlName, string urlLink, string description, int IsFrequenltyUsed)
         {
 
-            SqlCommand cmd = null;
+            MySqlCommand cmd = null;
             Int32 Msg = 0;
             try
             {
-                cmd = new SqlCommand("SP_OVI_LinkMaster_Credit", sqlCon);
+                cmd = new MySqlCommand("SP_OVI_LinkMaster_Credit", sqlCon);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@Action", "AddEdit");
                 cmd.Parameters.AddWithValue("@Name", urlName);
@@ -337,10 +337,10 @@ namespace Dashboard.Controllers
 
             try
             {
-                SqlCommand cmd = null;
+                MySqlCommand cmd = null;
                 DataSet ds = new DataSet();
 
-                cmd = new SqlCommand("SP_OVI_LinkMaster_Credit", sqlCon);
+                cmd = new MySqlCommand("SP_OVI_LinkMaster_Credit", sqlCon);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@Action", Identflag);
                 cmd.Parameters.AddWithValue("@Name", Name);
@@ -348,7 +348,7 @@ namespace Dashboard.Controllers
                 {
                     sqlCon.Open();
                 }
-                SqlDataAdapter sda = new SqlDataAdapter(cmd);
+                MySqlDataAdapter sda = new MySqlDataAdapter(cmd);
                 sda.Fill(ds);
                 //DataSet.Load(cmd.ExecuteReader());
                 cmd.Dispose();
@@ -387,11 +387,11 @@ namespace Dashboard.Controllers
         public string deleteRecord(Int32 recordId)
         {
 
-            SqlCommand cmd = null;
+            MySqlCommand cmd = null;
             string Msg = string.Empty;
             try
             {
-                cmd = new SqlCommand("SP_OVI_LinkMaster_Credit", sqlCon);
+                cmd = new MySqlCommand("SP_OVI_LinkMaster_Credit", sqlCon);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@Action", "Delete");
                 cmd.Parameters.AddWithValue("@RecordId", recordId);
@@ -421,7 +421,7 @@ namespace Dashboard.Controllers
             {
                 string role = HttpContext.Session.GetString("CheckUser");
                 DataTable dt = new DataTable();
-                SqlCommand cmd = new SqlCommand("SP_OVI_Urgent_Bulletin", sqlCon);
+                MySqlCommand cmd = new MySqlCommand("SP_OVI_Urgent_Bulletin", sqlCon);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@Identflag", "fetch_Urgent_bulletin_data");
                 cmd.Parameters.AddWithValue("@Emp_Id", HttpContext.Session.GetString("EmpId"));
@@ -429,7 +429,7 @@ namespace Dashboard.Controllers
                 {
                     sqlCon.Open();
                 }
-                SqlDataAdapter sda = new SqlDataAdapter(cmd);
+                MySqlDataAdapter sda = new MySqlDataAdapter(cmd);
                 sda.Fill(dt);
 
                 List<UrgentBulletin> MyList = new List<UrgentBulletin>();
@@ -486,7 +486,7 @@ namespace Dashboard.Controllers
             try
             {
                 DataSet ds = new DataSet();
-                SqlCommand cmd = new SqlCommand("SP_OVI_Urgent_Bulletin", sqlCon);
+                MySqlCommand cmd = new MySqlCommand("SP_OVI_Urgent_Bulletin", sqlCon);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@Identflag", "Take_UrgentBulletinCount");
                 cmd.Parameters.AddWithValue("@Emp_Id", HttpContext.Session.GetString("EmpId"));
@@ -495,7 +495,7 @@ namespace Dashboard.Controllers
                 {
                     sqlCon.Open();
                 }
-                SqlDataAdapter sda = new SqlDataAdapter(cmd);
+                MySqlDataAdapter sda = new MySqlDataAdapter(cmd);
                 sda.Fill(ds);
 
                 if (ds.Tables.Count > 0)
@@ -531,7 +531,7 @@ namespace Dashboard.Controllers
             try
             {
                 DataTable dt = new DataTable();
-                SqlCommand cmd = new SqlCommand("SP_OVI_Get_NotificationDetails", sqlCon);
+                MySqlCommand cmd = new MySqlCommand("SP_OVI_Get_NotificationDetails", sqlCon);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@Identflag", Identflag);
                 cmd.Parameters.AddWithValue("@Emp_Id", HttpContext.Session.GetString("EmpId"));
@@ -539,7 +539,7 @@ namespace Dashboard.Controllers
                 {
                     sqlCon.Open();
                 }
-                SqlDataAdapter sda = new SqlDataAdapter(cmd);
+                MySqlDataAdapter sda = new MySqlDataAdapter(cmd);
                 sda.Fill(dt);
 
                 return dt;
@@ -562,7 +562,7 @@ namespace Dashboard.Controllers
             try
             {
 
-                SqlCommand cmd = new SqlCommand("SP_OVI_Fetch_Master_Data", sqlCon);
+                MySqlCommand cmd = new MySqlCommand("SP_OVI_Fetch_Master_Data", sqlCon);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@IdenFlag", "SearchClients");
                 cmd.Parameters.AddWithValue("@SearchText", prefix);
@@ -570,7 +570,7 @@ namespace Dashboard.Controllers
                 {
                     sqlCon.Open();
                 }
-                SqlDataAdapter sda = new SqlDataAdapter(cmd);
+                MySqlDataAdapter sda = new MySqlDataAdapter(cmd);
                 DataTable dt = new DataTable();
                 sda.Fill(dt);
 
@@ -606,7 +606,7 @@ namespace Dashboard.Controllers
 
             try
             {
-                SqlCommand cmd = new SqlCommand("SP_OVI_Fetch_Master_Data", sqlCon);
+                MySqlCommand cmd = new MySqlCommand("SP_OVI_Fetch_Master_Data", sqlCon);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@IdenFlag", "SearchClients");
                 cmd.Parameters.AddWithValue("@SearchText", prefix);
@@ -614,7 +614,7 @@ namespace Dashboard.Controllers
                 {
                     sqlCon.Open();
                 }
-                SqlDataAdapter sda = new SqlDataAdapter(cmd);
+                MySqlDataAdapter sda = new MySqlDataAdapter(cmd);
                 DataTable dt = new DataTable();
                 sda.Fill(dt);
 
@@ -663,7 +663,7 @@ namespace Dashboard.Controllers
             {
 
                 DataTable dt = new DataTable();
-                SqlCommand cmd = new SqlCommand("SP_OVI_Urgent_Bulletin", sqlCon);
+                MySqlCommand cmd = new MySqlCommand("SP_OVI_Urgent_Bulletin", sqlCon);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@Identflag", "ToDoListData");
                 cmd.Parameters.AddWithValue("@Emp_Id", HttpContext.Session.GetString("EmpId"));
@@ -671,7 +671,7 @@ namespace Dashboard.Controllers
                 {
                     sqlCon.Open();
                 }
-                SqlDataAdapter sda = new SqlDataAdapter(cmd);
+                MySqlDataAdapter sda = new MySqlDataAdapter(cmd);
                 sda.Fill(dt);
 
                 return dt;
@@ -700,7 +700,7 @@ namespace Dashboard.Controllers
             {
 
                 DataSet ds = new DataSet();
-                SqlCommand cmd = new SqlCommand("SP_OVI_Get_Aquisition_Data", sqlCon);
+                MySqlCommand cmd = new MySqlCommand("SP_OVI_Get_Aquisition_Data", sqlCon);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@UserId", HttpContext.Session.GetString("EmpId"));
                 cmd.Parameters.AddWithValue("@month", Month);
@@ -710,7 +710,7 @@ namespace Dashboard.Controllers
                 {
                     sqlCon.Open();
                 }
-                SqlDataAdapter sda = new SqlDataAdapter(cmd);
+                MySqlDataAdapter sda = new MySqlDataAdapter(cmd);
                 cmd.CommandTimeout = 3000;
                 sda.Fill(ds);
 
@@ -737,12 +737,12 @@ namespace Dashboard.Controllers
             try
             {
                 DataTable dt = new DataTable();
-                SqlCommand sqlcmd = new SqlCommand("SP_Feedback_GetDropdownValues", sqlCon);
+                MySqlCommand sqlcmd = new MySqlCommand("SP_Feedback_GetDropdownValues", sqlCon);
                 sqlCon.Open();
                 sqlcmd.CommandTimeout = 0;
                 sqlcmd.CommandType = CommandType.StoredProcedure;
                 sqlcmd.Parameters.AddWithValue("@flag", "RM");
-                SqlDataAdapter da = new SqlDataAdapter(sqlcmd);
+                MySqlDataAdapter da = new MySqlDataAdapter(sqlcmd);
                 da.Fill(dt);
 
                 List<feedbackPageList> listFeedbackPage = new List<feedbackPageList>();
@@ -781,21 +781,21 @@ namespace Dashboard.Controllers
             {
                 DataTable dt = new DataTable();
 
-                SqlCommand sqlcmd = new SqlCommand("Sp_SaveFeedback", sqlCon);
+                MySqlCommand sqlcmd = new MySqlCommand("Sp_SaveFeedback", sqlCon);
                 sqlCon.Open();
                 sqlcmd.CommandTimeout = 0;
                 sqlcmd.CommandType = CommandType.StoredProcedure;
-                sqlcmd.Parameters.Add("@LUSR", SqlDbType.VarChar).Value = HttpContext.Session.GetString("EmpId");
-                sqlcmd.Parameters.Add("@Remarks", SqlDbType.VarChar).Value = myJSON.Remarks;
-                sqlcmd.Parameters.Add("@ModuleID", SqlDbType.Int).Value = myJSON.Modules;
-                sqlcmd.Parameters.Add("@Application", SqlDbType.VarChar).Value = "OVI-RM";
-                sqlcmd.Parameters.Add("@UI", SqlDbType.Int).Value = myJSON.UI;
-                sqlcmd.Parameters.Add("@Perfomance", SqlDbType.Int).Value = myJSON.Performance;
-                sqlcmd.Parameters.Add("@Userfreindly", SqlDbType.Int).Value = myJSON.Userfreindly;
-                sqlcmd.Parameters.Add("@Experience", SqlDbType.Int).Value = myJSON.Experience;
-                sqlcmd.Parameters.Add("@Revelvance", SqlDbType.Int).Value = myJSON.Revelvance;
-                sqlcmd.Parameters.Add("@ApplicationVersion", SqlDbType.VarChar).Value = "0.1.1";
-                SqlDataAdapter da = new SqlDataAdapter(sqlcmd);
+                sqlcmd.Parameters.Add("@LUSR", MySqlDbType.VarChar).Value = HttpContext.Session.GetString("EmpId");
+                sqlcmd.Parameters.Add("@Remarks", MySqlDbType.VarChar).Value = myJSON.Remarks;
+                sqlcmd.Parameters.Add("@ModuleID", MySqlDbType.Int32).Value = myJSON.Modules;
+                sqlcmd.Parameters.Add("@Application", MySqlDbType.VarChar).Value = "OVI-RM";
+                sqlcmd.Parameters.Add("@UI", MySqlDbType.Int32).Value = myJSON.UI;
+                sqlcmd.Parameters.Add("@Perfomance", MySqlDbType.Int32).Value = myJSON.Performance;
+                sqlcmd.Parameters.Add("@Userfreindly", MySqlDbType.Int32).Value = myJSON.Userfreindly;
+                sqlcmd.Parameters.Add("@Experience", MySqlDbType.Int32).Value = myJSON.Experience;
+                sqlcmd.Parameters.Add("@Revelvance", MySqlDbType.Int32).Value = myJSON.Revelvance;
+                sqlcmd.Parameters.Add("@ApplicationVersion", MySqlDbType.VarChar).Value = "0.1.1";
+                MySqlDataAdapter da = new MySqlDataAdapter(sqlcmd);
                 da.Fill(dt);
 
                 _dashboardRepository.CaptureProductivityDetails(HttpContext.Session.GetString("EmpName").ToString().Trim(), "Feedback", "OneViewIndicator-RM", 1, "Feedback", "Feedback Submited for EmpCode - " + HttpContext.Session.GetString("EmpId").ToString().Trim());
@@ -836,11 +836,11 @@ namespace Dashboard.Controllers
             //DelinquencyDaysCount Days_count = new DelinquencyDaysCount();
             DataSet ds = new DataSet();
             DataTable dt_count = new DataTable();
-            SqlCommand cmd = new SqlCommand("SP_OVI_Dashboard_Download", sqlCon);
+            MySqlCommand cmd = new MySqlCommand("SP_OVI_Dashboard_Download", sqlCon);
             cmd.Parameters.AddWithValue("@UserId", HttpContext.Session.GetString("EmpId").ToString());
             cmd.Parameters.AddWithValue("@Flag", flagName);
             cmd.CommandType = CommandType.StoredProcedure;
-            SqlDataAdapter da = new SqlDataAdapter(cmd);
+            MySqlDataAdapter da = new MySqlDataAdapter(cmd);
             if (sqlCon.State == ConnectionState.Closed)
             {
                 sqlCon.Open();

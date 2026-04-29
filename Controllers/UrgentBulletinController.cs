@@ -2,7 +2,7 @@
 using Dashboard.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Data;
-using System.Data.SqlClient;
+using MySqlConnector;
 
 namespace Dashboard.Controllers
 {
@@ -10,9 +10,9 @@ namespace Dashboard.Controllers
     {
         readonly ILogger _logger;
         public UrgentBulletinController(ILogger<ErrorController> logger) => _logger = logger;
-        SqlConnection sqlCon = new SqlConnection(clsConnectionString.GetConnectionString());
+        MySqlConnection sqlCon = new MySqlConnection(clsConnectionString.GetConnectionString());
 
-        //SqlConnection sqlCon = SqlHelper.openCon();
+        //MySqlConnection sqlCon = SqlHelper.openCon();
         [HttpGet, CustomFilter]
         public IActionResult CreateBulletin()
         {
@@ -89,7 +89,7 @@ namespace Dashboard.Controllers
             int bulletine_id = 0;
             try
             {
-                SqlCommand cmd = new SqlCommand("SP_OVI_Urgent_Bulletin", sqlCon);
+                MySqlCommand cmd = new MySqlCommand("SP_OVI_Urgent_Bulletin", sqlCon);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@Identflag", Identflag);
                 cmd.Parameters.AddWithValue("@subject", subject);
@@ -100,7 +100,7 @@ namespace Dashboard.Controllers
                 cmd.Parameters.AddWithValue("@Business", business);
                 cmd.Parameters.AddWithValue("@CreatedBy", HttpContext.Session.GetString("EmpId"));
                 sqlCon.Open();
-                SqlDataAdapter sda = new SqlDataAdapter(cmd);
+                MySqlDataAdapter sda = new MySqlDataAdapter(cmd);
                 DataTable dt = new DataTable();
                 sda.Fill(dt);
                 if (dt.Rows.Count > 0)
@@ -123,7 +123,7 @@ namespace Dashboard.Controllers
             bool result = false;
             try
             {
-                SqlCommand cmd = new SqlCommand("SP_OVI_Urgent_Bulletin", sqlCon);
+                MySqlCommand cmd = new MySqlCommand("SP_OVI_Urgent_Bulletin", sqlCon);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@Identflag", "Update_File_Details");
                 cmd.Parameters.AddWithValue("@Filename", filename);
@@ -149,7 +149,7 @@ namespace Dashboard.Controllers
         public bool DeleteBulletin(int bulletin_id)
         {
             bool result = false;
-            SqlCommand cmd = new SqlCommand("SP_OVI_Urgent_Bulletin", sqlCon);
+            MySqlCommand cmd = new MySqlCommand("SP_OVI_Urgent_Bulletin", sqlCon);
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.AddWithValue("@Identflag", "Delete_Bulletin");
             cmd.Parameters.AddWithValue("@id", bulletin_id);

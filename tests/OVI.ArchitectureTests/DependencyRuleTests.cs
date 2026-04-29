@@ -98,11 +98,11 @@ public class DependencyRuleTests
     {
         var result = Types.InAssembly(DomainAssembly)
             .ShouldNot()
-            .HaveDependencyOn("System.Data.SqlClient")
+            .HaveDependencyOn("MySqlConnector")
             .GetResult();
 
         Assert.True(result.IsSuccessful,
-            "OVI.Domain must not reference System.Data.SqlClient (no ADO.NET in Domain)");
+            "OVI.Domain must not reference MySqlConnector (no ADO.NET in Domain)");
     }
 
     [Fact]

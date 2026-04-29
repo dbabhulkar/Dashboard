@@ -1,20 +1,20 @@
 ﻿using Dashboard.Models;
 using Microsoft.AspNetCore.Mvc;
-using System.Data.SqlClient;
+using MySqlConnector;
 using System.Data;
 
 namespace Dashboard.DataHelper
 {
     public class SqlHelper : ControllerBase
     {
-        public static SqlConnection con;
+        public static MySqlConnection con;
 
         /*   --------   Common Sql Object Implementaion --------------------------  */
         //-- code to get a open connection object
-        public static SqlConnection openCon()
+        public static MySqlConnection openCon()
         {
             string str = clsConnectionString.GetConnectionString();
-            con = new SqlConnection(str);
+            con = new MySqlConnection(str);
             if (con.State == System.Data.ConnectionState.Closed)
             {
                 con.Open();
@@ -31,23 +31,23 @@ namespace Dashboard.DataHelper
         }
 
         //-- code to get a connection object
-        public static SqlConnection GetConnection()
+        public static MySqlConnection GetConnection()
         {
             string str = clsConnectionString.GetConnectionString();
-            con = new SqlConnection(str);
+            con = new MySqlConnection(str);
             con.Open();
             return con;
         }
 
-        //-- prepares SqlCommand object
-        public static SqlCommand PrepareCommand(string sp, Dictionary<string, string> Parameters)
+        //-- prepares MySqlCommand object
+        public static MySqlCommand PrepareCommand(string sp, Dictionary<string, string> Parameters)
         {
-            SqlCommand cmd = new SqlCommand(sp, con);
+            MySqlCommand cmd = new MySqlCommand(sp, con);
             cmd.CommandType = CommandType.StoredProcedure;
             if (null != Parameters)
             {
                 foreach (var item in Parameters)
-                    cmd.Parameters.Add(new SqlParameter(item.Key, item.Value));
+                    cmd.Parameters.Add(new MySqlParameter(item.Key, item.Value));
             }
             return cmd;
         }
@@ -68,25 +68,25 @@ namespace Dashboard.DataHelper
 
         public DataTable ExecuteCommand(string sp, Dictionary<string, string> Parameters)
         {
-            SqlCommand cmd = new SqlCommand(sp, con);
+            MySqlCommand cmd = new MySqlCommand(sp, con);
             DataTable dt = new DataTable();
             cmd.CommandType = CommandType.StoredProcedure;
             if (null != Parameters)
             {
                 foreach (var item in Parameters)
-                    cmd.Parameters.Add(new SqlParameter(item.Key, item.Value));
+                    cmd.Parameters.Add(new MySqlParameter(item.Key, item.Value));
             }
-            SqlDataAdapter sdp = new SqlDataAdapter(cmd);
+            MySqlDataAdapter sdp = new MySqlDataAdapter(cmd);
             sdp.Fill(dt);
 
             return dt;
         }
 
-        public static DataTable ExecuteCommandwithoutParam(SqlCommand cmd)
+        public static DataTable ExecuteCommandwithoutParam(MySqlCommand cmd)
         {
             openCon();
             DataTable dt = new DataTable();
-            SqlDataAdapter sdp = new SqlDataAdapter(cmd);
+            MySqlDataAdapter sdp = new MySqlDataAdapter(cmd);
             try
             {
                 cmd.CommandType = CommandType.StoredProcedure;
@@ -112,8 +112,8 @@ namespace Dashboard.DataHelper
         {
             openCon();
             DataTable dt = new DataTable();
-            SqlCommand cmd = new SqlCommand(spName, con);
-            SqlDataAdapter sdp = new SqlDataAdapter(cmd);
+            MySqlCommand cmd = new MySqlCommand(spName, con);
+            MySqlDataAdapter sdp = new MySqlDataAdapter(cmd);
             try
             {
                 cmd.CommandType = CommandType.StoredProcedure;
@@ -140,7 +140,7 @@ namespace Dashboard.DataHelper
             try
             {
                 DataTable dt = new DataTable();
-                //SqlConnection sqlCon = sqlconn;
+                //MySqlConnection sqlCon = sqlconn;
 
                 string[] columns = null;
 
@@ -163,14 +163,11 @@ namespace Dashboard.DataHelper
                 dc.DataType = typeof(DateTime);
                 dc.DefaultValue = DateTime.Now;
                 dt.Columns.Add(dc);
-                SqlBulkCopy bulkCopy = new SqlBulkCopy(con);
-                bulkCopy.DestinationTableName = tableName;
-                bulkCopy.BatchSize = 3000000;
-                int a = dt.Rows.Count;
-                bulkCopy.BulkCopyTimeout = 0;
                 openCon();
+                var bulkCopy = new MySqlBulkCopy(con);
+                bulkCopy.DestinationTableName = tableName;
+                int a = dt.Rows.Count;
                 bulkCopy.WriteToServer(dt);
-                bulkCopy.Close();
                 closeCon();
                 if (dt.Rows.Count > 0)
                 {

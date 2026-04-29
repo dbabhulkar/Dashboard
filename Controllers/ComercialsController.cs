@@ -1,7 +1,7 @@
 ﻿using Dashboard.Models;
 using Dashboard.Repositories;
 using Microsoft.AspNetCore.Mvc;
-using System.Data.SqlClient;
+using MySqlConnector;
 using System.Data;
 using OVI.Domain.Interfaces;
 
@@ -11,7 +11,7 @@ namespace Dashboard.Controllers
     public class ComercialsController : Controller
     {
         private readonly IDashboardRepository _dashboardRepository;
-        SqlConnection sqlCon = new SqlConnection(clsConnectionString.GetConnectionString());
+        MySqlConnection sqlCon = new MySqlConnection(clsConnectionString.GetConnectionString());
 
         public ComercialsController(IDashboardRepository dashboardRepository)
         {
@@ -42,7 +42,7 @@ namespace Dashboard.Controllers
 
                 int Customer_Details_ID;
 
-                SqlCommand cmd = new SqlCommand("SP_OVI_Add_AccountCustomization", sqlCon);
+                MySqlCommand cmd = new MySqlCommand("SP_OVI_Add_AccountCustomization", sqlCon);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@Account_Customisation_Customer_Details_ID", data.CustomerId);
                 cmd.Parameters.AddWithValue("@CustomerName", data.CustomerName);
@@ -105,7 +105,7 @@ namespace Dashboard.Controllers
             {
                 int Reversal_Approval_Customer_Details_ID;
 
-                SqlCommand cmd = new SqlCommand("SP_OVI_Add_ReversalApproval", sqlCon);
+                MySqlCommand cmd = new MySqlCommand("SP_OVI_Add_ReversalApproval", sqlCon);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@Reversal_Approval_Customer_Details_ID", data.CustomerId);
                 cmd.Parameters.AddWithValue("@LS_ClientID", Convert.ToInt32(data.ClientId));
@@ -166,7 +166,7 @@ namespace Dashboard.Controllers
             {
 
                 int CustomerID;
-                SqlCommand cmd = new SqlCommand("SP_OVI_AssetPricing", sqlCon);
+                MySqlCommand cmd = new MySqlCommand("SP_OVI_AssetPricing", sqlCon);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@CustomerId", data.CustomerId);
                 cmd.Parameters.AddWithValue("@IsPSL", Convert.ToInt32(data.IsPSL));
@@ -277,7 +277,7 @@ namespace Dashboard.Controllers
             {
 
                 DataSet ds = new DataSet();
-                SqlCommand cmd = new SqlCommand("SP_OVI_Fetch_Master_Data", sqlCon);
+                MySqlCommand cmd = new MySqlCommand("SP_OVI_Fetch_Master_Data", sqlCon);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@IdenFlag", "Get_All_Recepients");
                 cmd.Parameters.AddWithValue("@UserId", HttpContext.Session.GetString("EmpId").ToString());
@@ -286,7 +286,7 @@ namespace Dashboard.Controllers
                 {
                     sqlCon.Open();
                 }
-                SqlDataAdapter sda = new SqlDataAdapter(cmd);
+                MySqlDataAdapter sda = new MySqlDataAdapter(cmd);
                 sda.Fill(ds);
                 ds.Tables[0].TableName = "CH_TBL";
                 ds.Tables[1].TableName = "UH_TBL";
@@ -314,14 +314,14 @@ namespace Dashboard.Controllers
             try
             {
 
-                SqlCommand cmd = new SqlCommand("SP_OVI_GetSupervisors", sqlCon);
+                MySqlCommand cmd = new MySqlCommand("SP_OVI_GetSupervisors", sqlCon);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@Empcode", HttpContext.Session.GetString("EmpId").ToString());
                 if (sqlCon.State == System.Data.ConnectionState.Closed)
                 {
                     sqlCon.Open();
                 }
-                SqlDataAdapter sda = new SqlDataAdapter(cmd);
+                MySqlDataAdapter sda = new MySqlDataAdapter(cmd);
                 DataTable dt = new DataTable();
                 sda.Fill(dt);
 
@@ -344,7 +344,7 @@ namespace Dashboard.Controllers
             try
             {
 
-                SqlCommand cmd = new SqlCommand("SP_OVI_Insert_Other_AssetPricing", sqlCon);
+                MySqlCommand cmd = new MySqlCommand("SP_OVI_Insert_Other_AssetPricing", sqlCon);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@Idenflag", "InsertOtherCharges");
                 cmd.Parameters.AddWithValue("@AP_Customer_Info_ID", data.CustomerId);
@@ -388,14 +388,14 @@ namespace Dashboard.Controllers
             try
             {
 
-                SqlCommand cmd = new SqlCommand("SP_OVI_Fetch_Master_Data", sqlCon);
+                MySqlCommand cmd = new MySqlCommand("SP_OVI_Fetch_Master_Data", sqlCon);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@IdenFlag", drp_type);
                 if (sqlCon.State == System.Data.ConnectionState.Closed)
                 {
                     sqlCon.Open();
                 }
-                SqlDataAdapter sda = new SqlDataAdapter(cmd);
+                MySqlDataAdapter sda = new MySqlDataAdapter(cmd);
                 DataTable dt = new DataTable();
                 sda.Fill(dt);
 
@@ -420,7 +420,7 @@ namespace Dashboard.Controllers
             try
             {
 
-                SqlCommand cmd = new SqlCommand("SP_OVI_Insert_Other_AssetPricing", sqlCon);
+                MySqlCommand cmd = new MySqlCommand("SP_OVI_Insert_Other_AssetPricing", sqlCon);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@Idenflag", "InsertPromoters");
                 cmd.Parameters.AddWithValue("@AP_Customer_Info_ID", data.CustomerId);
@@ -466,7 +466,7 @@ namespace Dashboard.Controllers
             MessageModel message = new MessageModel();
             try
             {
-                SqlCommand cmd = new SqlCommand("SP_OVI_Insert_Other_AssetPricing", sqlCon);
+                MySqlCommand cmd = new MySqlCommand("SP_OVI_Insert_Other_AssetPricing", sqlCon);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@Idenflag", "InsertMultipleBanking");
                 cmd.Parameters.AddWithValue("@AP_Customer_Info_ID", data.CustomerId);
@@ -511,7 +511,7 @@ namespace Dashboard.Controllers
             try
             {
 
-                SqlCommand cmd = new SqlCommand("SP_OVI_Insert_Other_AssetPricing", sqlCon);
+                MySqlCommand cmd = new MySqlCommand("SP_OVI_Insert_Other_AssetPricing", sqlCon);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@Idenflag", "InsertCollateralDetails");
                 cmd.Parameters.AddWithValue("@AP_Customer_Info_ID", data.CustomerId);
@@ -577,7 +577,7 @@ namespace Dashboard.Controllers
                 }
 
 
-                SqlCommand cmd = new SqlCommand("SP_OVI_Insert_Other_AssetPricing", sqlCon);
+                MySqlCommand cmd = new MySqlCommand("SP_OVI_Insert_Other_AssetPricing", sqlCon);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@Idenflag", "InsertFacilityDetails");
                 cmd.Parameters.AddWithValue("@AP_Customer_Info_ID", data.CustomerId);
@@ -656,7 +656,7 @@ namespace Dashboard.Controllers
                 //}
 
 
-                SqlCommand cmd = new SqlCommand("SP_OVI_Get_TraderPricingDetails", sqlCon);
+                MySqlCommand cmd = new MySqlCommand("SP_OVI_Get_TraderPricingDetails", sqlCon);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@TradeType", TradeType);
                 cmd.Parameters.AddWithValue("@CustomerId", CustomerId);
@@ -666,7 +666,7 @@ namespace Dashboard.Controllers
                 {
                     sqlCon.Open();
                 }
-                SqlDataAdapter sda = new SqlDataAdapter(cmd);
+                MySqlDataAdapter sda = new MySqlDataAdapter(cmd);
                 DataTable dt = new DataTable();
                 sda.Fill(dt);
 
@@ -689,7 +689,7 @@ namespace Dashboard.Controllers
             try
             {
 
-                SqlCommand cmd = new SqlCommand("SP_OVI_Insert_Other_AssetPricing", sqlCon);
+                MySqlCommand cmd = new MySqlCommand("SP_OVI_Insert_Other_AssetPricing", sqlCon);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@Idenflag", "InsertApproverDetails");
                 cmd.Parameters.AddWithValue("@CommercialType", data.CommercialType);
@@ -704,7 +704,7 @@ namespace Dashboard.Controllers
                     sqlCon.Open();
                 }
 
-                SqlDataAdapter sda = new SqlDataAdapter(cmd);
+                MySqlDataAdapter sda = new MySqlDataAdapter(cmd);
                 DataSet dt = new DataSet();
                 sda.Fill(dt);
 
@@ -741,7 +741,7 @@ namespace Dashboard.Controllers
             {
                 MessageModel message = new MessageModel();
 
-                SqlCommand cmd = new SqlCommand("SP_OVI_Add_TraderPricingDetails", sqlCon);
+                MySqlCommand cmd = new MySqlCommand("SP_OVI_Add_TraderPricingDetails", sqlCon);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@TradeType", data.TradeType);
                 cmd.Parameters.AddWithValue("@CustomerId", data.CustomerId);
@@ -781,7 +781,7 @@ namespace Dashboard.Controllers
             try
             {
 
-                SqlCommand cmd = new SqlCommand("SP_OVI_Add_TraderPricingDetails", sqlCon);
+                MySqlCommand cmd = new MySqlCommand("SP_OVI_Add_TraderPricingDetails", sqlCon);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@TradeType", data.TradeType);
                 cmd.Parameters.AddWithValue("@CustomerId", data.CustomerId);
@@ -816,7 +816,7 @@ namespace Dashboard.Controllers
                 {
                     sqlCon.Open();
                 }
-                SqlDataAdapter sda = new SqlDataAdapter(cmd);
+                MySqlDataAdapter sda = new MySqlDataAdapter(cmd);
                 DataSet dt = new DataSet();
                 sda.Fill(dt);
 
@@ -867,7 +867,7 @@ namespace Dashboard.Controllers
         {
             try
             {
-                SqlCommand cmd = new SqlCommand("SP_OVI_Get_TraderPricingDetails", sqlCon);
+                MySqlCommand cmd = new MySqlCommand("SP_OVI_Get_TraderPricingDetails", sqlCon);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@TradeType", "GetAll");
                 cmd.Parameters.AddWithValue("@UserId", HttpContext.Session.GetString("EmpId").ToString());
@@ -875,7 +875,7 @@ namespace Dashboard.Controllers
                 {
                     sqlCon.Open();
                 }
-                SqlDataAdapter sda = new SqlDataAdapter(cmd);
+                MySqlDataAdapter sda = new MySqlDataAdapter(cmd);
                 DataTable dt = new DataTable();
                 sda.Fill(dt);
 
@@ -896,7 +896,7 @@ namespace Dashboard.Controllers
             try
             {
 
-                SqlCommand cmd = new SqlCommand("SP_OVI_Get_TraderPricingDetails", sqlCon);
+                MySqlCommand cmd = new MySqlCommand("SP_OVI_Get_TraderPricingDetails", sqlCon);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@TradeType", "GetTradePricingTableStatus");
                 cmd.Parameters.AddWithValue("@CustomerId", CustomerId);
@@ -904,7 +904,7 @@ namespace Dashboard.Controllers
                 {
                     sqlCon.Open();
                 }
-                SqlDataAdapter sda = new SqlDataAdapter(cmd);
+                MySqlDataAdapter sda = new MySqlDataAdapter(cmd);
                 DataTable dt = new DataTable();
                 sda.Fill(dt);
 
@@ -927,7 +927,7 @@ namespace Dashboard.Controllers
             try
             {
 
-                SqlCommand cmd = new SqlCommand("SP_OVI_Get_AssetPricingDetails", sqlCon);
+                MySqlCommand cmd = new MySqlCommand("SP_OVI_Get_AssetPricingDetails", sqlCon);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@CustomerType", CustomerType);
                 cmd.Parameters.AddWithValue("@Month", Month);
@@ -938,7 +938,7 @@ namespace Dashboard.Controllers
                 {
                     sqlCon.Open();
                 }
-                SqlDataAdapter sda = new SqlDataAdapter(cmd);
+                MySqlDataAdapter sda = new MySqlDataAdapter(cmd);
 
                 sda.Fill(ds);
 
@@ -966,7 +966,7 @@ namespace Dashboard.Controllers
             try
             {
 
-                SqlCommand cmd = new SqlCommand("SP_OVI_Get_AssetPricingCustomerDetail", sqlCon);
+                MySqlCommand cmd = new MySqlCommand("SP_OVI_Get_AssetPricingCustomerDetail", sqlCon);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@CustomerType", CustomerType);
                 cmd.Parameters.AddWithValue("@CustomerId", CustomerId);
@@ -975,7 +975,7 @@ namespace Dashboard.Controllers
                 {
                     sqlCon.Open();
                 }
-                SqlDataAdapter sda = new SqlDataAdapter(cmd);
+                MySqlDataAdapter sda = new MySqlDataAdapter(cmd);
                 DataSet ds = new DataSet();
                 sda.Fill(ds);
 
@@ -1010,7 +1010,7 @@ namespace Dashboard.Controllers
             try
             {
 
-                SqlCommand cmd = new SqlCommand("SP_OVI_AssetPricing_GetAPRs", sqlCon);
+                MySqlCommand cmd = new MySqlCommand("SP_OVI_AssetPricing_GetAPRs", sqlCon);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@LsId", LsId);
                 cmd.Parameters.AddWithValue("@Type", Type);
@@ -1020,7 +1020,7 @@ namespace Dashboard.Controllers
                 {
                     sqlCon.Open();
                 }
-                SqlDataAdapter sda = new SqlDataAdapter(cmd);
+                MySqlDataAdapter sda = new MySqlDataAdapter(cmd);
                 DataTable dt = new DataTable();
                 sda.Fill(dt);
 
@@ -1042,7 +1042,7 @@ namespace Dashboard.Controllers
             try
             {
 
-                SqlCommand cmd = new SqlCommand("SP_OVI_Get_FacilityDetails", sqlCon);
+                MySqlCommand cmd = new MySqlCommand("SP_OVI_Get_FacilityDetails", sqlCon);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@LsId", LsId);
                 cmd.Parameters.AddWithValue("@Type", Type);
@@ -1051,7 +1051,7 @@ namespace Dashboard.Controllers
                 {
                     sqlCon.Open();
                 }
-                SqlDataAdapter sda = new SqlDataAdapter(cmd);
+                MySqlDataAdapter sda = new MySqlDataAdapter(cmd);
                 DataTable dt = new DataTable();
                 sda.Fill(dt);
 
@@ -1078,7 +1078,7 @@ namespace Dashboard.Controllers
 
                 MessageModel message = new MessageModel();
 
-                SqlCommand cmd = new SqlCommand("SP_OVI_UpdateApproveStatus", sqlCon);
+                MySqlCommand cmd = new MySqlCommand("SP_OVI_UpdateApproveStatus", sqlCon);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@CustomerId", Convert.ToInt32(data.Asset_Pricing_CustomerId));
                 cmd.Parameters.AddWithValue("@Action", data.Action);
@@ -1092,7 +1092,7 @@ namespace Dashboard.Controllers
                     sqlCon.Open();
                 }
 
-                SqlDataAdapter sda = new SqlDataAdapter(cmd);
+                MySqlDataAdapter sda = new MySqlDataAdapter(cmd);
                 sda.Fill(dt);
                 if (dt.Tables[0].Rows.Count > 0)
                 {
@@ -1142,7 +1142,7 @@ namespace Dashboard.Controllers
             try
             {
 
-                SqlCommand cmd = new SqlCommand("SP_OVI_UpdateTradePricingApprovalStatus", sqlCon);
+                MySqlCommand cmd = new MySqlCommand("SP_OVI_UpdateTradePricingApprovalStatus", sqlCon);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@CustomerId", Convert.ToInt32(data.CustomerId));
                 cmd.Parameters.AddWithValue("@Action", data.Action);
@@ -1153,7 +1153,7 @@ namespace Dashboard.Controllers
                 {
                     sqlCon.Open();
                 }
-                SqlDataAdapter sda = new SqlDataAdapter(cmd);
+                MySqlDataAdapter sda = new MySqlDataAdapter(cmd);
                 DataSet dt = new DataSet();
                 sda.Fill(dt);
                 if (dt.Tables.Count > 0)
@@ -1196,7 +1196,7 @@ namespace Dashboard.Controllers
             try
             {
 
-                SqlCommand cmd = new SqlCommand("SP_OVI_GetApprovalStatus", sqlCon);
+                MySqlCommand cmd = new MySqlCommand("SP_OVI_GetApprovalStatus", sqlCon);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@IdentFlag", actionName);
                 cmd.Parameters.AddWithValue("@CustomerId", CustomerInfo_Id);
@@ -1205,7 +1205,7 @@ namespace Dashboard.Controllers
                 {
                     sqlCon.Open();
                 }
-                SqlDataAdapter sda = new SqlDataAdapter(cmd);
+                MySqlDataAdapter sda = new MySqlDataAdapter(cmd);
                 DataTable dt = new DataTable();
                 sda.Fill(dt);
 
@@ -1241,7 +1241,7 @@ namespace Dashboard.Controllers
             try
             {
 
-                SqlCommand cmd = new SqlCommand("SP_OVI_Insert_Other_Reversal_Approval", sqlCon);
+                MySqlCommand cmd = new MySqlCommand("SP_OVI_Insert_Other_Reversal_Approval", sqlCon);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@Idenflag", "InsertReversalDetails");
                 cmd.Parameters.AddWithValue("@Reversal_Approval_Customer_Details_ID", data.CustomerId);
@@ -1284,7 +1284,7 @@ namespace Dashboard.Controllers
             try
             {
 
-                SqlCommand cmd = new SqlCommand("SP_OVI_Insert_Other_Reversal_Approval", sqlCon);
+                MySqlCommand cmd = new MySqlCommand("SP_OVI_Insert_Other_Reversal_Approval", sqlCon);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@Idenflag", "InsertReversalAmountBreakdown");
                 cmd.Parameters.AddWithValue("@Reversal_Approval_Customer_Details_ID", data.CustomerId);
@@ -1332,7 +1332,7 @@ namespace Dashboard.Controllers
             try
             {
 
-                SqlCommand cmd = new SqlCommand("SP_OVI_Insert_Other_Reversal_Approval", sqlCon);
+                MySqlCommand cmd = new MySqlCommand("SP_OVI_Insert_Other_Reversal_Approval", sqlCon);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@Idenflag", "InsertReversal_FacilityDetails");
                 cmd.Parameters.AddWithValue("@Reversal_Approval_Customer_Details_ID", data.CustomerId);
@@ -1374,7 +1374,7 @@ namespace Dashboard.Controllers
             {
                 MessageModel message = new MessageModel();
 
-                SqlCommand cmd = new SqlCommand("SP_OVI_Insert_Other_Reversal_Approval", sqlCon);
+                MySqlCommand cmd = new MySqlCommand("SP_OVI_Insert_Other_Reversal_Approval", sqlCon);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@Idenflag", "Insert_Reversal_ApproverDetails");
                 cmd.Parameters.AddWithValue("@Reversal_Approval_Customer_Details_ID", data.CustomerId);
@@ -1387,7 +1387,7 @@ namespace Dashboard.Controllers
                 {
                     sqlCon.Open();
                 }
-                SqlDataAdapter sda = new SqlDataAdapter(cmd);
+                MySqlDataAdapter sda = new MySqlDataAdapter(cmd);
                 DataSet dt = new DataSet();
                 sda.Fill(dt);
 
@@ -1424,7 +1424,7 @@ namespace Dashboard.Controllers
             try
             {
 
-                SqlCommand cmd = new SqlCommand("SP_OVI_Get_ReversalApproval_Details", sqlCon);
+                MySqlCommand cmd = new MySqlCommand("SP_OVI_Get_ReversalApproval_Details", sqlCon);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@UserId", HttpContext.Session.GetString("EmpId").ToString());
                 cmd.Parameters.AddWithValue("@ProposalNumber", ProposalNumber);
@@ -1433,7 +1433,7 @@ namespace Dashboard.Controllers
                 {
                     sqlCon.Open();
                 }
-                SqlDataAdapter sda = new SqlDataAdapter(cmd);
+                MySqlDataAdapter sda = new MySqlDataAdapter(cmd);
                 DataTable dt = new DataTable();
                 sda.Fill(dt);
 
@@ -1455,7 +1455,7 @@ namespace Dashboard.Controllers
             try
             {
 
-                SqlCommand cmd = new SqlCommand("SP_OVI_Get_ReversalApprovalCustomerDetails", sqlCon);
+                MySqlCommand cmd = new MySqlCommand("SP_OVI_Get_ReversalApprovalCustomerDetails", sqlCon);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@CustomerId", CustomerId);
                 cmd.Parameters.AddWithValue("@UserId", HttpContext.Session.GetString("EmpId").ToString());
@@ -1463,7 +1463,7 @@ namespace Dashboard.Controllers
                 {
                     sqlCon.Open();
                 }
-                SqlDataAdapter sda = new SqlDataAdapter(cmd);
+                MySqlDataAdapter sda = new MySqlDataAdapter(cmd);
                 DataSet ds = new DataSet();
                 sda.Fill(ds);
                 ds.Tables[0].TableName = "TBL_Reversal_Approval_Customer_Info";
@@ -1491,7 +1491,7 @@ namespace Dashboard.Controllers
             try
             {
 
-                SqlCommand cmd = new SqlCommand("SP_OVI_Update_Reversal_ApproveStatus", sqlCon);
+                MySqlCommand cmd = new MySqlCommand("SP_OVI_Update_Reversal_ApproveStatus", sqlCon);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@CustomerId", Convert.ToInt32(data.CustomerId));
                 cmd.Parameters.AddWithValue("@Action", data.Action);
@@ -1502,7 +1502,7 @@ namespace Dashboard.Controllers
                 {
                     sqlCon.Open();
                 }
-                SqlDataAdapter sda = new SqlDataAdapter(cmd);
+                MySqlDataAdapter sda = new MySqlDataAdapter(cmd);
                 DataSet dt = new DataSet();
                 sda.Fill(dt);
 
@@ -1553,7 +1553,7 @@ namespace Dashboard.Controllers
             try
             {
 
-                SqlCommand cmd = new SqlCommand("SP_OVI_Insert_Other_AccountCustomisation", sqlCon);
+                MySqlCommand cmd = new MySqlCommand("SP_OVI_Insert_Other_AccountCustomisation", sqlCon);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@Idenflag", "InsertApproverDetails");
                 cmd.Parameters.AddWithValue("@Account_Customisation_Customer_Details_ID", data.CustomerId);
@@ -1567,7 +1567,7 @@ namespace Dashboard.Controllers
                     sqlCon.Open();
                 }
 
-                SqlDataAdapter sda = new SqlDataAdapter(cmd);
+                MySqlDataAdapter sda = new MySqlDataAdapter(cmd);
                 DataSet dt = new DataSet();
                 sda.Fill(dt);
 
@@ -1603,7 +1603,7 @@ namespace Dashboard.Controllers
             try
             {
 
-                SqlCommand cmd = new SqlCommand("SP_OVI_Insert_Other_AccountCustomisation", sqlCon);
+                MySqlCommand cmd = new MySqlCommand("SP_OVI_Insert_Other_AccountCustomisation", sqlCon);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@Idenflag", "InsertWaiverDetails");
                 cmd.Parameters.AddWithValue("@ClientId", data.ClientId);
@@ -1655,7 +1655,7 @@ namespace Dashboard.Controllers
                 }
 
 
-                SqlCommand cmd = new SqlCommand("SP_OVI_Insert_Other_AccountCustomisation", sqlCon);
+                MySqlCommand cmd = new MySqlCommand("SP_OVI_Insert_Other_AccountCustomisation", sqlCon);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@Idenflag", "GetWaiverAccordingToAccountNumber");
                 cmd.Parameters.AddWithValue("@CreatedBy", createdBy);
@@ -1665,7 +1665,7 @@ namespace Dashboard.Controllers
                 {
                     sqlCon.Open();
                 }
-                SqlDataAdapter sda = new SqlDataAdapter(cmd);
+                MySqlDataAdapter sda = new MySqlDataAdapter(cmd);
                 DataTable dt = new DataTable();
                 sda.Fill(dt);
 
@@ -1687,7 +1687,7 @@ namespace Dashboard.Controllers
             try
             {
 
-                SqlCommand cmd = new SqlCommand("SP_OVI_Insert_Other_AccountCustomisation", sqlCon);
+                MySqlCommand cmd = new MySqlCommand("SP_OVI_Insert_Other_AccountCustomisation", sqlCon);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@Idenflag", Identflag);
                 cmd.Parameters.AddWithValue("@CreatedBy", createdBy);
@@ -1697,7 +1697,7 @@ namespace Dashboard.Controllers
                 {
                     sqlCon.Open();
                 }
-                SqlDataAdapter sda = new SqlDataAdapter(cmd);
+                MySqlDataAdapter sda = new MySqlDataAdapter(cmd);
                 DataTable dt = new DataTable();
                 sda.Fill(dt);
 
@@ -1719,7 +1719,7 @@ namespace Dashboard.Controllers
             {
                 MessageModel message = new MessageModel();
 
-                SqlCommand cmd = new SqlCommand("SP_OVI_Insert_Other_AccountCustomisation", sqlCon);
+                MySqlCommand cmd = new MySqlCommand("SP_OVI_Insert_Other_AccountCustomisation", sqlCon);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@Idenflag", "DeleteTempRecords");
                 cmd.Parameters.AddWithValue("@CreatedBy", HttpContext.Session.GetString("EmpId").ToString());
@@ -1755,7 +1755,7 @@ namespace Dashboard.Controllers
             try
             {
 
-                SqlCommand cmd = new SqlCommand("SP_OVI_Insert_Other_AccountCustomisation", sqlCon);
+                MySqlCommand cmd = new MySqlCommand("SP_OVI_Insert_Other_AccountCustomisation", sqlCon);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@Idenflag", "DeleteWaiverById");
                 cmd.Parameters.AddWithValue("@WaiverId", WaiverId);
@@ -1792,7 +1792,7 @@ namespace Dashboard.Controllers
             try
             {
 
-                SqlCommand cmd = new SqlCommand("SP_OVI_Get_AccountCustomisationGridData", sqlCon);
+                MySqlCommand cmd = new MySqlCommand("SP_OVI_Get_AccountCustomisationGridData", sqlCon);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@UserId", HttpContext.Session.GetString("EmpId").ToString());
                 cmd.Parameters.AddWithValue("@ProposalNumber", ProposalNumber);
@@ -1801,7 +1801,7 @@ namespace Dashboard.Controllers
                 {
                     sqlCon.Open();
                 }
-                SqlDataAdapter sda = new SqlDataAdapter(cmd);
+                MySqlDataAdapter sda = new MySqlDataAdapter(cmd);
                 DataTable dt = new DataTable();
                 sda.Fill(dt);
 
@@ -1823,7 +1823,7 @@ namespace Dashboard.Controllers
             try
             {
 
-                SqlCommand cmd = new SqlCommand("SP_OVI_Get_AccountCustomisationCustomerDetails", sqlCon);
+                MySqlCommand cmd = new MySqlCommand("SP_OVI_Get_AccountCustomisationCustomerDetails", sqlCon);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@UserId", HttpContext.Session.GetString("EmpId").ToString());
                 cmd.Parameters.AddWithValue("@CustomerId", CustomerId);
@@ -1831,7 +1831,7 @@ namespace Dashboard.Controllers
                 {
                     sqlCon.Open();
                 }
-                SqlDataAdapter sda = new SqlDataAdapter(cmd);
+                MySqlDataAdapter sda = new MySqlDataAdapter(cmd);
                 DataSet ds = new DataSet();
                 sda.Fill(ds);
                 ds.Tables[0].TableName = "TBL_OVI_AC_Customer_Details";
@@ -1857,7 +1857,7 @@ namespace Dashboard.Controllers
             {
                 MessageModel message = new MessageModel();
 
-                SqlCommand cmd = new SqlCommand("SP_OVI_Update_AccountCustomisation_ApproveStatus", sqlCon);
+                MySqlCommand cmd = new MySqlCommand("SP_OVI_Update_AccountCustomisation_ApproveStatus", sqlCon);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@CustomerId", Convert.ToInt32(data.CustomerId));
                 cmd.Parameters.AddWithValue("@Action", data.Action);
@@ -1869,7 +1869,7 @@ namespace Dashboard.Controllers
                     sqlCon.Open();
                 }
                 DataSet dt = new DataSet();
-                SqlDataAdapter sda = new SqlDataAdapter(cmd);
+                MySqlDataAdapter sda = new MySqlDataAdapter(cmd);
                 sda.Fill(dt);
                 if (dt.Tables[0].Rows.Count > 0)
                 {
@@ -1917,7 +1917,7 @@ namespace Dashboard.Controllers
             {
                 MessageModel message = new MessageModel();
 
-                SqlCommand cmd = new SqlCommand("SP_OVI_Update_TableSaveStatus", sqlCon);
+                MySqlCommand cmd = new MySqlCommand("SP_OVI_Update_TableSaveStatus", sqlCon);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@CustomerId", Convert.ToInt32(data.CustomerId));
                 cmd.Parameters.AddWithValue("@Action", data.Action);
@@ -1956,7 +1956,7 @@ namespace Dashboard.Controllers
             {
                 MessageModel message = new MessageModel();
 
-                SqlCommand cmd = new SqlCommand(SP_Name, sqlCon);
+                MySqlCommand cmd = new MySqlCommand(SP_Name, sqlCon);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@Customer_Info_ID", Convert.ToInt32(Customer_Info_ID));
                 cmd.Parameters.AddWithValue("@Identflag", Identflag);
@@ -1993,14 +1993,14 @@ namespace Dashboard.Controllers
         {
             try
             {
-                SqlCommand cmd = new SqlCommand("SP_OVI_GetProposalApprovalDateDetails", sqlCon);
+                MySqlCommand cmd = new MySqlCommand("SP_OVI_GetProposalApprovalDateDetails", sqlCon);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@AP_Customer_Info_ID", CustomerId);
                 if (sqlCon.State == System.Data.ConnectionState.Closed)
                 {
                     sqlCon.Open();
                 }
-                SqlDataAdapter sda = new SqlDataAdapter(cmd);
+                MySqlDataAdapter sda = new MySqlDataAdapter(cmd);
                 DataTable dt = new DataTable();
                 sda.Fill(dt);
 
@@ -2021,14 +2021,14 @@ namespace Dashboard.Controllers
         {
             try
             {
-                SqlCommand cmd = new SqlCommand("SP_OVI_ClientId_InProgress", sqlCon);
+                MySqlCommand cmd = new MySqlCommand("SP_OVI_ClientId_InProgress", sqlCon);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@ClientId", clientId);
                 if (sqlCon.State == System.Data.ConnectionState.Closed)
                 {
                     sqlCon.Open();
                 }
-                SqlDataAdapter sda = new SqlDataAdapter(cmd);
+                MySqlDataAdapter sda = new MySqlDataAdapter(cmd);
                 DataTable dt = new DataTable();
                 sda.Fill(dt);
 

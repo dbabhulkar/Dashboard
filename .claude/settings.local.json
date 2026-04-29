@@ -10,7 +10,8 @@
       "Bash(dotnet clean:*)",
       "Bash(dotnet test:*)",
       "Bash(xargs grep:*)",
-      "Bash(xargs wc:*)"
+      "Bash(xargs wc:*)",
+      "Bash(dotnet remove:*)"
     ]
   }
 }

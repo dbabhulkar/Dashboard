@@ -1,22 +1,22 @@
 ﻿using Dashboard.Interfaces;
 using Dashboard.Models;
-using System.Data.SqlClient;
+using MySqlConnector;
 using System.Data;
 
 namespace Dashboard.Repositories
 {
     public class DashboardRepository : IDashboard
     {
-        SqlConnection sqlCon = new SqlConnection(clsConnectionString.GetConnectionString());
+        MySqlConnection sqlCon = new MySqlConnection(clsConnectionString.GetConnectionString());
         public DelinquencyDaysCount GetDelinquencyDaysCount(string UserId)
         {
             DelinquencyDaysCount Days_count = new DelinquencyDaysCount();
             DataSet ds = new DataSet();
             DataTable dt_count = new DataTable();
-            SqlCommand cmd = new SqlCommand("SP_OVI_GetDelinquencyDaysCount", sqlCon);
+            MySqlCommand cmd = new MySqlCommand("SP_OVI_GetDelinquencyDaysCount", sqlCon);
             cmd.Parameters.AddWithValue("@UserID", UserId);
             cmd.CommandType = CommandType.StoredProcedure;
-            SqlDataAdapter da = new SqlDataAdapter(cmd);
+            MySqlDataAdapter da = new MySqlDataAdapter(cmd);
             if (sqlCon.State == ConnectionState.Closed)
             {
                 sqlCon.Open();
@@ -48,10 +48,10 @@ namespace Dashboard.Repositories
             //DelinquencyDaysCount Days_count = new DelinquencyDaysCount();
             DataSet ds = new DataSet();
             DataTable dt_count = new DataTable();
-            SqlCommand cmd = new SqlCommand("SP_OVI_GetDelinquencyDashboardCount", sqlCon);
+            MySqlCommand cmd = new MySqlCommand("SP_OVI_GetDelinquencyDashboardCount", sqlCon);
             cmd.Parameters.AddWithValue("@UserID", UserId);
             cmd.CommandType = CommandType.StoredProcedure;
-            SqlDataAdapter da = new SqlDataAdapter(cmd);
+            MySqlDataAdapter da = new MySqlDataAdapter(cmd);
             if (sqlCon.State == ConnectionState.Closed)
             {
                 sqlCon.Open();
@@ -80,10 +80,10 @@ namespace Dashboard.Repositories
             List<Compliance> compliances = new List<Compliance>();
             DataSet ds = new DataSet();
             DataTable dt_count = new DataTable();
-            SqlCommand cmd = new SqlCommand("SP_OVI_GetComplianceList", sqlCon);
+            MySqlCommand cmd = new MySqlCommand("SP_OVI_GetComplianceList", sqlCon);
             cmd.Parameters.AddWithValue("@UserID", UserId);
             cmd.CommandType = CommandType.StoredProcedure;
-            SqlDataAdapter da = new SqlDataAdapter(cmd);
+            MySqlDataAdapter da = new MySqlDataAdapter(cmd);
             if (sqlCon.State == ConnectionState.Closed)
             {
                 sqlCon.Open();
@@ -107,7 +107,7 @@ namespace Dashboard.Repositories
             return compliances;
         }
 
-        public void CaptureProductivityDetails(SqlConnection Con, string Empcode, string Form_Name, string Module_Name, int Total_Count, string Activity, string Activity_Details)
+        public void CaptureProductivityDetails(MySqlConnection Con, string Empcode, string Form_Name, string Module_Name, int Total_Count, string Activity, string Activity_Details)
         {
             try
             {
@@ -115,14 +115,14 @@ namespace Dashboard.Repositories
 
 
 
-                SqlCommand cmd = new SqlCommand("USP_Insert_Data_In_Activity_Log_Tracker", Con);
+                MySqlCommand cmd = new MySqlCommand("USP_Insert_Data_In_Activity_Log_Tracker", Con);
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.Add("@Emp_Code", SqlDbType.Text).Value = Empcode;
-                cmd.Parameters.Add("@Form_Name", SqlDbType.Text).Value = Form_Name;
-                cmd.Parameters.Add("@Module_Name", SqlDbType.Text).Value = Module_Name;
-                cmd.Parameters.Add("@Total_Count", SqlDbType.Int).Value = Total_Count;
-                cmd.Parameters.Add("@Activity", SqlDbType.Text).Value = Activity;
-                cmd.Parameters.Add("@Activity_Details", SqlDbType.Text).Value = Activity_Details;
+                cmd.Parameters.Add("@Emp_Code", MySqlDbType.Text).Value = Empcode;
+                cmd.Parameters.Add("@Form_Name", MySqlDbType.Text).Value = Form_Name;
+                cmd.Parameters.Add("@Module_Name", MySqlDbType.Text).Value = Module_Name;
+                cmd.Parameters.Add("@Total_Count", MySqlDbType.Int32).Value = Total_Count;
+                cmd.Parameters.Add("@Activity", MySqlDbType.Text).Value = Activity;
+                cmd.Parameters.Add("@Activity_Details", MySqlDbType.Text).Value = Activity_Details;
 
 
 
@@ -191,10 +191,10 @@ namespace Dashboard.Repositories
             //DelinquencyDaysCount Days_count = new DelinquencyDaysCount();
             DataSet ds = new DataSet();
             DataTable dt_count = new DataTable();
-            SqlCommand cmd = new SqlCommand(procName, sqlCon);
+            MySqlCommand cmd = new MySqlCommand(procName, sqlCon);
             cmd.Parameters.AddWithValue("@EmpCode", UserId);
             cmd.CommandType = CommandType.StoredProcedure;
-            SqlDataAdapter da = new SqlDataAdapter(cmd);
+            MySqlDataAdapter da = new MySqlDataAdapter(cmd);
             if (sqlCon.State == ConnectionState.Closed)
             {
                 sqlCon.Open();

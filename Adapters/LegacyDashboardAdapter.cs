@@ -39,7 +39,7 @@ internal sealed class LegacyDashboardAdapter(ILogger<LegacyDashboardAdapter> log
         logger.LogDebug("Delegating to legacy DashboardRepository.CaptureProductivityDetails");
         var repo = new Repositories.DashboardRepository();
         // Legacy method takes SqlConnection as first param — create one from config
-        using var sqlCon = new System.Data.SqlClient.SqlConnection(Models.clsConnectionString.GetConnectionString());
+        using var sqlCon = new MySqlConnector.MySqlConnection(Models.clsConnectionString.GetConnectionString());
         repo.CaptureProductivityDetails(sqlCon, empCode, formName, moduleName, totalCount, activity, activityDetails);
     }
 }

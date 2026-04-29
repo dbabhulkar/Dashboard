@@ -1,4 +1,4 @@
-﻿using System.Data.SqlClient;
+﻿using MySqlConnector;
 using System.Data;
 using System.Security.Cryptography;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -10,9 +10,9 @@ namespace Dashboard.Models
 {
     public class Common
     {
-        private SqlConnection sqlCon;
-        private SqlCommand cmd;
-        private SqlDataAdapter sda;
+        private MySqlConnection sqlCon;
+        private MySqlCommand cmd;
+        private MySqlDataAdapter sda;
 
         public clsCMDelinquencyMain clsCMDelinquency11(string SelectedSegment, string SelectedLocation, string LSID, string datetime, string EmpID)
         {
@@ -44,8 +44,8 @@ namespace Dashboard.Models
             //List<Summary> lstSummary = new List<Summary>();
             try
             {
-                //sqlCon = new SqlConnection(Startup.connectionstring);               
-                cmd = new SqlCommand("SP_OVI_CMDelinquency", sqlCon);
+                //sqlCon = new MySqlConnection(Startup.connectionstring);               
+                cmd = new MySqlCommand("SP_OVI_CMDelinquency", sqlCon);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@IdentFlag", "CMDelinquency");
                 //cmd.Parameters.AddWithValue("@CM_Emp_Code", HttpContext.Session.GetString("EmpId"));
@@ -59,7 +59,7 @@ namespace Dashboard.Models
                 {
                     sqlCon.Open();
                 }
-                sda = new SqlDataAdapter(cmd);
+                sda = new MySqlDataAdapter(cmd);
                 sda.Fill(dt);
                 sqlCon.Close();
 
@@ -289,8 +289,8 @@ namespace Dashboard.Models
             //List<Summary> lstSummary = new List<Summary>();
             try
             {
-                //sqlCon = new SqlConnection(Startup.connectionstring);               
-                cmd = new SqlCommand("SP_OVI_CMLCHU", sqlCon);
+                //sqlCon = new MySqlConnection(Startup.connectionstring);               
+                cmd = new MySqlCommand("SP_OVI_CMLCHU", sqlCon);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@IdentFlag", "CMLCHU");
                 //cmd.Parameters.AddWithValue("@CM_Emp_Code", HttpContext.Session.GetString("EmpId"));
@@ -304,7 +304,7 @@ namespace Dashboard.Models
                 {
                     sqlCon.Open();
                 }
-                sda = new SqlDataAdapter(cmd);
+                sda = new MySqlDataAdapter(cmd);
                 sda.Fill(dt);
                 sqlCon.Close();
 
@@ -531,8 +531,8 @@ namespace Dashboard.Models
             //List<Summary> lstSummary = new List<Summary>();
             try
             {
-                //sqlCon = new SqlConnection(Startup.connectionstring);               
-                cmd = new SqlCommand("SP_OVI_CMAUR", sqlCon);
+                //sqlCon = new MySqlConnection(Startup.connectionstring);               
+                cmd = new MySqlCommand("SP_OVI_CMAUR", sqlCon);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@IdentFlag", "CMAUR");
                 //cmd.Parameters.AddWithValue("@CM_Emp_Code", HttpContext.Session.GetString("EmpId"));
@@ -546,7 +546,7 @@ namespace Dashboard.Models
                 {
                     sqlCon.Open();
                 }
-                sda = new SqlDataAdapter(cmd);
+                sda = new MySqlDataAdapter(cmd);
                 sda.Fill(dt);
                 sqlCon.Close();
 
@@ -736,8 +736,8 @@ namespace Dashboard.Models
             //List<Summary> lstSummary = new List<Summary>();
             try
             {
-                //sqlCon = new SqlConnection(Startup.connectionstring);               
-                cmd = new SqlCommand("SP_OVI_CMWatchList", sqlCon);
+                //sqlCon = new MySqlConnection(Startup.connectionstring);               
+                cmd = new MySqlCommand("SP_OVI_CMWatchList", sqlCon);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@IdentFlag", "CMWatchList");
                 //cmd.Parameters.AddWithValue("@CM_Emp_Code", HttpContext.Session.GetString("EmpId"));
@@ -751,7 +751,7 @@ namespace Dashboard.Models
                 {
                     sqlCon.Open();
                 }
-                sda = new SqlDataAdapter(cmd);
+                sda = new MySqlDataAdapter(cmd);
                 sda.Fill(dt);
                 sqlCon.Close();
 
@@ -916,7 +916,7 @@ namespace Dashboard.Models
             {
 
                 DataTable dt = new DataTable();
-                cmd = new SqlCommand("SP_OVI_Get_Links", sqlCon);
+                cmd = new MySqlCommand("SP_OVI_Get_Links", sqlCon);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@Type", Type);
                 cmd.Parameters.AddWithValue("@ServerType", ServerName);
@@ -924,7 +924,7 @@ namespace Dashboard.Models
                 {
                     sqlCon.Open();
                 }
-                sda = new SqlDataAdapter(cmd);
+                sda = new MySqlDataAdapter(cmd);
                 sda.Fill(dt);
                 sqlCon.Close();
                 if (dt.Rows.Count > 0)
@@ -1062,21 +1062,21 @@ namespace Dashboard.Models
     }
     public class CommonClass
     {
-        SqlCommand cmd;
+        MySqlCommand cmd;
         public void SaveLog(LogClass logClass)
         {
-            SqlConnection sqlCon1 = new SqlConnection(clsConnectionString.GetConnectionString());
+            MySqlConnection sqlCon1 = new MySqlConnection(clsConnectionString.GetConnectionString());
 
-            cmd = new SqlCommand("SP_OVI_Log", sqlCon1);
+            cmd = new MySqlCommand("SP_OVI_Log", sqlCon1);
             cmd.CommandType = CommandType.StoredProcedure;
-            cmd.Parameters.Add("@CustomerId", SqlDbType.Int).Value = logClass.CustomerId;
-            cmd.Parameters.Add("@MasterId", SqlDbType.VarChar).Value = logClass.MasterId;
-            cmd.Parameters.Add("@Activity", SqlDbType.VarChar).Value = logClass.Activity;
-            cmd.Parameters.Add("@ActionBy", SqlDbType.VarChar).Value = logClass.ActionBy;
-            cmd.Parameters.Add("@ActionStatus", SqlDbType.Int).Value = logClass.ActionStatus;
-            cmd.Parameters.Add("@Description", SqlDbType.VarChar).Value = logClass.Description;
-            cmd.Parameters.Add("@ErrorDescription", SqlDbType.Char).Value = logClass.ErrorDescription;
-            cmd.Parameters.Add("@Remark", SqlDbType.Char).Value = logClass.Remark;
+            cmd.Parameters.Add("@CustomerId", MySqlDbType.Int32).Value = logClass.CustomerId;
+            cmd.Parameters.Add("@MasterId", MySqlDbType.VarChar).Value = logClass.MasterId;
+            cmd.Parameters.Add("@Activity", MySqlDbType.VarChar).Value = logClass.Activity;
+            cmd.Parameters.Add("@ActionBy", MySqlDbType.VarChar).Value = logClass.ActionBy;
+            cmd.Parameters.Add("@ActionStatus", MySqlDbType.Int32).Value = logClass.ActionStatus;
+            cmd.Parameters.Add("@Description", MySqlDbType.VarChar).Value = logClass.Description;
+            cmd.Parameters.Add("@ErrorDescription", MySqlDbType.VarChar).Value = logClass.ErrorDescription;
+            cmd.Parameters.Add("@Remark", MySqlDbType.VarChar).Value = logClass.Remark;
 
             if (cmd.Connection.State == ConnectionState.Closed)
                 cmd.Connection.Open();

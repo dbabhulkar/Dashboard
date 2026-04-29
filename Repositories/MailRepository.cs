@@ -1,13 +1,13 @@
 ﻿using Dashboard.Models;
-using System.Data.SqlClient;
+using MySqlConnector;
 using System.Data;
 
 namespace Dashboard.Repositories
 {
     public class MailRepository
     {
-        SqlCommand cmd;
-        private SqlConnection sqlconn;
+        MySqlCommand cmd;
+        private MySqlConnection sqlconn;
         public static string[] sValues = new[] { "App_Web", "ThinkTank" };
         public static int ITGRCCode = 997003;
         public static string loginID;
@@ -41,18 +41,18 @@ namespace Dashboard.Repositories
                 MailParameters.From = ds.Tables[1].Rows[0]["From"].ToString();
 
                 string conStringSMTP_Attachment = ConnectionDB.getConString("1408481", string.Empty, "zMWOpB3jCjLJzCpaF2nWKg==") /*VaultAPI_Live.DBConnection.GetDBVault("zMWOpB3jCjLJzCpaF2nWKg==", 1408481, "", sValues)*/;
-                SqlConnection sqlconn = new SqlConnection(conStringSMTP_Attachment);
+                MySqlConnection sqlconn = new MySqlConnection(conStringSMTP_Attachment);
 
-                cmd = new SqlCommand("SP_MAIL_SAVE", sqlconn);
+                cmd = new MySqlCommand("SP_MAIL_SAVE", sqlconn);
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.Add("@p_RecEmailAddress", SqlDbType.VarChar).Value = MailParameters.To;
-                cmd.Parameters.Add("@p_From", SqlDbType.VarChar).Value = MailParameters.From;
-                cmd.Parameters.Add("@p_Subject", SqlDbType.VarChar).Value = MailParameters.Subject;
-                cmd.Parameters.Add("@p_Body", SqlDbType.VarChar).Value = MailParameters.Body;
-                cmd.Parameters.Add("@p_strDisplay", SqlDbType.VarChar).Value = MailParameters.StandardDisplay;
-                cmd.Parameters.Add("@p_cc", SqlDbType.VarChar).Value = MailParameters.CCMail;
-                cmd.Parameters.Add("@p_bcc", SqlDbType.VarChar).Value = "";
-                cmd.Parameters.Add("@p_ApplicationName", SqlDbType.Char).Value = MailParameters.applicationname;
+                cmd.Parameters.Add("@p_RecEmailAddress", MySqlDbType.VarChar).Value = MailParameters.To;
+                cmd.Parameters.Add("@p_From", MySqlDbType.VarChar).Value = MailParameters.From;
+                cmd.Parameters.Add("@p_Subject", MySqlDbType.VarChar).Value = MailParameters.Subject;
+                cmd.Parameters.Add("@p_Body", MySqlDbType.VarChar).Value = MailParameters.Body;
+                cmd.Parameters.Add("@p_strDisplay", MySqlDbType.VarChar).Value = MailParameters.StandardDisplay;
+                cmd.Parameters.Add("@p_cc", MySqlDbType.VarChar).Value = MailParameters.CCMail;
+                cmd.Parameters.Add("@p_bcc", MySqlDbType.VarChar).Value = "";
+                cmd.Parameters.Add("@p_ApplicationName", MySqlDbType.VarChar).Value = MailParameters.applicationname;
                 if (cmd.Connection.State == ConnectionState.Closed)
                     cmd.Connection.Open();
                 cmd.ExecuteNonQuery();
@@ -60,18 +60,18 @@ namespace Dashboard.Repositories
                 sqlconn.Close();
 
 
-                SqlConnection sqlCon1 = new SqlConnection(clsConnectionString.GetConnectionString());
+                MySqlConnection sqlCon1 = new MySqlConnection(clsConnectionString.GetConnectionString());
 
-                cmd = new SqlCommand("SP_OVI_EmailLog", sqlCon1);
+                cmd = new MySqlCommand("SP_OVI_EmailLog", sqlCon1);
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.Add("@Subject", SqlDbType.VarChar).Value = MailParameters.Subject;
-                cmd.Parameters.Add("@Body", SqlDbType.VarChar).Value = MailParameters.Body;
-                cmd.Parameters.Add("@From", SqlDbType.VarChar).Value = MailParameters.From;
-                cmd.Parameters.Add("@To", SqlDbType.VarChar).Value = MailParameters.To;
-                cmd.Parameters.Add("@CC", SqlDbType.VarChar).Value = MailParameters.CCMail;
-                cmd.Parameters.Add("@BCC", SqlDbType.VarChar).Value = "";
-                cmd.Parameters.Add("@Status", SqlDbType.Char).Value = "Success";
-                cmd.Parameters.Add("@Description", SqlDbType.Char).Value = "Successfully Send";
+                cmd.Parameters.Add("@Subject", MySqlDbType.VarChar).Value = MailParameters.Subject;
+                cmd.Parameters.Add("@Body", MySqlDbType.VarChar).Value = MailParameters.Body;
+                cmd.Parameters.Add("@From", MySqlDbType.VarChar).Value = MailParameters.From;
+                cmd.Parameters.Add("@To", MySqlDbType.VarChar).Value = MailParameters.To;
+                cmd.Parameters.Add("@CC", MySqlDbType.VarChar).Value = MailParameters.CCMail;
+                cmd.Parameters.Add("@BCC", MySqlDbType.VarChar).Value = "";
+                cmd.Parameters.Add("@Status", MySqlDbType.VarChar).Value = "Success";
+                cmd.Parameters.Add("@Description", MySqlDbType.VarChar).Value = "Successfully Send";
 
                 if (cmd.Connection.State == ConnectionState.Closed)
                     cmd.Connection.Open();
@@ -84,17 +84,17 @@ namespace Dashboard.Repositories
             }
             catch (Exception ex)
             {
-                SqlConnection sqlCon1 = new SqlConnection(clsConnectionString.GetConnectionString());
-                cmd = new SqlCommand("SP_OVI_EmailLog", sqlCon1);
+                MySqlConnection sqlCon1 = new MySqlConnection(clsConnectionString.GetConnectionString());
+                cmd = new MySqlCommand("SP_OVI_EmailLog", sqlCon1);
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.Add("@Subject", SqlDbType.VarChar).Value = MailParameters.Subject;
-                cmd.Parameters.Add("@Body", SqlDbType.VarChar).Value = MailParameters.Body;
-                cmd.Parameters.Add("@From", SqlDbType.VarChar).Value = MailParameters.From;
-                cmd.Parameters.Add("@To", SqlDbType.VarChar).Value = MailParameters.To;
-                cmd.Parameters.Add("@CC", SqlDbType.VarChar).Value = MailParameters.CCMail;
-                cmd.Parameters.Add("@BCC", SqlDbType.VarChar).Value = "";
-                cmd.Parameters.Add("@Status", SqlDbType.Char).Value = "Failed";
-                cmd.Parameters.Add("@Description", SqlDbType.Char).Value = ex.Message;
+                cmd.Parameters.Add("@Subject", MySqlDbType.VarChar).Value = MailParameters.Subject;
+                cmd.Parameters.Add("@Body", MySqlDbType.VarChar).Value = MailParameters.Body;
+                cmd.Parameters.Add("@From", MySqlDbType.VarChar).Value = MailParameters.From;
+                cmd.Parameters.Add("@To", MySqlDbType.VarChar).Value = MailParameters.To;
+                cmd.Parameters.Add("@CC", MySqlDbType.VarChar).Value = MailParameters.CCMail;
+                cmd.Parameters.Add("@BCC", MySqlDbType.VarChar).Value = "";
+                cmd.Parameters.Add("@Status", MySqlDbType.VarChar).Value = "Failed";
+                cmd.Parameters.Add("@Description", MySqlDbType.VarChar).Value = ex.Message;
 
                 if (cmd.Connection.State == ConnectionState.Closed)
                     cmd.Connection.Open();

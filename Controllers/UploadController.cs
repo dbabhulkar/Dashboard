@@ -4,7 +4,7 @@ using Dashboard.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Data;
-using System.Data.SqlClient;
+using MySqlConnector;
 
 namespace Dashboard.Controllers
 {
@@ -16,9 +16,9 @@ namespace Dashboard.Controllers
         string tableName = "";
         string MonthYear = "";
         private readonly IDashboard _dashboard;
-        SqlConnection sqlCon;
-        SqlCommand cmd;
-        //SqlConnection sqlCon = SqlHelper.openCon();
+        MySqlConnection sqlCon;
+        MySqlCommand cmd;
+        //MySqlConnection sqlCon = SqlHelper.openCon();
         public UploadController()
         {
             _dashboard = new DashboardRepository();
@@ -71,7 +71,7 @@ namespace Dashboard.Controllers
             //};
             try
             {
-                sqlCon = new SqlConnection(clsConnectionString.GetConnectionString());
+                sqlCon = new MySqlConnection(clsConnectionString.GetConnectionString());
                 if (HttpContext.Session.GetString("sectionType").ToString() == "RMView")
                 {
                     port.FileType = rmItem;
@@ -572,16 +572,13 @@ namespace Dashboard.Controllers
                             newColumnCreatedAt.SetOrdinal(dtIncremented.Columns.Count - 2);
                             newColumnUploadedDate.SetOrdinal(dtIncremented.Columns.Count - 1);
 
-                            //SqlConnection sqlCon = new SqlConnection(Startup.connectionstring);
-                            SqlBulkCopy bulkCopy = new SqlBulkCopy(sqlCon);
+                            //MySqlConnection sqlCon = new MySqlConnection(Startup.connectionstring);
+                            var bulkCopy = new MySqlBulkCopy(sqlCon);
                             bulkCopy.DestinationTableName = "" + tableName + "_UploadTemp";//"TBL_OVI_Client_RM_Mapping_UploadTemp";// tableName;
-                            bulkCopy.BatchSize = 3000000;
                             int a = dtIncremented.Rows.Count;
-                            bulkCopy.BulkCopyTimeout = 0;
                             if (sqlCon.State != ConnectionState.Open)
                             { sqlCon.Open(); }
                             bulkCopy.WriteToServer(dtIncremented);
-                            bulkCopy.Close();
                             sqlCon.Close();
                             message.Msg = "File uploaded successfully";
                             message.isSuccess = "true";
@@ -600,8 +597,8 @@ namespace Dashboard.Controllers
                             if (result)
                             {
 
-                                //SqlConnection sqlCon = new SqlConnection(Startup.connectionstring);
-                                //SqlBulkCopy bulkCopy = new SqlBulkCopy(sqlCon);
+                                //MySqlConnection sqlCon = new MySqlConnection(Startup.connectionstring);
+                                //MySqlBulkCopy bulkCopy = new MySqlBulkCopy(sqlCon);
                                 //bulkCopy.DestinationTableName = tableName;
                                 //bulkCopy.BatchSize = 3000000;
                                 //int a = dt.Rows.Count;
@@ -646,15 +643,12 @@ namespace Dashboard.Controllers
 
                             if (tableName == "TBL_OVI_CM_Delinquency_Temp")
                             {
-                                SqlBulkCopy bulkCopy = new SqlBulkCopy(sqlCon);
+                                var bulkCopy = new MySqlBulkCopy(sqlCon);
                                 bulkCopy.DestinationTableName = tableName;
-                                bulkCopy.BatchSize = 3000000;
                                 int a = dt.Rows.Count;
-                                bulkCopy.BulkCopyTimeout = 0;
                                 if (sqlCon.State != ConnectionState.Open)
                                 { sqlCon.Open(); }
                                 bulkCopy.WriteToServer(dt);
-                                bulkCopy.Close();
                                 sqlCon.Close();
 
                                 bool result1 = Delete_And_Add_Upload_Data(tableName, MonthYear);
@@ -677,15 +671,12 @@ namespace Dashboard.Controllers
                                 if (result)
                                 {
 
-                                    SqlBulkCopy bulkCopy = new SqlBulkCopy(sqlCon);
+                                    var bulkCopy = new MySqlBulkCopy(sqlCon);
                                     bulkCopy.DestinationTableName = tableName;
-                                    bulkCopy.BatchSize = 3000000;
                                     int a = dt.Rows.Count;
-                                    bulkCopy.BulkCopyTimeout = 0;
                                     if (sqlCon.State != ConnectionState.Open)
                                     { sqlCon.Open(); }
                                     bulkCopy.WriteToServer(dt);
-                                    bulkCopy.Close();
                                     sqlCon.Close();
                                     message.Msg = "File uploaded successfully";
                                     message.isSuccess = "true";
@@ -743,8 +734,8 @@ namespace Dashboard.Controllers
             bool result = false;
             try
             {
-                sqlCon = new SqlConnection(clsConnectionString.GetConnectionString());
-                cmd = new SqlCommand("SP_OVI_Delete_Add_Upload_Data", sqlCon);
+                sqlCon = new MySqlConnection(clsConnectionString.GetConnectionString());
+                cmd = new MySqlCommand("SP_OVI_Delete_Add_Upload_Data", sqlCon);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@Identflag", Identflag);
                 cmd.Parameters.AddWithValue("@MonthYear", MonthYear);

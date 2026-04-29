@@ -1,13 +1,13 @@
-﻿using System.Data.SqlClient;
+﻿using MySqlConnector;
 using System.Data;
 
 namespace Dashboard.Models
 {
     public class GetData
     {
-        SqlConnection sqlCon = null;
-        SqlCommand cmd = null;
-        SqlDataAdapter sda = null;
+        MySqlConnection sqlCon = null;
+        MySqlCommand cmd = null;
+        MySqlDataAdapter sda = null;
         public PortfolioMain GetPortfolioMain(clsDashboardVariable clsDashboardVariable)
         {
             if (!clsDashboardVariable.Date.Contains("-") && clsDashboardVariable.Date != null)
@@ -21,10 +21,10 @@ namespace Dashboard.Models
             List<clsCode> lstclsCode = new List<clsCode>();
             try
             {
-                //sqlCon = new SqlConnection(Startup.connectionstring);
-                sqlCon = new SqlConnection(clsConnectionString.GetConnectionString());
+                //sqlCon = new MySqlConnection(Startup.connectionstring);
+                sqlCon = new MySqlConnection(clsConnectionString.GetConnectionString());
                 DataSet dt = new DataSet();
-                cmd = new SqlCommand("SP_OVI_CMViewDashboardData", sqlCon);
+                cmd = new MySqlCommand("SP_OVI_CMViewDashboardData", sqlCon);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@IdentFlag", clsDashboardVariable.Type);
                 cmd.Parameters.AddWithValue("@CM_Code", clsDashboardVariable.EmployeeCode);
@@ -37,7 +37,7 @@ namespace Dashboard.Models
                 {
                     sqlCon.Open();
                 }
-                sda = new SqlDataAdapter(cmd);
+                sda = new MySqlDataAdapter(cmd);
                 sda.Fill(dt);
                 sqlCon.Close();
 

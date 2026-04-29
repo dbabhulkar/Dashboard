@@ -130,9 +130,9 @@ namespace Dashboard
 
                 // Health checks
                 builder.Services.AddHealthChecks()
-                    .AddSqlServer(
+                    .AddMySql(
                         connectionString: clsConnectionString.GetConnectionString(),
-                        name: "sqlserver",
+                        name: "mysql",
                         tags: new[] { "ready" });
 
                 // Feature management

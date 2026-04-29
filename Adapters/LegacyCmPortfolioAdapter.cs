@@ -62,8 +62,8 @@ internal sealed class LegacyCmPortfolioAdapter(ILogger<LegacyCmPortfolioAdapter>
     public void LogActivity(string empCode, string formName, string moduleName, string activity, string activityDetails)
     {
         logger.LogDebug("Legacy LogActivity — delegating to inline SQL");
-        using var sqlCon = new System.Data.SqlClient.SqlConnection(clsConnectionString.GetConnectionString());
-        using var cmd = new System.Data.SqlClient.SqlCommand("USP_Insert_Data_In_Activity_Log_Tracker", sqlCon);
+        using var sqlCon = new MySqlConnector.MySqlConnection(clsConnectionString.GetConnectionString());
+        using var cmd = new MySqlConnector.MySqlCommand("USP_Insert_Data_In_Activity_Log_Tracker", sqlCon);
         cmd.CommandType = System.Data.CommandType.StoredProcedure;
         cmd.Parameters.AddWithValue("@Form_Name", formName);
         cmd.Parameters.AddWithValue("@Emp_Code", empCode);

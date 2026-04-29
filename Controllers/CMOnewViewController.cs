@@ -2,7 +2,7 @@ using Dashboard.Models;
 using Microsoft.AspNetCore.Mvc;
 using OVI.Domain.Interfaces;
 using System.Data;
-using System.Data.SqlClient;
+using MySqlConnector;
 
 namespace Dashboard.Controllers
 {
@@ -37,25 +37,25 @@ namespace Dashboard.Controllers
                 oVIView.txt_custname = SearchText;
             }
 
-            // SP_OVI_View is specific to this controller — uses local SqlConnection
+            // SP_OVI_View is specific to this controller — uses local MySqlConnection
             // until a dedicated IOviViewService is introduced in a future phase.
-            SqlConnection sqlCon = null;
-            SqlCommand cmd = null;
-            SqlDataAdapter sda = null;
+            MySqlConnection sqlCon = null;
+            MySqlCommand cmd = null;
+            MySqlDataAdapter sda = null;
             try
             {
-                sqlCon = new SqlConnection(clsConnectionString.GetConnectionString());
+                sqlCon = new MySqlConnection(clsConnectionString.GetConnectionString());
 
                 if (id == null)
                 {
-                    cmd = new SqlCommand("SP_OVI_View", sqlCon);
+                    cmd = new MySqlCommand("SP_OVI_View", sqlCon);
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@IdentFlag", "GetCustomerTable");
                     cmd.Parameters.AddWithValue("@EmpCode", HttpContext.Session.GetString("EmpId"));
                     cmd.Parameters.AddWithValue("@SearchText", SearchText);
 
                     sqlCon.Open();
-                    sda = new SqlDataAdapter(cmd);
+                    sda = new MySqlDataAdapter(cmd);
                     sda.Fill(dataSet);
                     sqlCon.Close();
                     oVIView.customerDetails = new List<CustomerDetails>();
@@ -72,7 +72,7 @@ namespace Dashboard.Controllers
                 }
                 else
                 {
-                    cmd = new SqlCommand("SP_OVI_View", sqlCon);
+                    cmd = new MySqlCommand("SP_OVI_View", sqlCon);
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@IdentFlag", "AllDataByLSID");
                     cmd.Parameters.AddWithValue("@EmpCode", HttpContext.Session.GetString("EmpId"));
@@ -80,7 +80,7 @@ namespace Dashboard.Controllers
                     cmd.Parameters.AddWithValue("@SearchText", SearchText);
 
                     sqlCon.Open();
-                    sda = new SqlDataAdapter(cmd);
+                    sda = new MySqlDataAdapter(cmd);
                     sda.Fill(dataSet);
                     sqlCon.Close();
                     oVIView.demographicReports = new List<DemographicReport>();

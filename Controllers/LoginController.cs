@@ -3,7 +3,7 @@ using System.Net;
 using System.Security.Claims;
 using System.Web;
 using Dashboard.Models;
-using System.Data.SqlClient;
+using MySqlConnector;
 using System.DirectoryServices;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -17,13 +17,13 @@ namespace Dashboard.Controllers
     {
         DataSet chkstatus = new DataSet();
         ResponseContent message = new ResponseContent();
-        SqlConnection sqlCon = new SqlConnection(clsConnectionString.GetConnectionString());
+        MySqlConnection sqlCon = new MySqlConnection(clsConnectionString.GetConnectionString());
         DBClass dBClass = new DBClass();
         private readonly IDashboardRepository _dashboardRepository;
         private readonly ILinkService _linkService;
         private readonly IFeatureManager _featureManager;
         private readonly OviSettings _oviSettings;
-        SqlCommand cmdcount = null;
+        MySqlCommand cmdcount = null;
 
         public LoginController(IDashboardRepository dashboardRepository, ILinkService linkService, IFeatureManager featureManager)
         {
@@ -51,7 +51,7 @@ namespace Dashboard.Controllers
                 HttpContext.Session.SetString("EmpId", UserId);
                 HttpContext.Session.SetString("EmpName", UserId);
 
-                cmdcount = new SqlCommand("SP_OVI_ValidateUser", sqlCon);
+                cmdcount = new MySqlCommand("SP_OVI_ValidateUser", sqlCon);
                 cmdcount.CommandType = CommandType.StoredProcedure;
                 cmdcount.Parameters.AddWithValue("@UserId", HttpContext.Session.GetString("EmpCode"));
                 sqlCon.Open();
@@ -168,9 +168,9 @@ namespace Dashboard.Controllers
 
                         DataTable dtlandingpage = new DataTable();
                         dtlandingpage = chkmappmaster(0, login.UserName);
-                        SqlCommand cmdcount = null;
+                        MySqlCommand cmdcount = null;
 
-                        cmdcount = new SqlCommand("SP_OVI_ValidateUser", sqlCon);
+                        cmdcount = new MySqlCommand("SP_OVI_ValidateUser", sqlCon);
                         cmdcount.CommandType = CommandType.StoredProcedure;
                         cmdcount.Parameters.AddWithValue("@UserId", HttpContext.Session.GetString("EmpCode"));
                         sqlCon.Open();
@@ -207,7 +207,7 @@ namespace Dashboard.Controllers
                         else
                         {
                             int b = 2;
-                            SqlCommand checkadminlanding = new SqlCommand("Check_Report_Login", sqlCon);
+                            MySqlCommand checkadminlanding = new MySqlCommand("Check_Report_Login", sqlCon);
                             checkadminlanding.CommandType = CommandType.StoredProcedure;
                             checkadminlanding.Parameters.AddWithValue("@emp_code", login.UserName);
 
@@ -250,12 +250,12 @@ namespace Dashboard.Controllers
                                 else
                                 {
 
-                                    SqlConnection connection1 = sqlCon;
-                                    SqlCommand cmdcounter = null;
+                                    MySqlConnection connection1 = sqlCon;
+                                    MySqlCommand cmdcounter = null;
                                     string Msg = string.Empty;
                                     try
                                     {
-                                        cmdcounter = new SqlCommand("SP_OVI_ValidateUser", connection1);
+                                        cmdcounter = new MySqlCommand("SP_OVI_ValidateUser", connection1);
                                         cmdcounter.CommandType = CommandType.StoredProcedure;
                                         cmdcounter.Parameters.AddWithValue("@UserId", HttpContext.Session.GetString("EmpCode"));
                                         connection1.Open();
@@ -398,12 +398,12 @@ namespace Dashboard.Controllers
 
             Login log = new Login();
             DataSet ds = new DataSet();
-            SqlCommand sqlcmd = new SqlCommand("sp_Login_New", sqlCon);
+            MySqlCommand sqlcmd = new MySqlCommand("sp_Login_New", sqlCon);
             sqlcmd.CommandTimeout = 0;
             sqlcmd.CommandType = CommandType.StoredProcedure;
-            sqlcmd.Parameters.Add("@Type", SqlDbType.VarChar).Value = 5;
-            sqlcmd.Parameters.Add("@Empcode", SqlDbType.VarChar).Value = userName;
-            SqlDataAdapter da = new SqlDataAdapter(sqlcmd);
+            sqlcmd.Parameters.Add("@Type", MySqlDbType.VarChar).Value = 5;
+            sqlcmd.Parameters.Add("@Empcode", MySqlDbType.VarChar).Value = userName;
+            MySqlDataAdapter da = new MySqlDataAdapter(sqlcmd);
             da.Fill(ds);
             da.Dispose();
             sqlcmd.Dispose();
@@ -448,12 +448,12 @@ namespace Dashboard.Controllers
         private DataTable chkmappmaster(int intdataid, string Username)
         {
             DataSet ds = new DataSet();
-            SqlCommand sqlcmd = new SqlCommand("check_user", sqlCon);
+            MySqlCommand sqlcmd = new MySqlCommand("check_user", sqlCon);
             sqlcmd.CommandTimeout = 0;
             sqlcmd.CommandType = CommandType.StoredProcedure;
-            sqlcmd.Parameters.Add("@userid", SqlDbType.VarChar).Value = Username;
-            sqlcmd.Parameters.Add("@intdataid", SqlDbType.VarChar).Value = intdataid;
-            SqlDataAdapter da = new SqlDataAdapter(sqlcmd);
+            sqlcmd.Parameters.Add("@userid", MySqlDbType.VarChar).Value = Username;
+            sqlcmd.Parameters.Add("@intdataid", MySqlDbType.VarChar).Value = intdataid;
+            MySqlDataAdapter da = new MySqlDataAdapter(sqlcmd);
             da.Fill(ds);
             da.Dispose();
             sqlcmd.Dispose();
@@ -464,7 +464,7 @@ namespace Dashboard.Controllers
         public ActionResult SelectionPage()
         {
 
-            cmdcount = new SqlCommand("SP_OVI_ValidateUser", sqlCon);
+            cmdcount = new MySqlCommand("SP_OVI_ValidateUser", sqlCon);
             cmdcount.CommandType = CommandType.StoredProcedure;
             cmdcount.Parameters.AddWithValue("@UserId", HttpContext.Session.GetString("EmpCode"));
             sqlCon.Open();
@@ -550,7 +550,7 @@ namespace Dashboard.Controllers
                         else
                         {
                             int b = 2;
-                            SqlCommand checkadminlanding = new SqlCommand("Check_Report_Login", sqlCon);
+                            MySqlCommand checkadminlanding = new MySqlCommand("Check_Report_Login", sqlCon);
                             checkadminlanding.CommandType = CommandType.StoredProcedure;
                             checkadminlanding.Parameters.AddWithValue("@emp_code", userName);
 
@@ -591,13 +591,13 @@ namespace Dashboard.Controllers
                                 else
                                 {
                                     //Session["CheckUser"] = EncryptDecrypt.Decrypt("troaxMOhoRAkJrv2Lsj6/w==");
-                                    //sqlconn = new SqlConnection(DalConnection.clsSqlConnectionstring("PMS"));
-                                    SqlConnection connection1 = sqlCon;
-                                    SqlCommand cmdcounter = null;
+                                    //sqlconn = new MySqlConnection(DalConnection.clsMySqlConnectionstring("PMS"));
+                                    MySqlConnection connection1 = sqlCon;
+                                    MySqlCommand cmdcounter = null;
                                     string Msg = string.Empty;
                                     try
                                     {
-                                        cmdcounter = new SqlCommand("SP_OVI_ValidateUser", connection1);
+                                        cmdcounter = new MySqlCommand("SP_OVI_ValidateUser", connection1);
                                         cmdcounter.CommandType = CommandType.StoredProcedure;
                                         cmdcounter.Parameters.AddWithValue("@UserId", HttpContext.Session.GetString("EmpCode"));
                                         connection1.Open();
@@ -675,12 +675,12 @@ namespace Dashboard.Controllers
 
             Login log = new Login();
             DataSet ds = new DataSet();
-            SqlCommand sqlcmd = new SqlCommand("sp_Login_New_RMView", sqlCon);
+            MySqlCommand sqlcmd = new MySqlCommand("sp_Login_New_RMView", sqlCon);
             sqlcmd.CommandTimeout = 0;
             sqlcmd.CommandType = CommandType.StoredProcedure;
-            sqlcmd.Parameters.Add("@Type", SqlDbType.VarChar).Value = 5;
-            sqlcmd.Parameters.Add("@Empcode", SqlDbType.VarChar).Value = userName;
-            SqlDataAdapter da = new SqlDataAdapter(sqlcmd);
+            sqlcmd.Parameters.Add("@Type", MySqlDbType.VarChar).Value = 5;
+            sqlcmd.Parameters.Add("@Empcode", MySqlDbType.VarChar).Value = userName;
+            MySqlDataAdapter da = new MySqlDataAdapter(sqlcmd);
             da.Fill(ds);
             da.Dispose();
             sqlcmd.Dispose();

@@ -35,7 +35,7 @@ public class SmokeTests : IClassFixture<WebApplicationFactory<Program>>
                 // Fall back to what appsettings.Development.json would have
                 return false;
             }
-            using var conn = new System.Data.SqlClient.SqlConnection(connStr);
+            using var conn = new MySqlConnector.MySqlConnection(connStr);
             conn.Open();
             return true;
         }
