@@ -1,0 +1,33 @@
+name: Build and Test
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restore dependencies
+        run: dotnet restore Dashboard.sln
+
+      - name: Build
+        run: dotnet build Dashboard.sln --no-restore --configuration Release
+
+      - name: Test - Smoke Tests
+        run: dotnet test Dashboard.Tests/Dashboard.Tests.csproj --no-build --configuration Release --verbosity normal
+        env:
+          ASPNETCORE_ENVIRONMENT: Development
+
+      - name: Test - Architecture Rules
+        run: dotnet test tests/OVI.ArchitectureTests/OVI.ArchitectureTests.csproj --no-build --configuration Release --verbosity normal

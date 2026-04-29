@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Data.SqlClient;
 using System.Data;
 using Dashboard.Repositories;
+using OVI.Domain.Interfaces;
 
 namespace Dashboard.Controllers
 {
@@ -15,9 +16,12 @@ namespace Dashboard.Controllers
         //GetData getData = new GetData();
         clsConnectionString clsConnectionString = new clsConnectionString();
         private readonly IDashboard _dashboard;
-        public CMWatchListController()
+        private readonly ICmDataService _cmDataService;
+
+        public CMWatchListController(ICmDataService cmDataService)
         {
             _dashboard = new DashboardRepository();
+            _cmDataService = cmDataService;
         }
         public IActionResult Index()
         {

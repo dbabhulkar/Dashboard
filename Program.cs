@@ -1,8 +1,12 @@
+using Dashboard.Adapters;
 using Dashboard.Models;
 using Dashboard.Middleware;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement;
+using OVI.Application;
+using OVI.Domain.Interfaces;
+using OVI.Infrastructure;
 using Serilog;
 using Serilog.Events;
 
@@ -33,6 +37,13 @@ namespace Dashboard
 
                 var builder = WebApplication.CreateBuilder(args);
 
+                // Enable scope validation to catch captive dependency bugs early
+                builder.Host.UseDefaultServiceProvider((ctx, options) =>
+                {
+                    options.ValidateScopes = true;
+                    options.ValidateOnBuild = true;
+                });
+
                 // Initialize static configuration bridge for legacy callers
                 AppConfiguration.Initialize(builder.Configuration);
 
@@ -42,6 +53,19 @@ namespace Dashboard
 
                 // Replace default logging with Serilog
                 builder.Host.UseSerilog();
+
+                // Clean Architecture layer registrations
+                builder.Services.AddApplication();
+                builder.Services.AddInfrastructure(builder.Configuration);
+
+                // Legacy ACL adapters (concrete types for injection into feature-flagged wrappers)
+                builder.Services.AddScoped<LegacyCmDataAdapter>();
+                builder.Services.AddScoped<LegacyDashboardAdapter>();
+                builder.Services.AddScoped<ICryptoService, LegacyCryptoAdapter>();
+
+                // Feature-flagged data access — routes to legacy or Dapper based on flags
+                builder.Services.AddScoped<ICmDataService, FeatureFlaggedCmDataService>();
+                builder.Services.AddScoped<IDashboardRepository, FeatureFlaggedDashboardRepository>();
 
                 // Add services to the container.
                 builder.Services.AddControllersWithViews();

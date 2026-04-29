@@ -5,6 +5,7 @@ using System.Data.SqlClient;
 using System.Data;
 using System.Formats.Asn1;
 using Dashboard.Repositories;
+using OVI.Domain.Interfaces;
 
 namespace Dashboard.Controllers
 {
@@ -17,10 +18,13 @@ namespace Dashboard.Controllers
         readonly ILogger _logger;
         //SqlConnection sqlCon = DataHelper.SqlHelper.openCon();
         private readonly IDashboard _dashboard;
+        private readonly IDashboardRepository _dashboardService;
         SqlConnection sqlCon = new SqlConnection(clsConnectionString.GetConnectionString());
-        public ComercialsController()
+
+        public ComercialsController(IDashboardRepository dashboardService)
         {
             _dashboard = new DashboardRepository();
+            _dashboardService = dashboardService;
         }
 
 

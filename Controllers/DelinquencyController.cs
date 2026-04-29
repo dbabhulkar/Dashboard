@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Data.SqlClient;
 using System.Data;
 using Dashboard.Repositories;
+using OVI.Domain.Interfaces;
 
 namespace Dashboard.Controllers
 {
@@ -15,9 +16,12 @@ namespace Dashboard.Controllers
         //GetData getData = new GetData();
         clsConnectionString clsConnectionString = new clsConnectionString();
         private readonly IDashboard _dashboard;
-        public DelinquencyController()
+        private readonly ICmDataService _cmDataService;
+
+        public DelinquencyController(ICmDataService cmDataService)
         {
             _dashboard = new DashboardRepository();
+            _cmDataService = cmDataService;
         }
         public IActionResult Index()
         {
@@ -48,9 +52,6 @@ namespace Dashboard.Controllers
         [CustomFilter]
         public IActionResult Delinquency(string datetime = null)
         {
-            // string dateTime = "2022-11-24";
-            // 0 frm = new FormCollection();
-
             string EmpID = HttpContext.Session.GetString("EmpId");
 
             if (datetime is null)
@@ -58,8 +59,9 @@ namespace Dashboard.Controllers
                 datetime = DateTime.Now.ToString("yyyy-MM-dd");
             }
 
+            // ICmDataService is injected and available — Views still bind to legacy models
+            // until Phase 3 updates them. Use legacy Common for View rendering.
             Common common = new Common();
-            // common.clsCMDelinquency11("","",datetime, EmpID);
             _dashboard.CaptureProductivityDetails(sqlCon, EmpID.ToString().Trim(), "Delinquecy", "OneViewIndicator-CM", 1, "Delinquecy View", "Delinquency View for Emp - " + EmpID.ToString().Trim());
             return View(common.clsCMDelinquency11("", "", "", datetime, EmpID));
         }

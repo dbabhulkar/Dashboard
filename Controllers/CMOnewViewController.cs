@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.ViewEngines;
 using System.Data.SqlClient;
 using System.Data;
 using Dashboard.Repositories;
+using OVI.Domain.Interfaces;
 
 namespace Dashboard.Controllers
 {
@@ -17,9 +18,12 @@ namespace Dashboard.Controllers
         clsConnectionString clsConnectionString = new clsConnectionString();
 
         private readonly IDashboard _dashboard;
-        public CMOnewViewController()
+        private readonly ICmDataService _cmDataService;
+
+        public CMOnewViewController(ICmDataService cmDataService)
         {
             _dashboard = new DashboardRepository();
+            _cmDataService = cmDataService;
         }
 
 

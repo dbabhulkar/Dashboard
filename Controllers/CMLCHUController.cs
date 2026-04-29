@@ -4,9 +4,10 @@ using Microsoft.AspNetCore.Mvc;
 using System.Data.SqlClient;
 using System.Data;
 using Dashboard.Repositories;
+using OVI.Domain.Interfaces;
 
 namespace Dashboard.Controllers
-{ 
+{
         public class CMLCHUController : Controller
         {
             SqlConnection sqlCon = new SqlConnection(clsConnectionString.GetConnectionString());
@@ -15,9 +16,12 @@ namespace Dashboard.Controllers
             //GetData getData = new GetData();
             clsConnectionString clsConnectionString = new clsConnectionString();
             private readonly IDashboard _dashboard;
-            public CMLCHUController()
+            private readonly ICmDataService _cmDataService;
+
+            public CMLCHUController(ICmDataService cmDataService)
             {
                 _dashboard = new DashboardRepository();
+                _cmDataService = cmDataService;
             }
             public IActionResult Index()
             {

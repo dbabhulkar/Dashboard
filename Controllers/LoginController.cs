@@ -18,12 +18,14 @@ namespace Dashboard.Controllers
         SqlConnection sqlCon = new SqlConnection(clsConnectionString.GetConnectionString());
         DBClass dBClass = new DBClass();
         private readonly IDashboard _dashboard;
+        private readonly OviSettings _oviSettings;
         SqlCommand cmdcount = null;
 
         Common cs = new Common();
         public LoginController()
         {
             _dashboard = new DashboardRepository();
+            _oviSettings = AppConfiguration.GetOviSettings();
         }
         [HttpGet]
         public IActionResult Index()
@@ -98,10 +100,9 @@ namespace Dashboard.Controllers
             login.Password = login.Password;
 
             chkstatus = checkUserMaster(login.UserName);
-            //UAT
-            Isvalid = true;
-            //LIVE
-            //Isvalid = ValidateActiveDirectoryLogin("ldap.hbctxdom.com", EncryptDecrypt.Encrypt(login.UserName), login.Password);
+            Isvalid = _oviSettings.BypassLdap
+                ? true
+                : ValidateActiveDirectoryLogin("ldap.hbctxdom.com", EncryptDecrypt.Encrypt(login.UserName), login.Password);
 
             HttpContext.Session.SetString("EmpCode", login.UserName);
 
@@ -109,10 +110,7 @@ namespace Dashboard.Controllers
             {
                 if (chkstatus.Tables[0].Rows.Count > 0)
                 {
-                    //UAT
-                    if ("True" == "True")
-                    //LIVE
-                    //if(chkstatus.Tables[0].Rows[0]["Active"].ToString() == "True")
+                    if (_oviSettings.BypassActiveStatusCheck || chkstatus.Tables[0].Rows[0]["Active"].ToString() == "True")
                     {
                         if ((chkstatus.Tables[0].Rows[0]["LastLogoutDate"].ToString()) != null && (chkstatus.Tables[0].Rows[0]["LastLogOutDate"].ToString()) != "")
                         {
@@ -387,8 +385,8 @@ namespace Dashboard.Controllers
         public bool ValidateActiveDirectoryLogin(string Domain, string UserName, string Password)
         {
             bool success = false;
-            //UAT
-            return true;
+            if (_oviSettings.BypassLdap)
+                return true;
             try
             {
                 //    string DN;
@@ -492,10 +490,7 @@ namespace Dashboard.Controllers
                 chkstatus = checkRMUserMaster(userName);
                 if (chkstatus.Tables[0].Rows.Count > 0 && sectionType == "RMView" && businessRole.Contains("RM"))
                 {
-                    //UAT
-                    if ("True" == "True")
-                    //LIVE
-                    //if(chkstatus.Tables[0].Rows[0]["Active"].ToString() == "True")
+                    if (_oviSettings.BypassActiveStatusCheck || chkstatus.Tables[0].Rows[0]["Active"].ToString() == "True")
                     {
 
                         DataTable dtlandingpage = new DataTable();

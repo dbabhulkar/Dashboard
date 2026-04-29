@@ -7,6 +7,7 @@ using System.Data;
 using System.Diagnostics;
 using System.Net;
 using Dashboard.Repositories;
+using OVI.Domain.Interfaces;
 
 namespace Dashboard.Controllers
 {
@@ -52,10 +53,14 @@ namespace Dashboard.Controllers
         SqlConnection sqlCon = new SqlConnection(clsConnectionString.GetConnectionString());
         // SqlConnection sqlCon = DataHelper.SqlHelper.openCon();
 
-        public HomeController(ILogger<ErrorController> logger)
+        // Canary: IDashboardRepository injected via DI alongside legacy _dashboard
+        private readonly OVI.Domain.Interfaces.IDashboardRepository _dashboardService;
+
+        public HomeController(ILogger<ErrorController> logger, OVI.Domain.Interfaces.IDashboardRepository dashboardService)
         {
             _logger = logger;
             _dashboard = new DashboardRepository();
+            _dashboardService = dashboardService;
         }
 
         public IActionResult Index()
