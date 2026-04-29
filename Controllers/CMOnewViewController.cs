@@ -1,37 +1,29 @@
-﻿using Dashboard.Interfaces;
 using Dashboard.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ViewEngines;
-using System.Data.SqlClient;
-using System.Data;
-using Dashboard.Repositories;
 using OVI.Domain.Interfaces;
+using System.Data;
+using System.Data.SqlClient;
 
 namespace Dashboard.Controllers
 {
     public class CMOnewViewController : Controller
     {
-        SqlConnection sqlCon = new SqlConnection(clsConnectionString.GetConnectionString());
-        SqlCommand cmd = null;
-        SqlDataAdapter sda = null;
-        //GetData getData = new GetData();
-        clsConnectionString clsConnectionString = new clsConnectionString();
-
-        private readonly IDashboard _dashboard;
+        private readonly IDashboardRepository _dashboardRepository;
         private readonly ICmDataService _cmDataService;
 
-        public CMOnewViewController(ICmDataService cmDataService)
+        public CMOnewViewController(ICmDataService cmDataService, IDashboardRepository dashboardRepository)
         {
-            _dashboard = new DashboardRepository();
             _cmDataService = cmDataService;
+            _dashboardRepository = dashboardRepository;
         }
-
 
         [HttpGet]
         public IActionResult CMOneViewIndicator(string id = null, string SearchText = null)
         {
             string EmpID = HttpContext.Session.GetString("EmpId");
-            _dashboard.CaptureProductivityDetails(sqlCon, EmpID.ToString().Trim(), "OVI Screen", "OneViewIndicator-CM", 1, "OVI View", "OVI View for Emp - " + EmpID.ToString().Trim());
+            _dashboardRepository.CaptureProductivityDetails(
+                EmpID.Trim(), "OVI Screen", "OneViewIndicator-CM", 1,
+                "OVI View", "OVI View for Emp - " + EmpID.Trim());
 
             DataSet dataSet = new DataSet();
             OVIView oVIView = new OVIView();
@@ -45,8 +37,15 @@ namespace Dashboard.Controllers
                 oVIView.txt_custname = SearchText;
             }
 
+            // SP_OVI_View is specific to this controller — uses local SqlConnection
+            // until a dedicated IOviViewService is introduced in a future phase.
+            SqlConnection sqlCon = null;
+            SqlCommand cmd = null;
+            SqlDataAdapter sda = null;
             try
             {
+                sqlCon = new SqlConnection(clsConnectionString.GetConnectionString());
+
                 if (id == null)
                 {
                     cmd = new SqlCommand("SP_OVI_View", sqlCon);
@@ -55,10 +54,7 @@ namespace Dashboard.Controllers
                     cmd.Parameters.AddWithValue("@EmpCode", HttpContext.Session.GetString("EmpId"));
                     cmd.Parameters.AddWithValue("@SearchText", SearchText);
 
-                    if (sqlCon.State == ConnectionState.Closed)
-                    {
-                        sqlCon.Open();
-                    }
+                    sqlCon.Open();
                     sda = new SqlDataAdapter(cmd);
                     sda.Fill(dataSet);
                     sqlCon.Close();
@@ -83,10 +79,7 @@ namespace Dashboard.Controllers
                     cmd.Parameters.AddWithValue("@LSID", id);
                     cmd.Parameters.AddWithValue("@SearchText", SearchText);
 
-                    if (sqlCon.State == ConnectionState.Closed)
-                    {
-                        sqlCon.Open();
-                    }
+                    sqlCon.Open();
                     sda = new SqlDataAdapter(cmd);
                     sda.Fill(dataSet);
                     sqlCon.Close();
@@ -152,7 +145,6 @@ namespace Dashboard.Controllers
                             oneViewIndicatorReport.No_times_last_6_NPA = row["No_times_last_6_NPA"].ToString();
                             oneViewIndicatorReport.Pot_NPA_Months = row["Pot_NPA_Months"].ToString();
                             oneViewIndicatorReport.Field1 = row["Field1"].ToString();
-                            //oneViewIndicatorReport.Field1 = "";
                             oVIView.oneViewIndicatorReports.Add(oneViewIndicatorReport);
                         }
                     }
@@ -239,51 +231,19 @@ namespace Dashboard.Controllers
             }
             catch (Exception ex)
             {
-
                 throw;
             }
             finally
             {
                 if (sqlCon != null)
                     sqlCon.Close();
-
                 if (cmd != null)
                     cmd.Dispose();
-
                 if (sda != null)
                     sda.Dispose();
             }
 
             return View(oVIView);
         }
-
-        //[HttpDelete]
-        //public IActionResult CMOneViewIndicator(string id, string abc = null)
-        //{
-        //    DataSet dataSet = new DataSet();
-        //    OVIView oVIView = new OVIView();
-        //    try
-        //    {
-
-        //    }
-        //    catch (Exception ex)
-        //    {
-
-        //        throw;
-        //    }
-        //    finally
-        //    {
-        //        if (sqlCon != null)
-        //            sqlCon.Close();
-
-        //        if (cmd != null)
-        //            cmd.Dispose();
-
-        //        if (sda != null)
-        //            sda.Dispose();
-        //    }
-        //    return View(oVIView);
-        //}
-
     }
 }

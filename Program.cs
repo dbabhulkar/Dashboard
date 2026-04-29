@@ -62,11 +62,15 @@ namespace Dashboard
                 // Legacy ACL adapters (concrete types for injection into feature-flagged wrappers)
                 builder.Services.AddScoped<LegacyCmDataAdapter>();
                 builder.Services.AddScoped<LegacyDashboardAdapter>();
+                builder.Services.AddScoped<LegacyCmPortfolioAdapter>();
+                builder.Services.AddScoped<LegacyLinkAdapter>();
                 builder.Services.AddScoped<ICryptoService, LegacyCryptoAdapter>();
 
                 // Feature-flagged data access — routes to legacy or Dapper based on flags
                 builder.Services.AddScoped<ICmDataService, FeatureFlaggedCmDataService>();
                 builder.Services.AddScoped<IDashboardRepository, FeatureFlaggedDashboardRepository>();
+                builder.Services.AddScoped<ICmPortfolioService, FeatureFlaggedCmPortfolioService>();
+                builder.Services.AddScoped<ILinkService, LegacyLinkAdapter>();
 
                 // YARP reverse proxy — migration ledger for Strangler Fig pattern
                 builder.Services.AddReverseProxy()

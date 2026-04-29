@@ -1,4 +1,3 @@
-using Dashboard.Interfaces;
 using Dashboard.Models;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -6,61 +5,25 @@ using System.Data.SqlClient;
 using System.Data;
 using System.Diagnostics;
 using System.Net;
-using Dashboard.Repositories;
 using OVI.Domain.Interfaces;
 
 namespace Dashboard.Controllers
 {
-    //public class HomeController : Controller
-    //{
-    //    private readonly ILogger<HomeController> _logger;
-
-    //    public HomeController(ILogger<HomeController> logger)
-    //    {
-    //        _logger = logger;
-    //    }
-
-    //    public IActionResult Index()
-    //    {
-    //        return View();
-    //    }
-
-    //    public IActionResult Privacy()
-    //    {
-    //        return View();
-    //    }
-
-    //    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    //    public IActionResult Error()
-    //    {
-    //        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-    //    }
-    //}
-    /* CustomFilter Implemeted to check the session expiry. */
-
-    //[CustomFilter]
     public class HomeController : Controller
     {
-        private readonly ISession _session;
-        private readonly IDashboard _dashboard;
-        DataSet chkstatus = new DataSet();
         readonly ILogger _logger;
-        private SqlConnection sqlconn;
         public static string[] sValues = new[] { "App_Web", "ThinkTank" };
         public static int ITGRCCode = 997003;
         public static string loginID;
         public static string NewDbVaultId = "U5EokPqGwwv+FXX3sb0WnA==";
         SqlConnection sqlCon = new SqlConnection(clsConnectionString.GetConnectionString());
-        // SqlConnection sqlCon = DataHelper.SqlHelper.openCon();
 
-        // Canary: IDashboardRepository injected via DI alongside legacy _dashboard
-        private readonly OVI.Domain.Interfaces.IDashboardRepository _dashboardService;
+        private readonly IDashboardRepository _dashboardRepository;
 
-        public HomeController(ILogger<ErrorController> logger, OVI.Domain.Interfaces.IDashboardRepository dashboardService)
+        public HomeController(ILogger<ErrorController> logger, IDashboardRepository dashboardRepository)
         {
             _logger = logger;
-            _dashboard = new DashboardRepository();
-            _dashboardService = dashboardService;
+            _dashboardRepository = dashboardRepository;
         }
 
         public IActionResult Index()
@@ -122,9 +85,9 @@ namespace Dashboard.Controllers
                 string user_id = HttpContext.Session.GetString("EmpId").ToString();
 
                 var portData = GetPortfolioData();
-                ViewData["Decomplance"] = _dashboard.GetDelinquencyDetails(user_id);
-                ViewData["Compliance"] = _dashboard.GetComplianceItem(user_id);
-                _dashboard.CaptureProductivityDetails(sqlCon, HttpContext.Session.GetString("EmpName").ToString().Trim(), "Dashboard", "OneViewIndicator-RM", 1, "Dashboard", "Dashboard View for EmpCode - " + HttpContext.Session.GetString("EmpId").ToString().Trim());
+                ViewData["Decomplance"] = _dashboardRepository.GetDelinquencyDetails(user_id);
+                ViewData["Compliance"] = _dashboardRepository.GetComplianceItem(user_id);
+                _dashboardRepository.CaptureProductivityDetails(HttpContext.Session.GetString("EmpName").ToString().Trim(), "Dashboard", "OneViewIndicator-RM", 1, "Dashboard", "Dashboard View for EmpCode - " + HttpContext.Session.GetString("EmpId").ToString().Trim());
 
                 return View(portData);
             }
@@ -407,7 +370,7 @@ namespace Dashboard.Controllers
                 ds.Tables[0].TableName = "TBL_All_links";
                 ds.Tables[1].TableName = "TBL_FrequentlyUsedLinks";
 
-                _dashboard.CaptureProductivityDetails(sqlCon, HttpContext.Session.GetString("EmpName").ToString().Trim(), "Dashboard", "OneViewIndicator-RM", 1, "QuickLink", "QuickLink for EmpCode - " + HttpContext.Session.GetString("EmpId").ToString().Trim());
+                _dashboardRepository.CaptureProductivityDetails(HttpContext.Session.GetString("EmpName").ToString().Trim(), "Dashboard", "OneViewIndicator-RM", 1, "QuickLink", "QuickLink for EmpCode - " + HttpContext.Session.GetString("EmpId").ToString().Trim());
                 return ds;
             }
             catch (Exception e)
@@ -796,7 +759,7 @@ namespace Dashboard.Controllers
 
                 ViewData["feedbackPageList"] = listFeedbackPage;
 
-                _dashboard.CaptureProductivityDetails(sqlCon, HttpContext.Session.GetString("EmpName").ToString().Trim(), "Feedback", "OneViewIndicator-RM", 1, "Feedback", "Feedback View for EmpCode - " + HttpContext.Session.GetString("EmpId").ToString().Trim());
+                _dashboardRepository.CaptureProductivityDetails(HttpContext.Session.GetString("EmpName").ToString().Trim(), "Feedback", "OneViewIndicator-RM", 1, "Feedback", "Feedback View for EmpCode - " + HttpContext.Session.GetString("EmpId").ToString().Trim());
 
                 return View();
             }
@@ -835,7 +798,7 @@ namespace Dashboard.Controllers
                 SqlDataAdapter da = new SqlDataAdapter(sqlcmd);
                 da.Fill(dt);
 
-                _dashboard.CaptureProductivityDetails(sqlCon, HttpContext.Session.GetString("EmpName").ToString().Trim(), "Feedback", "OneViewIndicator-RM", 1, "Feedback", "Feedback Submited for EmpCode - " + HttpContext.Session.GetString("EmpId").ToString().Trim());
+                _dashboardRepository.CaptureProductivityDetails(HttpContext.Session.GetString("EmpName").ToString().Trim(), "Feedback", "OneViewIndicator-RM", 1, "Feedback", "Feedback Submited for EmpCode - " + HttpContext.Session.GetString("EmpId").ToString().Trim());
 
 
 
@@ -887,7 +850,7 @@ namespace Dashboard.Controllers
             {
                 dt = ds.Tables[0];
 
-                _dashboard.CaptureProductivityDetails(sqlCon, HttpContext.Session.GetString("EmpName").ToString().Trim(), "Dashboard", "OneViewIndicator-RM", 1, "Dashboard", "Dashboard " + flagName + " for EmpCode - " + HttpContext.Session.GetString("EmpId").ToString().Trim());
+                _dashboardRepository.CaptureProductivityDetails(HttpContext.Session.GetString("EmpName").ToString().Trim(), "Dashboard", "OneViewIndicator-RM", 1, "Dashboard", "Dashboard " + flagName + " for EmpCode - " + HttpContext.Session.GetString("EmpId").ToString().Trim());
 
             }
             else
@@ -915,7 +878,7 @@ namespace Dashboard.Controllers
 
             //Read the File data into Byte Array.
             byte[] bytes = System.IO.File.ReadAllBytes(path);
-            // _dashboard.CaptureProductivityDetails(sqlCon, HttpContext.Session.GetString("EmpName").ToString().Trim(), "Upload", "OneViewIndicator-RM", 1, "UploadMaster", "Download sample file " + fileName + " for EmpCode - " + HttpContext.Session.GetString("EmpId").ToString().Trim());
+            // _dashboardRepository.CaptureProductivityDetails(HttpContext.Session.GetString("EmpName").ToString().Trim(), "Upload", "OneViewIndicator-RM", 1, "UploadMaster", "Download sample file " + fileName + " for EmpCode - " + HttpContext.Session.GetString("EmpId").ToString().Trim());
             System.IO.File.Delete(path);
             //Send the File to Download.
             return File(bytes, "application/octet-stream", fileNameSplit + ".csv");

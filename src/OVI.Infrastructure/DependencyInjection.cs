@@ -19,6 +19,8 @@ public static class DependencyInjection
         // Dapper-based repositories (new implementations, gated by feature flags)
         services.AddScoped<DapperDashboardRepository>();
         services.AddScoped<DapperCmDataRepository>();
+        services.AddScoped<DapperCmPortfolioRepository>();
+        services.AddScoped<DapperLinkRepository>();
 
         return services;
     }

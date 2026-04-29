@@ -4,27 +4,26 @@ using System.Net;
 using System.Web;
 using Dashboard.Models;
 using System.Data.SqlClient;
-using Dashboard.Interfaces;
-using Dashboard.Repositories;
 using System.DirectoryServices;
+using OVI.Domain.Interfaces;
 
 namespace Dashboard.Controllers
 {
     public class LoginController : Controller
     {
-        // SqlConnection sqlCon = DataHelper.SqlHelper.openCon();
         DataSet chkstatus = new DataSet();
         ResponseContent message = new ResponseContent();
         SqlConnection sqlCon = new SqlConnection(clsConnectionString.GetConnectionString());
         DBClass dBClass = new DBClass();
-        private readonly IDashboard _dashboard;
+        private readonly IDashboardRepository _dashboardRepository;
+        private readonly ILinkService _linkService;
         private readonly OviSettings _oviSettings;
         SqlCommand cmdcount = null;
 
-        Common cs = new Common();
-        public LoginController()
+        public LoginController(IDashboardRepository dashboardRepository, ILinkService linkService)
         {
-            _dashboard = new DashboardRepository();
+            _dashboardRepository = dashboardRepository;
+            _linkService = linkService;
             _oviSettings = AppConfiguration.GetOviSettings();
         }
         [HttpGet]
@@ -37,7 +36,7 @@ namespace Dashboard.Controllers
             string PMS_Link = string.Empty;
             if (HttpContext.Request.Query["USERID"].ToString() != "")
             {
-                PMS_Link = cs.Get_PMS_Link("PMS", "Live");
+                PMS_Link = _linkService.GetLink("PMS", "Live");
                 Global.LoginUrl = PMS_Link;
 
                 //UserId = EncryptDecrypt.Decrypt(HttpContext.Request.Query["USERID"].ToString());
@@ -314,12 +313,12 @@ namespace Dashboard.Controllers
             }
             if (message.isSuccess == "true")
             {
-                _dashboard.CaptureProductivityDetails(sqlCon, login.UserName.ToString().Trim(), "Login", "OneViewIndicator-CM and RM", 1, "Login successfully", "Login successfully for EmpCode - " + login.UserName.ToString().Trim());
+                _dashboardRepository.CaptureProductivityDetails(login.UserName.ToString().Trim(), "Login", "OneViewIndicator-CM and RM", 1, "Login successfully", "Login successfully for EmpCode - " + login.UserName.ToString().Trim());
 
             }
             else
             {
-                _dashboard.CaptureProductivityDetails(sqlCon, login.UserName.ToString().Trim(), "Login", "OneViewIndicator-CM and RM", 1, "Login unsuccessfully", "Login unsuccessfully for EmpCode - " + login.UserName.ToString().Trim());
+                _dashboardRepository.CaptureProductivityDetails(login.UserName.ToString().Trim(), "Login", "OneViewIndicator-CM and RM", 1, "Login unsuccessfully", "Login unsuccessfully for EmpCode - " + login.UserName.ToString().Trim());
 
             }
             return new JsonResult(message);

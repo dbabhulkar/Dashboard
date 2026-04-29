@@ -1,10 +1,8 @@
-﻿using Dashboard.Interfaces;
-using Dashboard.Models;
+﻿using Dashboard.Models;
+using Dashboard.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using System.Data.SqlClient;
 using System.Data;
-using System.Formats.Asn1;
-using Dashboard.Repositories;
 using OVI.Domain.Interfaces;
 
 namespace Dashboard.Controllers
@@ -12,19 +10,12 @@ namespace Dashboard.Controllers
     [CustomFilter]
     public class ComercialsController : Controller
     {
-        CommonClass commonClass = new CommonClass();
-        LogClass logClass = new LogClass();
-        private readonly ISession _session;
-        readonly ILogger _logger;
-        //SqlConnection sqlCon = DataHelper.SqlHelper.openCon();
-        private readonly IDashboard _dashboard;
-        private readonly IDashboardRepository _dashboardService;
+        private readonly IDashboardRepository _dashboardRepository;
         SqlConnection sqlCon = new SqlConnection(clsConnectionString.GetConnectionString());
 
-        public ComercialsController(IDashboardRepository dashboardService)
+        public ComercialsController(IDashboardRepository dashboardRepository)
         {
-            _dashboard = new DashboardRepository();
-            _dashboardService = dashboardService;
+            _dashboardRepository = dashboardRepository;
         }
 
 
@@ -75,11 +66,11 @@ namespace Dashboard.Controllers
                 message.Msg = "Record Save Successfully";
                 if (data.CustomerId == 0)
                 {
-                    _dashboard.CaptureProductivityDetails(sqlCon, HttpContext.Session.GetString("EmpName").ToString().Trim(), "Commercial-Account Customisation", "OneViewIndicator-RM", 1, "Create", "RM Created Account Customisation Proposal");
+                    _dashboardRepository.CaptureProductivityDetails(HttpContext.Session.GetString("EmpName").ToString().Trim(), "Commercial-Account Customisation", "OneViewIndicator-RM", 1, "Create", "RM Created Account Customisation Proposal");
                 }
                 else
                 {
-                    _dashboard.CaptureProductivityDetails(sqlCon, HttpContext.Session.GetString("EmpName").ToString().Trim(), "Commercial-Account Customisation", "OneViewIndicator-RM", 1, "Update", "RM Updated Account Customisation Proposal");
+                    _dashboardRepository.CaptureProductivityDetails(HttpContext.Session.GetString("EmpName").ToString().Trim(), "Commercial-Account Customisation", "OneViewIndicator-RM", 1, "Update", "RM Updated Account Customisation Proposal");
                 }
 
 
@@ -144,11 +135,11 @@ namespace Dashboard.Controllers
                 {
                     if (data.CustomerId == 0)
                     {
-                        _dashboard.CaptureProductivityDetails(sqlCon, HttpContext.Session.GetString("EmpName").ToString().Trim(), "Commercial-Reversal Approval", "OneViewIndicator-RM", 1, "Create", "Created Reversal Approval Proposal");
+                        _dashboardRepository.CaptureProductivityDetails(HttpContext.Session.GetString("EmpName").ToString().Trim(), "Commercial-Reversal Approval", "OneViewIndicator-RM", 1, "Create", "Created Reversal Approval Proposal");
                     }
                     else
                     {
-                        _dashboard.CaptureProductivityDetails(sqlCon, HttpContext.Session.GetString("EmpName").ToString().Trim(), "Commercial-Reversal Approval", "OneViewIndicator-RM", 1, "Update", "Updated Reversal Approval Proposal");
+                        _dashboardRepository.CaptureProductivityDetails(HttpContext.Session.GetString("EmpName").ToString().Trim(), "Commercial-Reversal Approval", "OneViewIndicator-RM", 1, "Update", "Updated Reversal Approval Proposal");
                     }
 
                     message.isSuccess = "true";
@@ -254,11 +245,11 @@ namespace Dashboard.Controllers
                 {
                     if (data.CustomerId == 0)
                     {
-                        _dashboard.CaptureProductivityDetails(sqlCon, HttpContext.Session.GetString("EmpName").ToString().Trim(), "Commercial-Asset Pricing", "OneViewIndicator-RM", 1, "Create", "Created Asset Pricing Proposal");
+                        _dashboardRepository.CaptureProductivityDetails(HttpContext.Session.GetString("EmpName").ToString().Trim(), "Commercial-Asset Pricing", "OneViewIndicator-RM", 1, "Create", "Created Asset Pricing Proposal");
                     }
                     else
                     {
-                        _dashboard.CaptureProductivityDetails(sqlCon, HttpContext.Session.GetString("EmpName").ToString().Trim(), "Commercial-Asset Pricing", "OneViewIndicator-RM", 1, "Update", "Updated Asset Pricing Proposal");
+                        _dashboardRepository.CaptureProductivityDetails(HttpContext.Session.GetString("EmpName").ToString().Trim(), "Commercial-Asset Pricing", "OneViewIndicator-RM", 1, "Update", "Updated Asset Pricing Proposal");
                     }
                     message.isSuccess = "true";
                     message.Msg = "Record Save Successfully";
@@ -835,11 +826,11 @@ namespace Dashboard.Controllers
                     message.isSuccess = "true";
                     if (data.CustomerId == 0)
                     {
-                        _dashboard.CaptureProductivityDetails(sqlCon, HttpContext.Session.GetString("EmpName").ToString().Trim(), "Commercial-Trade Pricing", "OneViewIndicator-RM", 1, "Create", "Created Trade Pricing Proposal");
+                        _dashboardRepository.CaptureProductivityDetails(HttpContext.Session.GetString("EmpName").ToString().Trim(), "Commercial-Trade Pricing", "OneViewIndicator-RM", 1, "Create", "Created Trade Pricing Proposal");
                     }
                     else
                     {
-                        _dashboard.CaptureProductivityDetails(sqlCon, HttpContext.Session.GetString("EmpName").ToString().Trim(), "Commercial-Trade Pricing", "OneViewIndicator-RM", 1, "Update", "Updated Trade Pricing Proposal");
+                        _dashboardRepository.CaptureProductivityDetails(HttpContext.Session.GetString("EmpName").ToString().Trim(), "Commercial-Trade Pricing", "OneViewIndicator-RM", 1, "Update", "Updated Trade Pricing Proposal");
                     }
                     if (dt.Tables.Count == 2)
                     {
@@ -1110,18 +1101,18 @@ namespace Dashboard.Controllers
                     string result = mailRepository.SendMail(dt);
                     if (data.Action == "Approve")
                     {
-                        _dashboard.CaptureProductivityDetails(sqlCon, HttpContext.Session.GetString("EmpName").ToString().Trim(), "Commercial-Asset Pricing", "OneViewIndicator-RM", 1, "Approve", "Supervisor Approved Asset pricing proposal");
+                        _dashboardRepository.CaptureProductivityDetails(HttpContext.Session.GetString("EmpName").ToString().Trim(), "Commercial-Asset Pricing", "OneViewIndicator-RM", 1, "Approve", "Supervisor Approved Asset pricing proposal");
                         message.Msg = "Record approved successfully";
 
                     }
                     else if (data.Action == "Reject")
                     {
-                        _dashboard.CaptureProductivityDetails(sqlCon, HttpContext.Session.GetString("EmpName").ToString().Trim(), "Commercial-Asset Pricing", "OneViewIndicator-RM", 1, "Reject", "Supervisor Rejected Asset pricing proposal");
+                        _dashboardRepository.CaptureProductivityDetails(HttpContext.Session.GetString("EmpName").ToString().Trim(), "Commercial-Asset Pricing", "OneViewIndicator-RM", 1, "Reject", "Supervisor Rejected Asset pricing proposal");
                         message.Msg = "Record rejected successfully";
                     }
                     else
                     {
-                        _dashboard.CaptureProductivityDetails(sqlCon, HttpContext.Session.GetString("EmpName").ToString().Trim(), "Commercial-Asset Pricing", "OneViewIndicator-RM", 1, "send back", "Supervisor sent back Asset pricing proposal");
+                        _dashboardRepository.CaptureProductivityDetails(HttpContext.Session.GetString("EmpName").ToString().Trim(), "Commercial-Asset Pricing", "OneViewIndicator-RM", 1, "send back", "Supervisor sent back Asset pricing proposal");
                         message.Msg = "Record send back successfully";
                     }
                 }
@@ -1172,12 +1163,12 @@ namespace Dashboard.Controllers
                     string result = mailRepository.SendMail(dt);
                     if (data.Action == "Approve")
                     {
-                        _dashboard.CaptureProductivityDetails(sqlCon, HttpContext.Session.GetString("EmpName").ToString().Trim(), "Commercial-Trade Pricing", "OneViewIndicator-RM", 1, "Approve", "Supervisor Approved Trade pricing proposal");
+                        _dashboardRepository.CaptureProductivityDetails(HttpContext.Session.GetString("EmpName").ToString().Trim(), "Commercial-Trade Pricing", "OneViewIndicator-RM", 1, "Approve", "Supervisor Approved Trade pricing proposal");
                         message.Msg = "Record Approved Successfully";
                     }
                     else if (data.Action == "Reject")
                     {
-                        _dashboard.CaptureProductivityDetails(sqlCon, HttpContext.Session.GetString("EmpName").ToString().Trim(), "Commercial-Trade Pricing", "OneViewIndicator-RM", 1, "Reject", "Supervisor Rejected Trade pricing proposal");
+                        _dashboardRepository.CaptureProductivityDetails(HttpContext.Session.GetString("EmpName").ToString().Trim(), "Commercial-Trade Pricing", "OneViewIndicator-RM", 1, "Reject", "Supervisor Rejected Trade pricing proposal");
                         message.Msg = "Record Rejected Successfully";
                     }
 
@@ -1524,17 +1515,17 @@ namespace Dashboard.Controllers
 
                     if (data.Action == "Approve")
                     {
-                        _dashboard.CaptureProductivityDetails(sqlCon, HttpContext.Session.GetString("EmpName").ToString().Trim(), "Commercial-Reversal Approval", "OneViewIndicator-RM", 1, "Approve", "Supervisor Approved Reversal approval proposal");
+                        _dashboardRepository.CaptureProductivityDetails(HttpContext.Session.GetString("EmpName").ToString().Trim(), "Commercial-Reversal Approval", "OneViewIndicator-RM", 1, "Approve", "Supervisor Approved Reversal approval proposal");
                         message.Msg = "Record Approved Successfully";
                     }
                     else if (data.Action == "Reject")
                     {
-                        _dashboard.CaptureProductivityDetails(sqlCon, HttpContext.Session.GetString("EmpName").ToString().Trim(), "Commercial-Reversal Approval", "OneViewIndicator-RM", 1, "Reject", "Supervisor Rejected Reversal approval proposal");
+                        _dashboardRepository.CaptureProductivityDetails(HttpContext.Session.GetString("EmpName").ToString().Trim(), "Commercial-Reversal Approval", "OneViewIndicator-RM", 1, "Reject", "Supervisor Rejected Reversal approval proposal");
                         message.Msg = "Record Rejected Successfully";
                     }
                     else
                     {
-                        _dashboard.CaptureProductivityDetails(sqlCon, HttpContext.Session.GetString("EmpName").ToString().Trim(), "Commercial-Reversal Approval", "OneViewIndicator-RM", 1, "Send Back", "Supervisor sent Back Reversal approval proposal");
+                        _dashboardRepository.CaptureProductivityDetails(HttpContext.Session.GetString("EmpName").ToString().Trim(), "Commercial-Reversal Approval", "OneViewIndicator-RM", 1, "Send Back", "Supervisor sent Back Reversal approval proposal");
                         message.Msg = "Record send Back Successfully";
                     }
                 }
@@ -1887,17 +1878,17 @@ namespace Dashboard.Controllers
                     string result = mailRepository.SendMail(dt);
                     if (data.Action == "Approve")
                     {
-                        _dashboard.CaptureProductivityDetails(sqlCon, HttpContext.Session.GetString("EmpName").ToString().Trim(), "Commercial-Account Customisation", "OneViewIndicator-RM", 1, "Approve", "Supervisor Approved Account Customisation proposal");
+                        _dashboardRepository.CaptureProductivityDetails(HttpContext.Session.GetString("EmpName").ToString().Trim(), "Commercial-Account Customisation", "OneViewIndicator-RM", 1, "Approve", "Supervisor Approved Account Customisation proposal");
                         message.Msg = "Record Approved Successfully";
                     }
                     else if (data.Action == "Reject")
                     {
-                        _dashboard.CaptureProductivityDetails(sqlCon, HttpContext.Session.GetString("EmpName").ToString().Trim(), "Commercial-Account Customisation", "OneViewIndicator-RM", 1, "Reject", "Supervisor Rejected Account Customisation proposal");
+                        _dashboardRepository.CaptureProductivityDetails(HttpContext.Session.GetString("EmpName").ToString().Trim(), "Commercial-Account Customisation", "OneViewIndicator-RM", 1, "Reject", "Supervisor Rejected Account Customisation proposal");
                         message.Msg = "Record Rejected Successfully";
                     }
                     else
                     {
-                        _dashboard.CaptureProductivityDetails(sqlCon, HttpContext.Session.GetString("EmpName").ToString().Trim(), "Commercial-Account Customisation", "OneViewIndicator-RM", 1, "send Back", "Supervisor Sent Back Account Customisation proposal");
+                        _dashboardRepository.CaptureProductivityDetails(HttpContext.Session.GetString("EmpName").ToString().Trim(), "Commercial-Account Customisation", "OneViewIndicator-RM", 1, "send Back", "Supervisor Sent Back Account Customisation proposal");
                         message.Msg = "Record send Back Successfully";
                     }
                 }
