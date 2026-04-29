@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using OVI.Domain.Interfaces;
+using OVI.Infrastructure.Audit;
 using OVI.Infrastructure.Persistence;
 using OVI.Infrastructure.Repositories;
 
@@ -21,6 +22,11 @@ public static class DependencyInjection
         services.AddScoped<DapperCmDataRepository>();
         services.AddScoped<DapperCmPortfolioRepository>();
         services.AddScoped<DapperLinkRepository>();
+
+        // Structured audit service (WORM JSON + legacy SP dual-write)
+        var wormPath = configuration["AuditSettings:WormPath"] ?? "wwwroot/Logs/audit-.jsonl";
+        services.AddSingleton(sp =>
+            new StructuredAuditService(sp.GetRequiredService<IDbConnectionFactory>(), wormPath));
 
         return services;
     }

@@ -116,4 +116,30 @@ public class DependencyRuleTests
         Assert.True(result.IsSuccessful,
             "OVI.Application must not reference System.Data (no DataTable in Application)");
     }
+
+    // --- Phase 5: Observability isolation ---
+
+    [Fact]
+    public void Domain_Should_Not_Reference_OpenTelemetry()
+    {
+        var result = Types.InAssembly(DomainAssembly)
+            .ShouldNot()
+            .HaveDependencyOn("OpenTelemetry")
+            .GetResult();
+
+        Assert.True(result.IsSuccessful,
+            "OVI.Domain must not reference OpenTelemetry");
+    }
+
+    [Fact]
+    public void Domain_Should_Not_Reference_Serilog()
+    {
+        var result = Types.InAssembly(DomainAssembly)
+            .ShouldNot()
+            .HaveDependencyOn("Serilog")
+            .GetResult();
+
+        Assert.True(result.IsSuccessful,
+            "OVI.Domain must not reference Serilog");
+    }
 }

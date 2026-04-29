@@ -1,10 +1,13 @@
 ﻿@using Microsoft.AspNetCore.Http
+@using Microsoft.AspNetCore.Antiforgery
 @inject IHttpContextAccessor Accessor
+@inject IAntiforgery Antiforgery
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="csrf-token" content="@Antiforgery.GetAndStoreTokens(Context).RequestToken" />
     <title>@ViewData["Title"] - Dashboard</title>
 
     <link href="~/css/jquery-ui.css" rel="stylesheet" />

@@ -1,10 +1,17 @@
+using System.Diagnostics;
 using Dashboard.Adapters;
 using Dashboard.Endpoints;
 using Dashboard.Models;
 using Dashboard.Middleware;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
 using OVI.Application;
 using OVI.Domain.Interfaces;
 using OVI.Infrastructure;
@@ -22,13 +29,14 @@ namespace Dashboard
                 .MinimumLevel.Information()
                 .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
                 .Enrich.FromLogContext()
+                .Enrich.WithMachineName()
                 .WriteTo.Console(outputTemplate:
                     "[{Timestamp:HH:mm:ss} {Level:u3}] {CorrelationId} {Message:lj}{NewLine}{Exception}")
                 .WriteTo.File(
                     path: "wwwroot/Logs/ovi-.log",
                     rollingInterval: RollingInterval.Day,
                     outputTemplate:
-                        "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {CorrelationId} | {RequestPath} | {UserId} | {Message:lj}{NewLine}{Exception}",
+                        "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {CorrelationId} | {MachineName} | {RequestPath} | {UserId} | {Message:lj}{NewLine}{Exception}",
                     retainedFileCountLimit: 90)
                 .CreateLogger();
 
@@ -72,12 +80,40 @@ namespace Dashboard
                 builder.Services.AddScoped<ICmPortfolioService, FeatureFlaggedCmPortfolioService>();
                 builder.Services.AddScoped<ILinkService, LegacyLinkAdapter>();
 
+                // Audit service — structured events or legacy CaptureProductivityDetails
+                builder.Services.AddScoped<LegacyAuditAdapter>();
+                builder.Services.AddScoped<IAuditService, FeatureFlaggedAuditService>();
+
                 // YARP reverse proxy — migration ledger for Strangler Fig pattern
                 builder.Services.AddReverseProxy()
                     .LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));
 
+                // Antiforgery — tokens generated and available; enforcement gated by flag
+                builder.Services.AddAntiforgery(options =>
+                {
+                    options.HeaderName = "X-XSRF-TOKEN";
+                });
+
                 // Add services to the container.
-                builder.Services.AddControllersWithViews();
+                builder.Services.AddControllersWithViews(options =>
+                {
+                    options.Filters.Add<Middleware.ConditionalAntiforgeryFilter>();
+                });
+                // Cookie authentication — dual-write with session, gated by Auth.UseCookieAuth
+                builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                    .AddCookie(options =>
+                    {
+                        options.LoginPath = "/Common/SessionExpiry";
+                        options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+                        options.SlidingExpiration = true;
+                        options.Cookie.HttpOnly = true;
+                        options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+                        options.Cookie.SameSite = SameSiteMode.Strict;
+                    });
+
+                builder.Services.AddDataProtection()
+                    .SetApplicationName("OVI.Dashboard");
+
                 builder.Services.Configure<CookiePolicyOptions>(options =>
                 {
                     options.CheckConsentNeeded = context => true;
@@ -92,9 +128,52 @@ namespace Dashboard
                 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
                 builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 
+                // Health checks
+                builder.Services.AddHealthChecks()
+                    .AddSqlServer(
+                        connectionString: clsConnectionString.GetConnectionString(),
+                        name: "sqlserver",
+                        tags: new[] { "ready" });
+
                 // Feature management
                 builder.Services.AddFeatureManagement(
                     builder.Configuration.GetSection("FeatureManagement"));
+
+                // OpenTelemetry — tracing and metrics, gated by feature flag
+                var otelEnabled = builder.Configuration
+                    .GetSection("FeatureManagement")
+                    .GetValue<bool>("Observability.OpenTelemetry");
+
+                if (otelEnabled)
+                {
+                    var serviceName = "OVI.Dashboard";
+                    var serviceVersion = typeof(Program).Assembly
+                        .GetName().Version?.ToString() ?? "1.0.0";
+
+                    builder.Services.AddOpenTelemetry()
+                        .ConfigureResource(r => r.AddService(
+                            serviceName: serviceName,
+                            serviceVersion: serviceVersion))
+                        .WithTracing(tracing => tracing
+                            .AddAspNetCoreInstrumentation()
+                            .AddHttpClientInstrumentation()
+                            .AddSqlClientInstrumentation()
+                            .AddOtlpExporter(o =>
+                            {
+                                o.Endpoint = new Uri(
+                                    builder.Configuration["OtlpExporter:Endpoint"]
+                                    ?? "http://localhost:4317");
+                            }))
+                        .WithMetrics(metrics => metrics
+                            .AddAspNetCoreInstrumentation()
+                            .AddHttpClientInstrumentation()
+                            .AddOtlpExporter(o =>
+                            {
+                                o.Endpoint = new Uri(
+                                    builder.Configuration["OtlpExporter:Endpoint"]
+                                    ?? "http://localhost:4317");
+                            }));
+                }
 
                 var app = builder.Build();
 
@@ -118,13 +197,43 @@ namespace Dashboard
                 {
                     options.EnrichDiagnosticContext = (diagnosticContext, httpContext) =>
                     {
+                        // Prefer claims (cookie auth) with session fallback
+                        var user = httpContext.User;
                         diagnosticContext.Set("UserId",
-                            httpContext.Session.GetString("EmpId") ?? "anonymous");
+                            user.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value
+                            ?? httpContext.Session.GetString("EmpId")
+                            ?? "anonymous");
+                        diagnosticContext.Set("BusinessRole",
+                            user.FindFirst("BusinessRole")?.Value
+                            ?? httpContext.Session.GetString("BusinessRole")
+                            ?? "none");
+                        diagnosticContext.Set("SectionType",
+                            user.FindFirst("sectionType")?.Value
+                            ?? httpContext.Session.GetString("sectionType")
+                            ?? "none");
+
+                        var activity = Activity.Current;
+                        if (activity != null)
+                        {
+                            diagnosticContext.Set("TraceId", activity.TraceId.ToString());
+                            diagnosticContext.Set("SpanId", activity.SpanId.ToString());
+                        }
                     };
                 });
 
                 app.UseRouting();
+                app.UseAuthentication();
                 app.UseAuthorization();
+
+                // Health check endpoints — unauthenticated for load balancer probes
+                app.MapHealthChecks("/healthz", new HealthCheckOptions
+                {
+                    Predicate = _ => false // liveness: no dependency checks
+                });
+                app.MapHealthChecks("/ready", new HealthCheckOptions
+                {
+                    Predicate = check => check.Tags.Contains("ready")
+                });
 
                 app.MapControllerRoute(
                     name: "default",

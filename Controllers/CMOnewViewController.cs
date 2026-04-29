@@ -17,7 +17,7 @@ namespace Dashboard.Controllers
             _dashboardRepository = dashboardRepository;
         }
 
-        [HttpGet]
+        [HttpGet, CustomFilter]
         public IActionResult CMOneViewIndicator(string id = null, string SearchText = null)
         {
             string EmpID = HttpContext.Session.GetString("EmpId");

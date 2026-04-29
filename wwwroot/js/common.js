@@ -8,6 +8,18 @@
 //});
 
 
+// Attach CSRF token to all non-GET AJAX requests
+$.ajaxSetup({
+    beforeSend: function (xhr, settings) {
+        if (!/^(GET|HEAD|OPTIONS)$/i.test(settings.type)) {
+            var token = document.querySelector('meta[name="csrf-token"]');
+            if (token) {
+                xhr.setRequestHeader('X-XSRF-TOKEN', token.content);
+            }
+        }
+    }
+});
+
 $(document).ready(function () {
     //var as = (1000000).toLocaleString("en");
 

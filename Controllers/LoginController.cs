@@ -1,10 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System.Data;
+﻿using System.Data;
 using System.Net;
+using System.Security.Claims;
 using System.Web;
 using Dashboard.Models;
 using System.Data.SqlClient;
 using System.DirectoryServices;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.FeatureManagement;
 using OVI.Domain.Interfaces;
 
 namespace Dashboard.Controllers
@@ -17,13 +21,15 @@ namespace Dashboard.Controllers
         DBClass dBClass = new DBClass();
         private readonly IDashboardRepository _dashboardRepository;
         private readonly ILinkService _linkService;
+        private readonly IFeatureManager _featureManager;
         private readonly OviSettings _oviSettings;
         SqlCommand cmdcount = null;
 
-        public LoginController(IDashboardRepository dashboardRepository, ILinkService linkService)
+        public LoginController(IDashboardRepository dashboardRepository, ILinkService linkService, IFeatureManager featureManager)
         {
             _dashboardRepository = dashboardRepository;
             _linkService = linkService;
+            _featureManager = featureManager;
             _oviSettings = AppConfiguration.GetOviSettings();
         }
         [HttpGet]
@@ -69,16 +75,37 @@ namespace Dashboard.Controllers
                     }
                 }
                 chkstatus = checkUserMaster(UserId);
+                string sectionType = "";
                 if (chkstatus.Tables[0].Rows.Count > 0 && listBusiness.Contains("RM"))
                 {
-                    HttpContext.Session.SetString("sectionType", "RMView");
+                    sectionType = "RMView";
+                    HttpContext.Session.SetString("sectionType", sectionType);
                     url = "/Home/Dashboard?USERID=" + HttpUtility.UrlEncode(EncryptDecrypt.Encrypt(UserId)) + "&IP=" + HttpUtility.UrlEncode(HttpContext.Request.Query["IP"]);
                 }
                 else if (chkstatus.Tables[0].Rows.Count > 0 && listBusiness.Contains("CM"))
                 {
-                    HttpContext.Session.SetString("sectionType", "CMView");
+                    sectionType = "CMView";
+                    HttpContext.Session.SetString("sectionType", sectionType);
                     url = "/CM/CMDashboard?USERID=" + HttpUtility.UrlEncode(HttpContext.Request.Query["USERID"]) + "&IP=" + HttpUtility.UrlEncode(HttpContext.Request.Query["IP"]);
                 }
+
+                // Dual-write: issue cookie auth ticket alongside session
+                if (_featureManager.IsEnabledAsync("Auth.UseCookieAuth").GetAwaiter().GetResult())
+                {
+                    var claims = new List<Claim>
+                    {
+                        new(ClaimTypes.NameIdentifier, UserId),
+                        new(ClaimTypes.Name, UserId),
+                        new("BusinessRole", listBusiness),
+                        new("sectionType", sectionType)
+                    };
+                    var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                    HttpContext.SignInAsync(new ClaimsPrincipal(identity)).GetAwaiter().GetResult();
+                }
+
+                // Store login URL in session instead of static Global.LoginUrl
+                HttpContext.Session.SetString("LoginUrl", PMS_Link ?? "");
+
                 return Redirect(url);
             }
             else
@@ -313,6 +340,21 @@ namespace Dashboard.Controllers
             }
             if (message.isSuccess == "true")
             {
+                // Dual-write: issue cookie auth ticket alongside session
+                if (_featureManager.IsEnabledAsync("Auth.UseCookieAuth").GetAwaiter().GetResult())
+                {
+                    var claims = new List<Claim>
+                    {
+                        new(ClaimTypes.NameIdentifier, login.UserName),
+                        new(ClaimTypes.Name, login.UserName),
+                        new("BusinessRole", HttpContext.Session.GetString("BusinessRole") ?? ""),
+                        new("sectionType", HttpContext.Session.GetString("sectionType") ?? ""),
+                        new("UserRole", HttpContext.Session.GetString("UserRole") ?? "")
+                    };
+                    var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                    HttpContext.SignInAsync(new ClaimsPrincipal(identity)).GetAwaiter().GetResult();
+                }
+
                 _dashboardRepository.CaptureProductivityDetails(login.UserName.ToString().Trim(), "Login", "OneViewIndicator-CM and RM", 1, "Login successfully", "Login successfully for EmpCode - " + login.UserName.ToString().Trim());
 
             }
@@ -327,15 +369,15 @@ namespace Dashboard.Controllers
         [HttpPost, CustomFilter]
         public ActionResult LogoutUser()
         {
+            // Read login URL from session (preferred) or static fallback
+            string Url = HttpContext.Session.GetString("LoginUrl") ?? Global.LoginUrl ?? "/Login/Index";
 
+            // Sign out of cookie auth if active
+            HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme)
+                .GetAwaiter().GetResult();
 
-            string Url = Global.LoginUrl;
             HttpContext.Session.Clear();
-            HttpContext.Session.Remove("EmpId");
-
             Global.LoginUrl = null;
-
-            //Url = "/Login/Index";
 
             return Redirect(Url + "?LogOut=1");
         }

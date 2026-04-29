@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Serilog.Context;
 
 namespace Dashboard.Middleware
@@ -19,9 +20,22 @@ namespace Dashboard.Middleware
 
             context.Response.Headers[CorrelationIdHeader] = correlationId;
 
+            // Push CorrelationId and OTel TraceId (when available) into Serilog LogContext
             using (LogContext.PushProperty("CorrelationId", correlationId))
             {
-                await _next(context);
+                var activity = Activity.Current;
+                if (activity != null)
+                {
+                    using (LogContext.PushProperty("TraceId", activity.TraceId.ToString()))
+                    using (LogContext.PushProperty("SpanId", activity.SpanId.ToString()))
+                    {
+                        await _next(context);
+                    }
+                }
+                else
+                {
+                    await _next(context);
+                }
             }
         }
     }
