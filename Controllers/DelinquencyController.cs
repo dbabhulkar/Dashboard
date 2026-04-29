@@ -1,176 +1,77 @@
-﻿using Dashboard.Interfaces;
 using Dashboard.Models;
+using Dashboard.ViewModels;
 using Microsoft.AspNetCore.Mvc;
-using System.Data.SqlClient;
-using System.Data;
-using Dashboard.Repositories;
 using OVI.Domain.Interfaces;
 
 namespace Dashboard.Controllers
 {
     public class DelinquencyController : Controller
     {
-        SqlConnection sqlCon = new SqlConnection(clsConnectionString.GetConnectionString());
-        SqlCommand cmd = null;
-        SqlDataAdapter sda = null;
-        //GetData getData = new GetData();
-        clsConnectionString clsConnectionString = new clsConnectionString();
-        private readonly IDashboard _dashboard;
         private readonly ICmDataService _cmDataService;
+        private readonly IDashboardRepository _dashboardRepository;
 
-        public DelinquencyController(ICmDataService cmDataService)
+        public DelinquencyController(ICmDataService cmDataService, IDashboardRepository dashboardRepository)
         {
-            _dashboard = new DashboardRepository();
             _cmDataService = cmDataService;
+            _dashboardRepository = dashboardRepository;
         }
+
         public IActionResult Index()
         {
             return View();
         }
 
         [HttpPost, CustomFilter]
-        public IActionResult Delinquency(clsCMDelinquencyMain clsCMDelinquencyMain)
+        public IActionResult Delinquency(CmDelinquencyViewModel viewModel)
         {
-            var SelectedSegment = "";
-            var SelectedLocation = "";
-            string EmpID = HttpContext.Session.GetString("EmpId");
-            if (clsCMDelinquencyMain.SelectedSegment != null)
-            {
-                SelectedSegment = String.Join(",", clsCMDelinquencyMain.SelectedSegment.Select(w => w).ToArray());
-            }
-            if (clsCMDelinquencyMain.SelectedLocation != null)
-            {
-                SelectedLocation = String.Join(",", clsCMDelinquencyMain.SelectedLocation.Select(w => w).ToArray());
-            }
+            var selectedSegment = viewModel.SelectedSegment != null
+                ? string.Join(",", viewModel.SelectedSegment)
+                : "";
+            var selectedLocation = viewModel.SelectedLocation != null
+                ? string.Join(",", viewModel.SelectedLocation)
+                : "";
+            string empId = HttpContext.Session.GetString("EmpId");
 
-            Common common = new Common();
-            //common.clsCMDelinquency11(SelectedSegment, SelectedLocation, clsCMDelinquencyMain.HiddenDatetime, EmpID);
+            var dto = _cmDataService.GetCmDelinquency(
+                selectedSegment, selectedLocation,
+                viewModel.LSId ?? "", viewModel.HiddenDatetime ?? "", empId);
 
-            return View(common.clsCMDelinquency11(SelectedSegment, SelectedLocation, clsCMDelinquencyMain.LSId, clsCMDelinquencyMain.HiddenDatetime, EmpID));
+            return View(CmDelinquencyViewModel.FromDto(dto));
         }
 
         [CustomFilter]
         public IActionResult Delinquency(string datetime = null)
         {
-            string EmpID = HttpContext.Session.GetString("EmpId");
+            string empId = HttpContext.Session.GetString("EmpId");
 
             if (datetime is null)
             {
                 datetime = DateTime.Now.ToString("yyyy-MM-dd");
             }
 
-            // ICmDataService is injected and available — Views still bind to legacy models
-            // until Phase 3 updates them. Use legacy Common for View rendering.
-            Common common = new Common();
-            _dashboard.CaptureProductivityDetails(sqlCon, EmpID.ToString().Trim(), "Delinquecy", "OneViewIndicator-CM", 1, "Delinquecy View", "Delinquency View for Emp - " + EmpID.ToString().Trim());
-            return View(common.clsCMDelinquency11("", "", "", datetime, EmpID));
+            _dashboardRepository.CaptureProductivityDetails(
+                empId.Trim(), "Delinquecy", "OneViewIndicator-CM", 1,
+                "Delinquecy View", "Delinquency View for Emp - " + empId.Trim());
+
+            var dto = _cmDataService.GetCmDelinquency("", "", "", datetime, empId);
+            return View(CmDelinquencyViewModel.FromDto(dto));
         }
 
+        /// <summary>
+        /// AJAX endpoint returning typed JSON — replaces inline SqlCommand data access.
+        /// </summary>
         [CustomFilter]
         public JsonResult GetCMDelinquencyPageData(string dateTime)
         {
-            DataSet dt = new DataSet();
-            clsCMDelinquencyMain clsCMDelinquencyMain = new clsCMDelinquencyMain();
-            DateTime dateTime1 = new DateTime();
-
-            dateTime1 = Convert.ToDateTime(dateTime);
-            // Delinquency(dateTime);
-            List<clsCode> lstclsColorCode = new List<clsCode>();
-            List<clsMonthTotal> lstclsMonthTotal = new List<clsMonthTotal>();
-
-            try
+            string empId = HttpContext.Session.GetString("EmpId");
+            var dto = _cmDataService.GetCmDelinquency("", "", "", dateTime, empId);
+            return new JsonResult(new
             {
-                //sqlCon = new SqlConnection(Startup.connectionstring);               
-                cmd = new SqlCommand("SP_OVI_CMDelinquency", sqlCon);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@IdentFlag", "CMDelinquency");
-                cmd.Parameters.AddWithValue("@CM_Emp_Code", HttpContext.Session.GetString("EmpId"));
-                cmd.Parameters.AddWithValue("@SelectedDate", dateTime1);
-
-                if (sqlCon.State == ConnectionState.Closed)
-                {
-                    sqlCon.Open();
-                }
-                sda = new SqlDataAdapter(cmd);
-                sda.Fill(dt);
-                sqlCon.Close();
-
-                if (dt.Tables[3].Rows.Count > 0)
-                {
-                    foreach (DataRow row in dt.Tables[3].Rows)
-                    {
-                        clsCMDelinquencyMain.OverDueAccount = row["OverDueAccount"].ToString();
-                        clsCMDelinquencyMain.OverDueAmount = row["OverDueAmount"].ToString();
-                    }
-                }
-
-                if (dt.Tables[5].Rows.Count > 0)
-                {
-                    foreach (DataRow row in dt.Tables[5].Rows)
-                    {
-                        clsCode clsColorCode = new clsCode();
-
-                        clsColorCode.Segment = row["Segment"].ToString();
-                        clsColorCode.Div = row["Div"].ToString();
-                        clsColorCode.BackgroundColor = row["BackgroundColor"].ToString();
-                        clsColorCode.HoverBackgroundColor = row["HoverBackgroundColor"].ToString();
-
-                        lstclsColorCode.Add(clsColorCode);
-                    }
-                }
-                //if (dt.Tables[10].Rows.Count > 0)
-                //{
-                //    foreach (DataRow row in dt.Tables[10].Rows)
-                //    {
-                //        clsMonthTotal clsMonthTotalDDP = new clsMonthTotal();
-                //        clsMonthTotalDDP.NoOFAcc = row["NOOFAccCount"].ToString();
-                //        clsMonthTotalDDP.TotalAmount = row["Overdue_Amount"].ToString();
-                //        clsMonthTotalDDP.TotalExpoAmount = row["Overdue_Exposure"].ToString();
-                //        clsMonthTotalDDP.Segment = row["Segment"].ToString();
-                //        lstclsMonthTotal.Add(clsMonthTotalDDP);
-                //    }
-                //}
-                if (dt.Tables[11].Rows.Count > 0)
-                {
-                    foreach (DataRow row in dt.Tables[11].Rows)
-                    {
-                        clsMonthTotal clsMonthTotalDDP = new clsMonthTotal();
-                        clsMonthTotalDDP.NoOFAcc = row["NOOFAccCount"].ToString();
-                        clsMonthTotalDDP.TotalAmount = row["Utilization"].ToString();
-                        clsMonthTotalDDP.Segment = row["Segment"].ToString();
-                        lstclsMonthTotal.Add(clsMonthTotalDDP);
-                    }
-                }
-
-
-                sqlCon.Close();
-            }
-            catch (Exception ex)
-            {
-                if (sqlCon != null)
-                    sqlCon.Close();
-
-                if (cmd != null)
-                    cmd.Dispose();
-
-                if (sda != null)
-                    sda.Dispose();
-            }
-            finally
-            {
-                if (sqlCon != null)
-                    sqlCon.Close();
-
-                if (cmd != null)
-                    cmd.Dispose();
-
-                if (sda != null)
-                    sda.Dispose();
-            }
-
-            clsCMDelinquencyMain.clsColorCode = lstclsColorCode;
-            clsCMDelinquencyMain.clsMonthExposure = lstclsMonthTotal;
-            return new JsonResult(clsCMDelinquencyMain);
+                dto.OverDueAccount,
+                dto.OverDueAmount,
+                clsColorCode = dto.ColorCodes,
+                clsMonthExposure = dto.MonthExposures
+            });
         }
     }
 }

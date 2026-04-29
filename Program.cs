@@ -1,4 +1,5 @@
 using Dashboard.Adapters;
+using Dashboard.Endpoints;
 using Dashboard.Models;
 using Dashboard.Middleware;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
@@ -67,6 +68,10 @@ namespace Dashboard
                 builder.Services.AddScoped<ICmDataService, FeatureFlaggedCmDataService>();
                 builder.Services.AddScoped<IDashboardRepository, FeatureFlaggedDashboardRepository>();
 
+                // YARP reverse proxy — migration ledger for Strangler Fig pattern
+                builder.Services.AddReverseProxy()
+                    .LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));
+
                 // Add services to the container.
                 builder.Services.AddControllersWithViews();
                 builder.Services.Configure<CookiePolicyOptions>(options =>
@@ -120,6 +125,14 @@ namespace Dashboard
                 app.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Login}/{action=Index}/{id?}");
+
+                // Minimal API endpoints — typed JSON for modernized AJAX calls
+                app.MapCmDataEndpoints();
+                app.MapDashboardEndpoints();
+
+                // YARP catch-all — routes not handled by MVC go to legacy cluster.
+                // As routes migrate, they move from legacyFallback to local handlers.
+                app.MapReverseProxy();
 
                 app.Run();
             }
